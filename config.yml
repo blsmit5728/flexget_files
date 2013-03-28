@@ -25,6 +25,14 @@ presets:
         - '*.m2ts'
         - 'password.txt'
     pathscrub: windows
+    email:
+      from: uraniumserver@gmail.com
+      to: blsmit5728+flexget@gmail.com
+      smtp_host: smtp.gmail.com
+      smtp_port: 587
+      smtp_username: uraniumserver
+      smtp_password: baseball!2
+      smtp_tls: yes
 
   tv-global:
     include: 

@@ -29,7 +29,7 @@ tasks:
   Sort_Unpacked_TV_Shows:
     # Where to get the unpacked (staged) files from
     find:
-      path: '/raid/videos/staging/tv_shows/'
+      path: '/mnt/media/Library/staging/tv_shows/'
     # Where to get the metadata
     thetvdb_lookup: yes
     # This is needed to get my TVDB offset values 
@@ -42,7 +42,7 @@ tasks:
     move:
       # Folder to move to
       to: >
-        /raid/videos/TV Shows/{{ series_name|replace('/', '_')|replace(':', ' -') }}/{% if series_id_type == 'ep' %}Season {{ tvdb_season|default(series_season) }}/{% endif %}
+        /mnt/media/Library/TV Shows/{{ series_name|replace('/', '_')|replace(':', ' -') }}/{% if series_id_type == 'ep' %}Season {{ tvdb_season|default(series_season) }}/{% endif %}
       # Filename (inside of folder) to move to
       filename: >
         {{ series_name|replace('/', '_')|replace(':', ' -') }} - {{ tvdb_ep_id|default(series_id) }}{% if ep_name|default(False) %} - {{ ep_name|replace('/', '_')|replace(':', ' -') }}{% endif %} - {{ quality }}.{{ location[-3:] }}
@@ -51,12 +51,12 @@ tasks:
   # Same as above
   Sort_Unpacked_Movies:
     find:
-      path: '/raid/videos/staging/movies/'
+      path: '/mnt/media/Library/staging/movies/'
     imdb_lookup: yes
     require_field: [imdb_url]
     move:
       to: >
-        /raid/videos/Movies/{{ imdb_name|replace('/', '_')|replace(':', ' -') }} ({{ imdb_year }})/
+        /mnt/media/Library/Movies/{{ imdb_name|replace('/', '_')|replace(':', ' -') }} ({{ imdb_year }})/
       filename: >
         {{ imdb_name|replace('/', '_')|replace(':', ' -') }} ({{ imdb_year }}) - {{ quality }}.{{ location[-3:] }}
       clean_source: 1000
