@@ -27,9 +27,11 @@ presets:
     pathscrub: windows
 
   tv-global:
-    include: [ series.yml ]
-    inputs:
-      - rss: http://rss.torrentleech.org/99bc6497f31180e997cf                  
+    include: 
+      - series.yml
+      - private/tl.yml
+    #inputs:
+    #  - rss: http://rss.torrentleech.org/99bc6497f31180e997cf                  
     content_size:
       max: 4000
       min: 20
@@ -40,8 +42,10 @@ presets:
     thetvdb_lookup: yes
 
   movie-global:
-    inputs:
-      - rss: http://rss.torrentleech.org/99bc6497f31180e997cf 
+    include: 
+      - private/tl.yml
+    #inputs:
+    #  - rss: http://rss.torrentleech.org/99bc6497f31180e997cf 
     content_size:
       max: 8000
       min: 500
