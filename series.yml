@@ -19,7 +19,6 @@ series:
     - True Blood
   Better:
     - 1600 Penn
-    - 2 Broke Girls
     - American Dad!:
         name_regexp: ^american.dad(!)?
         set:
