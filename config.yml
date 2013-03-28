@@ -1,0 +1,93 @@
+presets:
+  global:
+    regexp:
+      reject:
+        - (s|d)ub(s|bed)?\b: {from: title} 
+        - (duo|tri|quadri|tetra|penta|hexa|hepta|octa|ennea|deca)logy 
+        - \b3-?D\b: {from: title}          
+        - \bR5\b: {from: title}            
+        - \bWEBSCR\b: {from: title}        
+        - \bscreener\b: {from: title}
+        - \bTS\b: {from: title}
+        - \bCam\b: {from: title}
+        - "{C_P}": {from: title}
+        - \bFRENCH\b: {from: title}
+        - \btrailer\b: {from: title}
+        - "SCR": {from: title}
+    content_filter:
+      require:
+        - '*.avi'
+        - '*.mkv'
+        - '*.m4v'
+        - '*.mp4'
+        - '*.rar'
+      reject:
+        - '*.m2ts'
+        - 'password.txt'
+    pathscrub: windows
+
+  tv-global:
+    include: [ series.yml ]
+    inputs:
+      - rss: http://rss.torrentleech.org/99bc6497f31180e997cf                  
+    content_size:
+      max: 4000
+      min: 20
+    #content_sort:
+    #  '*.rar': /Users/bsmith/PVR/tv-staging/
+    exists_series:
+      - "/Users/bsmith/PVR/tvshows"
+    thetvdb_lookup: yes
+
+  movie-global:
+    inputs:
+      - rss: http://rss.torrentleech.org/99bc6497f31180e997cf 
+    content_size:
+      max: 8000
+      min: 500
+    quality: 
+      - 720p-1080p bluray xvid-h264 
+    exists_movie:
+      - /Users/bsmith/PVR/movies/
+      - /Users/bsmith/PVR/torrents/
+    imdb_required: yes
+
+tasks:
+  tv-shows:
+    priority: 3
+    preset:
+      - tv-global
+    series:
+      settings:
+        Best:
+          target: 720p+ hdtv+
+          timeframe: 6 hours
+          quality: 720p+ dvdscr+
+        Better:
+          target: 720p+ dvdscr+
+          timeframe: 3 days
+          quality: 480p+ dvdscr+
+        Average:
+          target: webrip+
+          timeframe: 5 days
+          quality: preair+
+    download: /Users/bsmith/PVR/torrents/
+
+  movies:
+    preset: 
+      - movie-global
+    movie_queue: yes
+    download: /Users/bsmith/PVR/torrents/
+
+  imdb_queue:
+    priority: 10 # Always run before My_Movies feeds
+    preset: no_global
+    interval: 2 hours
+    imdb_list:
+      user_id: ur34962140
+      list: watchlist
+    accept_all: yes
+    queue_movies:
+      force: no
+    
+  

@@ -1,0 +1,63 @@
+series:
+  settings:
+    global:
+      propers: no
+    Average:
+      propers: yes
+  Best:
+    - 2 Broke Girls
+    - Dexter
+    - Don't Trust the B---- in Apartment 23
+    - Homeland
+    - House of Lies
+    - How I Met Your Mother
+    - Justified
+    - Modern Family
+    - Revenge
+    - The Big Bang Theory
+    - The Walking Dead
+    - True Blood
+  Better:
+    - 1600 Penn
+    - 2 Broke Girls
+    - American Dad!:
+        name_regexp: ^american.dad(!)?
+        set:
+          thetvdb_lookup_season_offset: 1
+    - American Horror Story
+    - Anger Management
+    - Archer (2009):
+        name_regexp: ^archer(.2009)?
+    - Bobs Burgers
+    - Breaking Bad
+    - Brickleberry
+    - Eastbound & Down:
+        name_regexp: ^east.?bound(.and|.&)?.down
+    - Family Guy
+    - Futurama
+    - Girls
+    - Its Always Sunny In Philadelphia
+    - Last Resort
+    - Mad Men
+    - MythBusters
+    - New Girl
+    - Red Widow
+    - Revolution
+    - South Park
+    - The Americans (2013):
+        name_regexp: ^the.americans(.2013)?
+    - The Following
+    - The Cleveland Show
+    - The IT Crowd
+    - The Mindy Project
+    - The Simpsons
+    - Tosh.0
+    - Two and a Half Men
+    - Workaholics
+    - Zero Hour
+  Average:
+    - 666 Park Avenue
+    - Downton Abbey
+    - Falling Skies
+    - Moonshiners
+
