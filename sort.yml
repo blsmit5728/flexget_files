@@ -1,0 +1,62 @@
+# Flexget (http://www.flexget.com) configuration file.
+#
+# Created by: Jeff Wilson <jeff@jeffalwilson.com>
+# I will keep this above ^^ thanks dude
+#
+# This config file is not a standard Flexget config, it is used
+# to sort my unrared movies and TV shows into their proper place
+#
+presets:
+  global:
+    # Each feed must be run manually
+    manual: yes
+    # Disable seen, alway process files
+    disable_builtins: [seen]
+    accept_all: yes
+    # Make sure all filenames are Windows safe (for samba)
+    pathscrub: windows
+    find:
+      # We are looking for any video files that were extracted
+      regexp: '.*\.(avi|mkv|mpg|mp4)$'
+      recursive: yes
+    regexp:
+      reject:
+        - \bsample\b: {from: title}
+    content_size:
+      min: 60
+
+tasks:
+  Sort_Unpacked_TV_Shows:
+    # Where to get the unpacked (staged) files from
+    find:
+      path: '/raid/videos/staging/tv_shows/'
+    # Where to get the metadata
+    thetvdb_lookup: yes
+    # This is needed to get my TVDB offset values 
+    include: [series.yml]
+    all_series:
+      # Don't actually filter
+      parse_only: yes
+    # Don't attempt to move if we don't have valid metadata
+    require_field: [series_id]
+    move:
+      # Folder to move to
+      to: >
+        /raid/videos/TV Shows/{{ series_name|replace('/', '_')|replace(':', ' -') }}/{% if series_id_type == 'ep' %}Season {{ tvdb_season|default(series_season) }}/{% endif %}
+      # Filename (inside of folder) to move to
+      filename: >
+        {{ series_name|replace('/', '_')|replace(':', ' -') }} - {{ tvdb_ep_id|default(series_id) }}{% if ep_name|default(False) %} - {{ ep_name|replace('/', '_')|replace(':', ' -') }}{% endif %} - {{ quality }}.{{ location[-3:] }}
+      clean_source: 40
+
+  # Same as above
+  Sort_Unpacked_Movies:
+    find:
+      path: '/raid/videos/staging/movies/'
+    imdb_lookup: yes
+    require_field: [imdb_url]
+    move:
+      to: >
+        /raid/videos/Movies/{{ imdb_name|replace('/', '_')|replace(':', ' -') }} ({{ imdb_year }})/
+      filename: >
+        {{ imdb_name|replace('/', '_')|replace(':', ' -') }} ({{ imdb_year }}) - {{ quality }}.{{ location[-3:] }}
+      clean_source: 1000
