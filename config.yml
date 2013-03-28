@@ -29,9 +29,7 @@ presets:
   tv-global:
     include: 
       - series.yml
-      - private/tl.yml
-    #inputs:
-    #  - rss: http://rss.torrentleech.org/99bc6497f31180e997cf                  
+      - private/tl.yml                  
     content_size:
       max: 4000
       min: 20
@@ -43,9 +41,7 @@ presets:
 
   movie-global:
     include: 
-      - private/tl.yml
-    #inputs:
-    #  - rss: http://rss.torrentleech.org/99bc6497f31180e997cf 
+      - private/tl.yml 
     content_size:
       max: 8000
       min: 500
