@@ -68,17 +68,17 @@ tasks:
     series:
       settings:
         Best:
-          target: 720p+ hdtv+
-          timeframe: 6 hours
-          quality: 720p+ dvdscr+
-        Better:
-          target: 720p+ dvdscr+
-          timeframe: 3 days
+          target: 720p+ hdtv+ h264+
+          timeframe: 2 hours
           quality: 480p+ dvdscr+
+        Better:
+          target: 480p+ dvdscr+ h264+
+          timeframe: 3 hours
+          quality: webrip+
         Average:
-          target: webrip+
-          timeframe: 5 days
-          quality: preair+
+          target: 360p+ webrip+
+          timeframe: 4 hours
+          quality: 360p+ preair+
     download: /Users/bsmith/PVR/torrents/
 
   movies:
