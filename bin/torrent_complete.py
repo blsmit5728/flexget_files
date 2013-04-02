@@ -4,20 +4,19 @@ import os
 import logging, logging.handlers
 from subprocess import call
 
-LOG_FILE='/home/deluge/.flexget/torrent_complete.log'
-LOG_FILE='/Users/bsmith/.flexget/bin/torrent_complete.log'
-DOWNLOAD_PATH='/Users/bsmith/PVR/downloaded'
-STAGING_PATH='/Users/bsmith/PVR/staging'
+LOG_FILE='/home/bsmith/.flexget/bin/torrent_complete.log'
+DOWNLOAD_PATH='/home/bsmith/Downloads/completed'
+STAGING_PATH='/home/bsmith/Downloads/staging/'
 #XBMC_HOST='Carina.singularity.net'
 # If you're using a local checkout of Flexget, use flexget_vanilla.
 # Otherwise use the one in your system
-FLEXGET_COMMAND='flexget --logfile /Users/bsmith/.flexget/flexget-sorting.log'
-FLEXGET_SORTING_CONFIG='/Users/bsmith/.flexget/sort.yml'
+FLEXGET_COMMAND='flexget --logfile /home/bsmith/.flexget/flexget-sorting.log'
+FLEXGET_SORTING_CONFIG='/home/bsmith/.flexget/sort.yml'
 FLEXGET_TASK_PREFIX='Sort_Unpacked_'
 
 FLEXGET_PATH_TASK={
-    '/movies/': 'Movies',
-    '/tvshows/': 'TV_Shows',
+    '/Movies/': 'Movies',
+    '/TvShows/': 'TV_Shows',
     }
 
 log = logging.getLogger("torrent_complete")
@@ -60,19 +59,19 @@ if DOWNLOAD_PATH not in torrent_path:
     chain()
 
 for path, task in FLEXGET_PATH_TASK.items():
+    print DOWNLOAD_PATH+path + " " + torrent_path
     if DOWNLOAD_PATH+path in torrent_path:
         log.info('Processing %s as part of task %s.' % (torrent_name,task))
-
+        print torrent_path+ "/"+torrent_name
         for root, dirs, files in os.walk(torrent_path+'/'+torrent_name, topdown=False):
             print torrent_path + '/' + torrent_name
-            cmd='find "'+root+'" -type f -regex ".*\(rar\)$" | head -1 | xargs -I {} unrar x -o+ "{}" '+STAGING_PATH+path+torrent_id+'/'
+            cmd='find "'+root+'" -type f -regex ".*\.\(\part[0-9]+\.\)?r\([0-9]+\|ar\)$" | head -1 | xargs -I {} unrar x -o+ "{}" '+STAGING_PATH+path+torrent_id+'/'
             log.debug('Shelling out: %s' % cmd)
             ret = call(cmd, shell=True)
             if ret != 0:
                 log.warning('Unrar command returned non-zero value %d.' % ret)
 
-        cmd=FLEXGET_COMMAND+' -c '+FLEXGET_SORTING_CONFIG+' --task '+FLEXGET_TASK_PREFIX+task+\
-            (' --disable-advancement' if 'tv' in path else '')
+        cmd=FLEXGET_COMMAND+' -c '+FLEXGET_SORTING_CONFIG+' --task '+FLEXGET_TASK_PREFIX + task + (' --disable-advancement' if 'tv' in path else '')
         log.debug('Shelling out: %s' % cmd)
         ret = call(cmd, shell=True)
         if ret != 0:

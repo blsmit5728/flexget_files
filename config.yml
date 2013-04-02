@@ -54,7 +54,7 @@ presets:
       label: tv
       movedone: "/home/bsmith/disk1/Library/TvShows/{{ series_name }}/Season {{ series_season + thetvdb_lookup_season_offset|default(0)}}"
     content_sort:
-      '*.rar': /home/bsmith/Downloads/staging/TvShows
+      '*.rar': /home/bsmith/Downloads/completed/TvShows
 
   movie-global:
     include: 
@@ -73,11 +73,10 @@ presets:
         {{ imdb_name|replace('/', '_')|replace(':', ' -') }} ({{ imdb_year }}) - {{ quality }}
       movedone: "/home/bsmith/disk1/Library/Movies/{{ imdb_name|replace('/', '_')|replace(':', ' -') }} ({{ imdb_year }})"
     content_sort:
-      '*.rar': /home/bsmith/Downloads/staging/Movies
+      '*.rar': /home/bsmith/Downloads/completed/Movies
 
 tasks:
   tv-shows:
-    priority: 3
     preset:
       - tv-global
     series:
@@ -94,13 +93,13 @@ tasks:
           target: 360p+ webrip+
           timeframe: 4 hours
           quality: 360p+ preair+
-    download: /home/bsmith/Downloads/torrents/
+    #download: /home/bsmith/Downloads/torrents/
 
   movies:
     preset: 
       - movie-global
     movie_queue: yes
-    download: /home/bsmith/Downloads/torrents/
+    #download: /home/bsmith/Downloads/torrents/
 
   imdb_queue:
     priority: 10 # Always run before My_Movies feeds
