@@ -33,7 +33,9 @@ presets:
       smtp_username: uraniumserver
       smtp_password: baseball!2
       smtp_tls: yes
-
+    deluge:
+      main_file_only: yes
+      
   tv-global:
     include: 
       - series.yml
@@ -42,15 +44,17 @@ presets:
       max: 4000
       min: 20
     exists_series:
-      - "/Users/bsmith/PVR/tvshows"
+      - "/mnt/disk1/Library/TvShows/"
+      - "/home/bsmith/Downloads/staging/TvShows"
     thetvdb_lookup: yes
     set:
       # Rename the "content file" to something nice
       content_filename: >
-        {{ series_name|replace('/', '_')|replace(':', ' -') }} - {{ tvdb_ep_id|default(series_id) }}{% if ep_name|default(False) %} - {{ ep_name|replace('/', '_')|replace(':', ' -') }}{% endif %} - {{ quality }}
+        {{ series_name|replace('/', '_')|replace(':', ' -') }} - {{ tvdb_ep_id|default(series_id) }}{% if tvdb_ep_name|default(False) %} - {{ tvdb_ep_name|replace('/', '_')|replace(':', ' -') }}{% endif %} - {{ quality }}
       label: tv
+      movedone: "/home/bsmith/disk1/Library/TvShows/{{ series_name }}/Season {{ series_season + thetvdb_lookup_season_offset|default(0)}}"
     content_sort:
-      '*.rar': /Users/bsmith/PVR/tv-staging/
+      '*.rar': /home/bsmith/Downloads/staging/TvShows
 
   movie-global:
     include: 
@@ -61,9 +65,15 @@ presets:
     quality: 
       - 720p-1080p bluray xvid-h264 
     exists_movie:
-      - /Users/bsmith/PVR/movies/
-      - /Users/bsmith/PVR/torrents/
+      - /mnt/disk1/Library/Movies/
+      - /home/bsmith/Downloads/staging/Movies/
     imdb_required: yes
+    deluge:
+      content_filename: >
+        {{ imdb_name|replace('/', '_')|replace(':', ' -') }} ({{ imdb_year }}) - {{ quality }}
+      movedone: "/home/bsmith/disk1/Library/Movies/{{ imdb_name|replace('/', '_')|replace(':', ' -') }} ({{ imdb_year }})"
+    content_sort:
+      '*.rar': /home/bsmith/Downloads/staging/Movies
 
 tasks:
   tv-shows:
@@ -84,13 +94,13 @@ tasks:
           target: 360p+ webrip+
           timeframe: 4 hours
           quality: 360p+ preair+
-    download: /Users/bsmith/PVR/torrents/
+    download: /home/bsmith/Downloads/torrents/
 
   movies:
     preset: 
       - movie-global
     movie_queue: yes
-    download: /Users/bsmith/PVR/torrents/
+    download: /home/bsmith/Downloads/torrents/
 
   imdb_queue:
     priority: 10 # Always run before My_Movies feeds
