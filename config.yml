@@ -41,11 +41,16 @@ presets:
     content_size:
       max: 4000
       min: 20
-    #content_sort:
-    #  '*.rar': /Users/bsmith/PVR/tv-staging/
     exists_series:
       - "/Users/bsmith/PVR/tvshows"
     thetvdb_lookup: yes
+    set:
+      # Rename the "content file" to something nice
+      content_filename: >
+        {{ series_name|replace('/', '_')|replace(':', ' -') }} - {{ tvdb_ep_id|default(series_id) }}{% if ep_name|default(False) %} - {{ ep_name|replace('/', '_')|replace(':', ' -') }}{% endif %} - {{ quality }}
+      label: tv
+    content_sort:
+      '*.rar': /Users/bsmith/PVR/tv-staging/
 
   movie-global:
     include: 
