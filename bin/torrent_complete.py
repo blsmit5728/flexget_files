@@ -7,7 +7,7 @@ from subprocess import call
 LOG_FILE='/home/bsmith/.flexget/bin/torrent_complete.log'
 DOWNLOAD_PATH='/home/bsmith/Downloads/completed'
 STAGING_PATH='/home/bsmith/Downloads/staging/'
-#XBMC_HOST='Carina.singularity.net'
+XBMC_HOST='uranium.local'
 # If you're using a local checkout of Flexget, use flexget_vanilla.
 # Otherwise use the one in your system
 FLEXGET_COMMAND='flexget --logfile /home/bsmith/.flexget/flexget-sorting.log'
@@ -47,12 +47,12 @@ torrent_path=sys.argv[3]
 log.debug("%s called with torrent_id='%s', torrent_name='%s', torrent_path='%s'." % (sys.argv[0],
     torrent_id, torrent_name, torrent_path))
 
-#def chain():
-#    log.debug("Updating XBMC Library")
-#    ret=call('/usr/bin/xbmc-send --host='+XBMC_HOST+' --action="XBMC.updatelibrary(video)"', shell=True)
-#    if ret != 0:
-#        log.warning('Update XBMC command returned non-zero value %d.' % ret)
-#    sys.exit(0)
+def chain():
+    log.debug("Updating XBMC Library")
+    ret=call('/usr/bin/xbmc-send --host='+XBMC_HOST+' --action="XBMC.updatelibrary(video)"', shell=True)
+    if ret != 0:
+        log.warning('Update XBMC command returned non-zero value %d.' % ret)
+    sys.exit(0)
 
 if DOWNLOAD_PATH not in torrent_path:
     log.debug("Torrent '%s' path (%s) not in %s, skipping unrar" % (torrent_name,torrent_path,DOWNLOAD_PATH))
@@ -77,5 +77,5 @@ for path, task in FLEXGET_PATH_TASK.items():
         if ret != 0:
             log.warning('Flexget command returned non-zero value %d.' % ret)
 
-#chain()
+chain()
 
