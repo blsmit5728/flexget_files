@@ -42,7 +42,7 @@ presets:
       content_filename: >
         {{ series_name|replace('/', '_')|replace(':', ' -') }} - {{ tvdb_ep_id|default(series_id) }}{% if tvdb_ep_name|default(False) %} - {{ tvdb_ep_name|replace('/', '_')|replace(':', ' -') }}{% endif %} - {{ quality }}
       label: tv
-      movedone: "/home/bsmith/disk1/Library/TvShows/{{ series_name }}/Season {{ series_season + thetvdb_lookup_season_offset|default(0)}}"
+      movedone: "/mnt/disk1/Library/TvShows/{{ series_name }}/Season {{ series_season + thetvdb_lookup_season_offset|default(0)}}"
     content_sort:
       '*.rar': /home/bsmith/Downloads/completed/TvShows
 
@@ -61,7 +61,7 @@ presets:
     deluge:
       content_filename: >
         {{ imdb_name|replace('/', '_')|replace(':', ' -') }} ({{ imdb_year }}) - {{ quality }}
-      movedone: "/home/bsmith/disk1/Library/Movies/{{ imdb_name|replace('/', '_')|replace(':', ' -') }} ({{ imdb_year }})"
+      movedone: "/mnt/disk1/Library/Movies/{{ imdb_name|replace('/', '_')|replace(':', ' -') }} ({{ imdb_year }})"
     content_sort:
       '*.rar': /home/bsmith/Downloads/completed/Movies
 
