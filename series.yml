@@ -27,9 +27,11 @@ series:
     - Anger Management
     - Archer (2009):
         name_regexp: ^archer(.2009)?
+    - Bates Motel
     - Bobs Burgers
     - Breaking Bad
     - Brickleberry
+    - Defiance
     - Eastbound & Down:
         name_regexp: ^east.?bound(.and|.&)?.down
     - Family Guy
