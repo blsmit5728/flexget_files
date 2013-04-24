@@ -8,6 +8,7 @@ series:
     - 2 Broke Girls
     - Dexter
     - Don't Trust the B---- in Apartment 23
+    - Hannibal
     - Homeland
     - House of Lies
     - How I Met Your Mother
@@ -37,6 +38,7 @@ series:
     - Family Guy
     - Futurama
     - Girls
+    - Inside Amy Schumer
     - Its Always Sunny In Philadelphia
     - Last Resort
     - Mad Men
@@ -55,10 +57,12 @@ series:
     - Tosh.0
     - Two and a Half Men
     - Workaholics
-    - Zero Hour
+    - Zero Hour (2013):
+        name_regexp: ^zero.hour(.2013)?
   Average:
     - 666 Park Avenue
     - Downton Abbey
     - Falling Skies
     - Moonshiners
+
 

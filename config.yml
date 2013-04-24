@@ -62,6 +62,7 @@ presets:
       content_filename: >
         {{ imdb_name|replace('/', '_')|replace(':', ' -') }} ({{ imdb_year }}) - {{ quality }}
       movedone: "/mnt/disk1/Library/Movies/{{ imdb_name|replace('/', '_')|replace(':', ' -') }} ({{ imdb_year }})"
+      label: movie
     content_sort:
       '*.rar': /home/bsmith/Downloads/completed/Movies
 
