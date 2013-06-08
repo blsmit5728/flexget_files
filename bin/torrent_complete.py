@@ -62,7 +62,7 @@ for path, task in FLEXGET_PATH_TASK.items():
     print DOWNLOAD_PATH+path + " " + torrent_path
     if DOWNLOAD_PATH+path in torrent_path:
         log.info('Processing %s as part of task %s.' % (torrent_name,task))
-        print torrent_path+ "/"+torrent_name
+        #print torrent_path+ "/"+torrent_name
         for root, dirs, files in os.walk(torrent_path+'/'+torrent_name, topdown=False):
             print torrent_path + '/' + torrent_name
             cmd='find "'+root+'" -type f -regex ".*\.\(\part[0-9]+\.\)?r\([0-9]+\|ar\)$" | head -1 | xargs -I {} unrar x -o+ "{}" '+STAGING_PATH+path+torrent_id+'/'
