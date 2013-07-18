@@ -36,6 +36,8 @@ series:
     - Counting Cars
     - Crisis 
     - Crossing Lines
+    - Dads (2013):
+        name_regexp: ^dads(.2013)?
     - Defiance
     - Dracula
     - Eastbound & Down:
@@ -63,6 +65,7 @@ series:
     - Ray Donovan
     - Red Widow
     - Revolution
+    - Sleepy Hollow
     - South Park
     - Super Fun Night
     - The Americans (2013):
