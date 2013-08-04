@@ -40,6 +40,7 @@ series:
         name_regexp: ^dads(.2013)?
     - Defiance
     - Dracula
+    - Drunk History
     - Eastbound & Down:
         name_regexp: ^east.?bound(.and|.&)?.down
     - Family Guy
