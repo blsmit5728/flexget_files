@@ -71,6 +71,8 @@ series:
     - Super Fun Night
     - The Americans (2013):
         name_regexp: ^the.americans(.2013)?
+    - The Bridge (US):
+        name_regexp: ^the.bridge(!.uk)
     - The Following
     - The Cleveland Show
     - The IT Crowd
