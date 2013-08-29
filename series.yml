@@ -30,7 +30,8 @@ series:
     - Archer (2009):
         name_regexp: ^archer(.2009)?
     - Bates Motel
-    - Bobs Burgers
+    - "Bob's Burgers":
+        name_regexp: ^bobs.burgers
     - Breaking Bad
     - Brickleberry
     - Counting Cars
