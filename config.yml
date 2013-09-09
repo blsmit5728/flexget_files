@@ -1,5 +1,8 @@
 presets:
   global:
+    free_space:
+      path: /mnt/disk1/
+      space: 10000
     regexp:
       reject:
         - (s|d)ub(s|bed)?\b: {from: title} 

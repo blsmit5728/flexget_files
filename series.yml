@@ -72,12 +72,12 @@ series:
     - Super Fun Night
     - The Americans (2013):
         name_regexp: ^the.americans(.2013)?
-    - The Bridge (US):
-        name_regexp: ^the.bridge(!.uk)
+    - The Bridge US
     - The Following
     - The Cleveland Show
     - The IT Crowd
     - The Mindy Project
+    - The Newsroom (2012)
     - The Simpsons
     - Tosh.0
     - Two and A Half Men
