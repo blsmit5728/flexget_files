@@ -34,6 +34,7 @@ series:
         name_regexp: ^bobs.burgers
     - Breaking Bad
     - Brickleberry
+    - Brooklyn Nine-Nine
     - Counting Cars
     - Crisis 
     - Crossing Lines
@@ -44,12 +45,14 @@ series:
     - Drunk History
     - Eastbound & Down:
         name_regexp: ^east.?bound(.and|.&)?.down
+    - Falling Skies
     - Family Guy
     - "Fast N' Loud":
         name_regexp: ^fast.n(.)?.loud
     - Futurama
     - Get Out Alive With Bear Grylls
     - Girls
+    - Hostages
     - Inside Amy Schumer
     - Ironside (2013):
        name_regexp: ^ironside(.2013)?
@@ -73,22 +76,25 @@ series:
     - The Americans (2013):
         name_regexp: ^the.americans(.2013)?
     - The Bridge US
+    - The Blacklist
     - The Following
     - The Cleveland Show
+    - The Crazy Ones
     - The IT Crowd
     - The Mindy Project
+    - The Michael J. Fox Show
     - The Newsroom (2012)
     - The Simpsons
     - Tosh.0
     - Two and A Half Men
     - Under the Dome
+    - We Are Men
     - Workaholics
     - Zero Hour (2013):
         name_regexp: ^zero.hour(.2013)?
   Average:
     - 666 Park Avenue
     - Downton Abbey
-    - Falling Skies
     - Moonshiners
     - Only in America with Larry the Cable Guy
 

@@ -81,11 +81,11 @@ tasks:
           quality: 480p+ dvdscr+
         Better:
           target: 480p+ dvdscr+ h264+
-          timeframe: 3 hours
+          timeframe: 4 hours
           quality: webrip+
         Average:
           target: 360p+ webrip+
-          timeframe: 4 hours
+          timeframe: 6 hours
           quality: 360p+ preair+
 
   movies:
