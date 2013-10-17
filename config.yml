@@ -76,17 +76,17 @@ tasks:
     series:
       settings:
         Best:
-          target: 720p+ hdtv+ h264+
           timeframe: 2 hours
-          quality: 480p+ dvdscr+
+          target: 720p+ hdtv+ h264+
+          quality: 480p+ hdrip+ divx+
         Better:
-          target: 480p+ dvdscr+ h264+
           timeframe: 4 hours
-          quality: webrip+
+          target: 720p+ hdtv+ h264+
+          quality: 360p+ webrip+ divx+
         Average:
-          target: 360p+ webrip+
-          timeframe: 6 hours
-          quality: 360p+ preair+
+          timeframe: 12 hours
+          target: 360p+ hdrip+
+          quality: 360p+ hdrip+
 
   movies:
     preset: 
