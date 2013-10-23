@@ -45,7 +45,7 @@ presets:
       content_filename: >
         {{ series_name|replace('/', '_')|replace(':', ' -') }} - {{ tvdb_ep_id|default(series_id) }}{% if tvdb_ep_name|default(False) %} - {{ tvdb_ep_name|replace('/', '_')|replace(':', ' -') }}{% endif %} - {{ quality }}
       label: tv
-      movedone: "/mnt/disk1/Library/TvShows/{{ series_name }}/Season {{ series_season + thetvdb_lookup_season_offset|default(0)}}"
+      movedone: "/mnt/disk1/Library/TvShows/{{ series_name|replace('/', '_')|replace(':', ' -') }}/{% if series_id_type == 'ep' %}Season {{ tvdb_season|default(series_season) }}/{% endif %}"
     content_sort:
       '*.rar': /home/bsmith/Downloads/completed/TvShows
 

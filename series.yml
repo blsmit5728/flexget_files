@@ -19,69 +19,57 @@ series:
     - The Walking Dead
     - True Blood
   Better:
-    - 1600 Penn
     - American Dad!:
         name_regexp: ^american.dad(!)?
         set:
           thetvdb_lookup_season_offset: 1
     - American Horror Story
-    - American Restoration
     - Anger Management
     - Archer (2009):
         name_regexp: ^archer(.2009)?
-    - Bates Motel
     - "Bob's Burgers":
         name_regexp: ^bobs.burgers
     - Brickleberry
     - Brooklyn Nine-Nine
     - Counting Cars
     - Crisis 
-    #- Crossing Lines
     - Dads (2013):
         name_regexp: ^dads(.2013)?
     - Defiance
-    #- Dracula
-    #- Drunk History
     - Eastbound & Down:
         name_regexp: ^east.?bound(.and|.&)?.down
     - Falling Skies
     - Family Guy
     - "Fast N' Loud":
         name_regexp: ^fast.n(.)?.loud
-    #- Futurama
-    #- Get Out Alive With Bear Grylls
     - Girls
     - Hostages
     - Inside Amy Schumer
     - Ironside (2013):
        name_regexp: ^ironside(.2013)?
     - Its Always Sunny In Philadelphia
-    #- Last Resort
     - Low Winter Sun
     - Mad Men
     - Marvel's Agents of S.H.I.E.L.D.
     - Men at Work
-    #- Mistresses
-    - Mom
     - Mountain Men
     - MythBusters
     - NCIS
-    - New Girl
     - Pawn Stars
     - Ray Donovan
     - Red Widow
     - Revolution
     - Sleepy Hollow
     - South Park
-    - Super Fun Night
+    #- Super Fun Night
     - The Americans (2013):
         name_regexp: ^the.americans(.2013)?
     - The Bridge US
     - The Blacklist
     - The Following
     #- The Cleveland Show
-    - The Crazy Ones
-    - The Goldbergs (2013)
+    #- The Crazy Ones
+    #- The Goldbergs (2013)
     - The IT Crowd
     - The Mindy Project
     - The Michael J. Fox Show
