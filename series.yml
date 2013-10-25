@@ -6,13 +6,9 @@ series:
       propers: yes
   Best:
     - 2 Broke Girls
-    - Dexter
-    #- Don't Trust the B---- in Apartment 23
-    #- Hannibal
     - Homeland
     - House of Lies
     - How I Met Your Mother
-    #- Justified
     - Modern Family
     - Revenge
     - The Big Bang Theory
@@ -31,7 +27,6 @@ series:
         name_regexp: ^bobs.burgers
     - Brickleberry
     - Brooklyn Nine-Nine
-    - Counting Cars
     - Crisis 
     - Dads (2013):
         name_regexp: ^dads(.2013)?
@@ -55,22 +50,15 @@ series:
     - Mountain Men
     - MythBusters
     - NCIS
-    - Pawn Stars
     - Ray Donovan
-    - Red Widow
     - Revolution
     - Sleepy Hollow
     - South Park
-    #- Super Fun Night
     - The Americans (2013):
         name_regexp: ^the.americans(.2013)?
     - The Bridge US
     - The Blacklist
     - The Following
-    #- The Cleveland Show
-    #- The Crazy Ones
-    #- The Goldbergs (2013)
-    - The IT Crowd
     - The Mindy Project
     - The Michael J. Fox Show
     - The Newsroom (2012)
@@ -80,12 +68,8 @@ series:
     - Under the Dome
     - We Are Men
     - Workaholics
-    - Zero Hour (2013):
-        name_regexp: ^zero.hour(.2013)?
   Average:
-    #- 666 Park Avenue
     - Downton Abbey
     - Moonshiners
-    #- Only in America with Larry the Cable Guy
 
 
