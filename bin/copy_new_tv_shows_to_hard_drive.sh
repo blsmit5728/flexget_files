@@ -28,6 +28,9 @@ then
     exit
 fi
 
+# flexget copy_sort.yml deletes this dir every time...
+#mkdir $TV_STAGING_DIR
+
 # Get list of recently added Videos from the daily .rsync log file
 
 #tail -n60  /home/bsmith/.rsync_log.log | grep ".mkv"| grep "TvShows" | while read -r line  

@@ -46,7 +46,7 @@ tasks:
       # Filename (inside of folder) to move to
       filename: >
         {{ series_name|replace('/', '_')|replace(':', ' -') }} - {{ tvdb_ep_id|default(series_id) }}{% if tvdb_ep_name|default(False) %} - {{ tvdb_ep_name|replace('/', '_')|replace(':', ' -') }}{% endif %} - {{ quality }}.{{ location[-3:] }}
-      clean_source: 40
+      #clean_source: 40
 
   # Same as above
   sort_copied_movies:
@@ -59,4 +59,4 @@ tasks:
         /media/300GB/XBMC_LIBRARY/Movies/{{ imdb_name|replace('/', '_')|replace(':', ' -') }} ({{ imdb_year }})/
       filename: >
         {{ imdb_name|replace('/', '_')|replace(':', ' -') }} ({{ imdb_year }}) - {{ quality }}.{{ location[-3:] }}
-      clean_source: 1000
+      #clean_source: 1000
