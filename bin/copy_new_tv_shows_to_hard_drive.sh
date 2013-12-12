@@ -9,6 +9,9 @@ FLEXGET_TV_TASK="sort_copied_tv_shows"
 
 TV_STAGING_DIR="/media/300GB/$HD_DIR/staged/tvshows/"
 
+RSYNC_FILE="/home/bsmith/.flexget/rsync/rsync_logs/rsync_log_`date +%m_%d_%Y`.log"
+
+
 #test to see if the drive is present
 df -h | grep 300GB
 if [ $? -eq "0" ]
@@ -34,7 +37,8 @@ fi
 # Get list of recently added Videos from the daily .rsync log file
 
 #tail -n60  /home/bsmith/.rsync_log.log | grep ".mkv"| grep "TvShows" | while read -r line  
-cat /home/bsmith/.rsync_log.log | grep .mkv | grep TvShows | while read -r line
+#cat /home/bsmith/.rsync_log.log | grep .mkv | grep TvShows | while read -r line
+cat $RSYNC_FILE | grep .mkv | grep TvShows | while read -r line
 do 
     #echo "/mnt/disk1/Library/$line" 
     cp -v "/mnt/disk1/Library/$line" $TV_STAGING_DIR
