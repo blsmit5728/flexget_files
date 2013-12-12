@@ -61,6 +61,7 @@ presets:
       - /mnt/disk1/Library/Movies/
       - /home/bsmith/Downloads/staging/Movies/
     imdb_required: yes
+    #min_score: 3.0
     deluge:
       content_filename: >
         {{ imdb_name|replace('/', '_')|replace(':', ' -') }} ({{ imdb_year }}) - {{ quality }}
