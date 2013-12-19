@@ -67,6 +67,7 @@ if DOWNLOAD_PATH not in torrent_path:
     log.debug("Torrent '%s' path (%s) not in %s, skipping unrar" % (torrent_name,torrent_path,DOWNLOAD_PATH))
     chain()
 
+
 for path, task in FLEXGET_PATH_TASK.items():
     if DOWNLOAD_PATH+path in torrent_path:
         log.info('Processing %s as part of task %s.' % (torrent_name,task))
