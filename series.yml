@@ -27,7 +27,6 @@ series:
         name_regexp: ^bobs.burgers
     - Brickleberry
     - Brooklyn Nine-Nine
-    - Crisis 
     - Dads (2013):
         name_regexp: ^dads(.2013)?
     - Defiance
@@ -40,8 +39,6 @@ series:
     - Girls
     - Hostages
     - Inside Amy Schumer
-    - Ironside (2013):
-       name_regexp: ^ironside(.2013)?
     - Its Always Sunny In Philadelphia
     - Low Winter Sun
     - Mad Men
@@ -49,7 +46,6 @@ series:
     - Men at Work
     - Mountain Men
     - MythBusters
-    - NCIS
     - Ray Donovan
     - Revolution
     - Sleepy Hollow
@@ -68,6 +64,15 @@ series:
     - Under the Dome
     - We Are Men
     - Workaholics
+    - Penny Dreadful
+    - Believe
+    - Crossbones
+    - The Leftovers
+    - Turn
+    - Halt & Catch Fire:
+        name_regexp: ^halt(.and|.&)?.catch.fire
+    - The Strain
+    - Intelligence (2014)
   Average:
     - Downton Abbey
     - Moonshiners
