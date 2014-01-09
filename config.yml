@@ -1,4 +1,4 @@
-presets:
+templates:
   global:
     free_space:
       path: /mnt/disk1/
@@ -72,7 +72,7 @@ presets:
 
 tasks:
   tv-shows:
-    preset:
+    template:
       - tv-global
     series:
       settings:
@@ -90,23 +90,22 @@ tasks:
           quality: 360p+ hdrip+
 
   movies:
-    preset: 
+    template: 
       - movie-global
     movie_queue: yes
 
   imdb_queue:
     priority: 10 # Always run before My_Movies feeds
-    preset: no_global
+    template: no_global
     interval: 2 hours
     imdb_list:
       user_id: ur34962140
       list: watchlist
     accept_all: yes
-    queue_movies:
-      force: no
+    queue_movies: yes
   
   #local-movies:
-  #  preset:
+  #  template:
   #    - movie-global
   #  disable_builtins: [seen, seen_info_hash]
   #  disable_plugin:
