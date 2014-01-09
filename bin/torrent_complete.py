@@ -78,7 +78,7 @@ for path, task in FLEXGET_PATH_TASK.items():
             if ret != 0:
                 log.warning('Unrar command returned non-zero value %d.' % ret)
 
-        cmd=FLEXGET_COMMAND+' -c '+FLEXGET_SORTING_CONFIG+' --task '+FLEXGET_TASK_PREFIX + task + (' --disable-advancement' if 'tv' in path else '')
+        cmd=FLEXGET_COMMAND+' -c '+FLEXGET_SORTING_CONFIG+' execute --task '+FLEXGET_TASK_PREFIX + task + (' --disable-advancement' if 'tv' in path else '')
         log.debug('Shelling out: %s' % cmd)
         ret = call(cmd, shell=True)
         if ret != 0:
