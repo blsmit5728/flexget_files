@@ -8,7 +8,7 @@ LOG_FILE='/home/bsmith/.flexget/bin/torrent_complete.log'
 DOWNLOAD_PATH='/home/bsmith/Downloads/completed'
 STAGING_PATH='/home/bsmith/Downloads/staging/'
 XBMC_HOST2='192.168.1.4'
-XBMC_HOST3='192.168.1.13'
+XBMC_HOST3='aluminum.local'
 #XBMC_HOST2='192.168.1.7'
 # If you're using a local checkout of Flexget, use flexget_vanilla.
 # Otherwise use the one in your system

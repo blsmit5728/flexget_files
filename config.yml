@@ -34,7 +34,7 @@ templates:
       - series.yml
       - private/tl.yml                  
     content_size:
-      max: 4000
+      max: 5000
       min: 20
     exists_series:
       - "/mnt/disk1/Library/TvShows/"
@@ -78,16 +78,16 @@ tasks:
       settings:
         Best:
           timeframe: 2 hours
-          target: 720p+ hdtv+ h264+
-          quality: 480p+ hdrip+ divx+
+          target: 720p+ 
+          quality: hdtv+ 
         Better:
           timeframe: 4 hours
-          target: 720p+ hdtv+ h264+
-          quality: 360p+ webrip+ divx+
+          target: 720p+ 
+          quality: hdtv+ 
         Average:
-          timeframe: 12 hours
-          target: 360p+ hdrip+
-          quality: 360p+ hdrip+
+          timeframe: 5 hours
+          target: hdtv+
+          quality: hdrip+
 
   movies:
     template: 

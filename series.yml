@@ -72,9 +72,11 @@ series:
     - Halt & Catch Fire:
         name_regexp: ^halt(.and|.&)?.catch.fire
     - The Strain
-    - Intelligence (2014)
+    - Intelligence (2014):
+        name_regexp: ^intelligence(.US|2014)?
   Average:
     - Downton Abbey
     - Moonshiners
+    - Sex Sent Me To The ER
 
 
