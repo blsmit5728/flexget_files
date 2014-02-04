@@ -44,7 +44,6 @@ series:
     - Mad Men
     - Marvel's Agents of S.H.I.E.L.D.
     - Men at Work
-    - Mountain Men
     - MythBusters
     - Ray Donovan
     - Revolution
@@ -74,9 +73,14 @@ series:
     - The Strain
     - Intelligence (2014):
         name_regexp: ^intelligence(.US|2014)?
+    - Saturday Night Live
+    - Rake (US)
+    - Almost Human
   Average:
     - Downton Abbey
     - Moonshiners
     - Sex Sent Me To The ER
+    - Counting Cars
+    - Pawn Stars
 
 
