@@ -53,8 +53,8 @@ log.debug("%s called with torrent_id='%s', torrent_name='%s', torrent_path='%s'.
 def chain():
     log.debug("Updating XBMC Library")
     #ret=call('/usr/bin/xbmc-send --host='+XBMC_HOST+' --action="XBMC.updatelibrary(video)"', shell=True)
-    #if ret != 0:
-    #    log.warning('Update XBMC command returned non-zero value %d.' % ret)
+    if ret != 0:
+        log.warning('Update XBMC command returned non-zero value %d.' % ret)
     ret=call('/usr/bin/xbmc-send --host='+XBMC_HOST2+' --action="XBMC.updatelibrary(video)"', shell=True)
     if ret != 0:
         log.warning('Update XBMC command returned non-zero value %d.' % ret)
@@ -69,10 +69,15 @@ if DOWNLOAD_PATH not in torrent_path:
 
 
 for path, task in FLEXGET_PATH_TASK.items():
+    print path 
+    print task
+    print DOWNLOAD_PATH+path
+    print torrent_path+torrent_name
     if DOWNLOAD_PATH+path in torrent_path:
         log.info('Processing %s as part of task %s.' % (torrent_name,task))
         for root, dirs, files in os.walk(torrent_path+'/'+torrent_name, topdown=False):
             cmd='find "'+root+'" -type f -regex ".*\.\(\part[0-9]+\.\)?r\([0-9]+\|ar\)$" | head -1 | xargs -I {} unrar x -o+ "{}" '+STAGING_PATH+path+torrent_id+'/'
+            print cmd
             log.debug('Shelling out: %s' % cmd)
             ret = call(cmd, shell=True)
             if ret != 0:

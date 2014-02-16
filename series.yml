@@ -14,6 +14,10 @@ series:
     - The Big Bang Theory
     - The Walking Dead
     - True Blood
+    - Archer (2009):
+        name_regexp: ^archer(.2009)?
+    - "Bob's Burgers":
+        name_regexp: ^bobs.burgers
   Better:
     - American Dad!:
         name_regexp: ^american.dad(!)?
@@ -21,10 +25,7 @@ series:
           thetvdb_lookup_season_offset: 1
     - American Horror Story
     - Anger Management
-    - Archer (2009):
-        name_regexp: ^archer(.2009)?
-    - "Bob's Burgers":
-        name_regexp: ^bobs.burgers
+    - Black Sails
     - Brickleberry
     - Brooklyn Nine-Nine
     - Dads (2013):
@@ -36,6 +37,7 @@ series:
     - Family Guy
     - "Fast N' Loud":
         name_regexp: ^fast.n(.)?.loud
+    - Game of Thrones
     - Girls
     - Hostages
     - Inside Amy Schumer
@@ -76,11 +78,9 @@ series:
     - Saturday Night Live
     - Rake (US)
     - Almost Human
+    - Masters of Sex
   Average:
     - Downton Abbey
     - Moonshiners
-    - Sex Sent Me To The ER
     - Counting Cars
     - Pawn Stars
-
-
