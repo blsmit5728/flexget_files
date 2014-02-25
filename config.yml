@@ -28,8 +28,15 @@ templates:
         - '*.m2ts'
         - 'password.txt'
     pathscrub: windows
+    retry_failed:
+      retry_time: 1 hour
+      retry_time_multiplier: 2
+      max_retries: 5
       
   tv-global:
+      #inputs:
+      #- rss: { url: 'http://www.torlock.com/television/rss.xml', silent: yes }  # TorLock (TV)
+      #- rss: { url: 'http://torrentz.eu/feed_verified?q=tv', silent: yes }      # Torrentz (Verified only, TV)
     include: 
       - series.yml
       - private/tl.yml                  
@@ -98,7 +105,7 @@ tasks:
     interval: 2 hours
     imdb_list:
       user_id: ur34962140
-      username: **** 
+      username: ****
       password: ****
       list: watchlist
     accept_all: yes
