@@ -7,13 +7,13 @@ from subprocess import call
 LOG_FILE='/home/bsmith/.flexget/bin/torrent_complete.log'
 DOWNLOAD_PATH='/home/bsmith/Downloads/completed'
 STAGING_PATH='/home/bsmith/Downloads/staging/'
-XBMC_HOST1='192.168.1.4'
-XBMC_HOST2='192.168.1.15'
 # If you're using a local checkout of Flexget, use flexget_vanilla.
 # Otherwise use the one in your system
 FLEXGET_COMMAND='flexget --logfile /home/bsmith/.flexget/flexget-sorting.log'
 FLEXGET_SORTING_CONFIG='/home/bsmith/.flexget/sort.yml'
 FLEXGET_TASK_PREFIX='Sort_Unpacked_'
+
+XBMC_LIST = ["192.168.1.4","192.168.1.15","192.168.1.20"]
 
 FLEXGET_PATH_TASK={
     '/Movies/': 'Movies',
@@ -51,8 +51,8 @@ log.debug("%s called with torrent_id='%s', torrent_name='%s', torrent_path='%s'.
 
 def chain():
     log.debug("Updating XBMC Library")
-    ret=call('/usr/bin/xbmc-send --host='+XBMC_HOST1+' --action="XBMC.updatelibrary(video)"', shell=True)
-    ret=call('/usr/bin/xbmc-send --host='+XBMC_HOST2+' --action="XBMC.updatelibrary(video)"', shell=True)
+    for xbmc in XBMC_LIST:
+        ret=call('/usr/bin/xbmc-send --host='+xbmc+' --action="XBMC.updatelibrary(video)"', shell=True)
     sys.exit(0)
 
 if DOWNLOAD_PATH not in torrent_path:
@@ -61,15 +61,10 @@ if DOWNLOAD_PATH not in torrent_path:
 
 
 for path, task in FLEXGET_PATH_TASK.items():
-    print path 
-    print task
-    print DOWNLOAD_PATH+path
-    print torrent_path+torrent_name
     if DOWNLOAD_PATH+path in torrent_path:
         log.info('Processing %s as part of task %s.' % (torrent_name,task))
         for root, dirs, files in os.walk(torrent_path+'/'+torrent_name, topdown=False):
             cmd='find "'+root+'" -type f -regex ".*\.\(\part[0-9]+\.\)?r\([0-9]+\|ar\)$" | head -1 | xargs -I {} unrar x -o+ "{}" '+STAGING_PATH+path+torrent_id+'/'
-            print cmd
             log.debug('Shelling out: %s' % cmd)
             ret = call(cmd, shell=True)
             if ret != 0:
