@@ -12,7 +12,7 @@ templates:
         - \bWEBSCR\b: {from: title}        
         - \bscreener\b: {from: title}
         - \bTS\b: {from: title}
-        - \bCam\b: {from: title}
+        - \bCam\b: {from: title} 
         - "{C_P}": {from: title}
         - \bFRENCH\b: {from: title}
         - \btrailer\b: {from: title}
@@ -34,7 +34,7 @@ templates:
       max_retries: 5
       
   tv-global:
-      #inputs:
+    #inputs:
       #- rss: { url: 'http://www.torlock.com/television/rss.xml', silent: yes }  # TorLock (TV)
       #- rss: { url: 'http://torrentz.eu/feed_verified?q=tv', silent: yes }      # Torrentz (Verified only, TV)
     include: 
@@ -48,34 +48,31 @@ templates:
       - "/home/bsmith/Downloads/staging/TvShows"
     thetvdb_lookup: yes
     set:
-      # Rename the "content file" to something nice
-      content_filename: >
-        {{ series_name|replace('/', '_')|replace(':', ' -') }} - {{ tvdb_ep_id|default(series_id) }}{% if tvdb_ep_name|default(False) %} - {{ tvdb_ep_name|replace('/', '_')|replace(':', ' -') }}{% endif %} - {{ quality }}
+      content_filename: "{{ series_name|replace('/', '_')|replace(':', ' -') }} - {{ tvdb_ep_id|default(series_id) }}{% if tvdb_ep_name|default(False) %} - {{ tvdb_ep_name|replace('/', '_')|replace(':', ' -') }}{% endif %} - {{ quality }}"
       label: tv
       movedone: "/mnt/disk1/Library/TvShows/{{ series_name|replace('/', '_')|replace(':', ' -') }}/{% if series_id_type == 'ep' %}Season {{ tvdb_season|default(series_season) }}/{% endif %}"
     content_sort:
-      '*.rar': /home/bsmith/Downloads/completed/TvShows
+      '*.rar': "/home/bsmith/Downloads/completed/TvShows/"
 
   movie-global:
     include: 
       - private/tl.yml 
     content_size:
-      max: 8000
+      # I don't like my Movies too big.
+      max: 9000
       min: 500
     quality: 
-      - 720p-1080p bluray xvid-h264 
+      - 720p-1080p bluray h264 
     exists_movie:
-      - /mnt/disk1/Library/Movies/
-      - /home/bsmith/Downloads/staging/Movies/
+      - "/mnt/disk1/Library/Movies/"
+      - "/home/bsmith/Downloads/staging/Movies/"
     imdb_required: yes
-    #min_score: 3.0
     deluge:
-      content_filename: >
-        {{ imdb_name|replace('/', '_')|replace(':', ' -') }} ({{ imdb_year }}) - {{ quality }}
+      content_filename: "{{ imdb_name|replace('/', '_')|replace(':', ' -') }} ({{ imdb_year }}) - {{ quality }}"
       movedone: "/mnt/disk1/Library/Movies/{{ imdb_name|replace('/', '_')|replace(':', ' -') }} ({{ imdb_year }})"
       label: movie
     content_sort:
-      '*.rar': /home/bsmith/Downloads/completed/Movies
+      '*.rar': "/home/bsmith/Downloads/completed/Movies/"
 
 tasks:
   tv-shows:
@@ -87,12 +84,15 @@ tasks:
           timeframe: 2 hours
           target: 720p+ 
           quality: hdtv+ 
+          propers: 4 hours
         Better:
           timeframe: 2 hours
           target: 720p+ 
           quality: hdtv+ 
+          propers: 2 hours
         Average:
           quality: hdtv+
+          propers: no
 
   movies:
     template: 
@@ -105,30 +105,22 @@ tasks:
     interval: 2 hours
     imdb_list:
       user_id: ur34962140
-      username: ****
+      username: **** 
       password: ****
       list: watchlist
     accept_all: yes
     queue_movies: yes
   
-  #local-movies:
-  #  template:
-  #    - movie-global
-  #  disable_builtins: [seen, seen_info_hash]
-  #  disable_plugin:
-  #    - inputs
-  #    - exists_movie
-  #    - seen_movies
-  #    - regexp
-  #    - content_size
-  #    - torrent_alive
-  #  movie_queue: yes
-  #  listdir: /home/bsmith/Dropbox/Torrent/movies/
-  #  exec:
-  #    on_output:
-  #      for_accepted: rm "/home/bsmith/Dropbox/Torrent/movies/{{title}}"
-  #  accept_all: yes
-  #  set:
-  #    label: local-movies
-
+  Google_Music_Sync:
+    priority: 3
+    disable_builtins: [seen, seen_info_hash]
+    template: no_global # None of the global templates make sense here
+    find:
+      path: '/home/bsmith/Dropbox/Music/to_sync/'
+      regexp: '.*\.(mp3|flac|m4a|ogg)$'
+      recursive: yes
+    accept_all: yes
+    exec:
+      on_output:
+        for_accepted: '"/home/bsmith/repos/gmusicapi-scripts/gmsync.py" -q -l -m "{{location}}" && rm "{{location}}"'
   

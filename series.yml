@@ -1,9 +1,4 @@
 series:
-  settings:
-    global:
-      propers: no
-    Average:
-      propers: yes
   Best:
     - 2 Broke Girls
     - Homeland

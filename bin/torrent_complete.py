@@ -7,9 +7,8 @@ from subprocess import call
 LOG_FILE='/home/bsmith/.flexget/bin/torrent_complete.log'
 DOWNLOAD_PATH='/home/bsmith/Downloads/completed'
 STAGING_PATH='/home/bsmith/Downloads/staging/'
-XBMC_HOST2='192.168.1.4'
-XBMC_HOST3='aluminum.local'
-#XBMC_HOST2='192.168.1.7'
+XBMC_HOST1='192.168.1.4'
+XBMC_HOST2='192.168.1.15'
 # If you're using a local checkout of Flexget, use flexget_vanilla.
 # Otherwise use the one in your system
 FLEXGET_COMMAND='flexget --logfile /home/bsmith/.flexget/flexget-sorting.log'
@@ -52,15 +51,8 @@ log.debug("%s called with torrent_id='%s', torrent_name='%s', torrent_path='%s'.
 
 def chain():
     log.debug("Updating XBMC Library")
-    #ret=call('/usr/bin/xbmc-send --host='+XBMC_HOST+' --action="XBMC.updatelibrary(video)"', shell=True)
-    if ret != 0:
-        log.warning('Update XBMC command returned non-zero value %d.' % ret)
+    ret=call('/usr/bin/xbmc-send --host='+XBMC_HOST1+' --action="XBMC.updatelibrary(video)"', shell=True)
     ret=call('/usr/bin/xbmc-send --host='+XBMC_HOST2+' --action="XBMC.updatelibrary(video)"', shell=True)
-    if ret != 0:
-        log.warning('Update XBMC command returned non-zero value %d.' % ret)
-    ret=call('/usr/bin/xbmc-send --host='+XBMC_HOST3+' --action="XBMC.updatelibrary(video)"', shell=True)
-    if ret != 0:
-        log.warning('Update XBMC command returned non-zero value %d.' % ret)
     sys.exit(0)
 
 if DOWNLOAD_PATH not in torrent_path:
