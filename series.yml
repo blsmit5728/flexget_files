@@ -13,6 +13,8 @@ series:
         name_regexp: ^archer(.2009)?
     - "Bob's Burgers":
         name_regexp: ^bobs.burgers
+    - "Cosmos A Space Time Oddyssey":
+        name_regexp: ^cosmos.+a.space.time.odyssey
   Better:
     - American Dad!:
         name_regexp: ^american.dad(!)?
