@@ -13,7 +13,7 @@ FLEXGET_COMMAND='flexget --logfile /home/bsmith/.flexget/flexget-sorting.log'
 FLEXGET_SORTING_CONFIG='/home/bsmith/.flexget/sort.yml'
 FLEXGET_TASK_PREFIX='Sort_Unpacked_'
 
-XBMC_LIST = ["192.168.1.4","192.168.1.15","192.168.1.20"]
+XBMC_LIST = ["192.168.1.4","192.168.1.15","192.168.1.20","openelec","192.168.1.8","dsgburg-cgq63q1"]
 
 FLEXGET_PATH_TASK={
     '/Movies/': 'Movies',
