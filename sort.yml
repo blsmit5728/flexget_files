@@ -10,6 +10,8 @@ templates:
   global:
     # Each feed must be run manually
     manual: yes
+    include:
+      - private/email.yml
     # Disable seen, alway process files
     disable_builtins: [seen]
     accept_all: yes
@@ -33,6 +35,7 @@ tasks:
       path: '/home/bsmith/Downloads/staging/TvShows/'
     # Where to get the metadata
     thetvdb_lookup: yes
+    trakt_lookup: yes
     # This is needed to get my TVDB offset values 
     include: [series.yml]
     all_series:
