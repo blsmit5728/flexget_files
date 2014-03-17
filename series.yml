@@ -80,7 +80,4 @@ series:
     - Downton Abbey
     - Moonshiners
     - Counting Cars
-    - Pawn Stars:
-        set:
-          tvdb_id: 111051
-          content_filename: "{{ series_name|replace('/', '_')|replace(':', ' -') }} - {{ trakt_ep_id|default(series_id) }}{% if trakt_ep_name|default(False) %} - {{ trakt_ep_name|replace('/', '_')|replace(':', ' -') }}{% endif %} - {{ quality }}"
+    - Pawn Stars
