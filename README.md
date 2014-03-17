@@ -1,14 +1,13 @@
-#Flexget_files
-I'd like to present my flexget config in all of it's glory. A big thanks to [Jeff](https://github.com/jawilson) for helping me out with the config. 
+#My [Flexget](https://github.com/Flexget/Flexget) Setup
 
-There are some private portions of my config and if you'd like help with those, 
-I can provide assistance on a case-by-case basis
+A big thanks to [jawilson](https://github.com/jawilson) for helping me out with the config. 
 
-Basically, what we do here is take an rss torrent feed, pipe it through this config and Flexget
-pull out all of the shows that I specify in series.yml, find the best qualities, then shoot them over to deluge.
+There are some private portions of my config. They contain info for logins and various other things that are not needed. 
 
-For some reason XBMC has decided not to include rar support in their Linux mainline. So we must unrar, 
-but who's got time for that stuff? So for rar's we pipe them to a new place and when they finish downloading
-deluge spits off this execute script that unrar's them, places that output file in another place, and then runs 
-a special flexget config over them! pretty freakin' sweet.
+* `private/tl.yml`
+* `private/email.yml`
+
+There will be more private files as I move on. You can remove the `- include` from the config and all should be well.
+
+Of course my list of shows lives in `series.yml` and has some quality specific stuff wrapped around it. These will be removed in the coming weeks/months when I have time and be replaced by various [trakt.tv](http:trakt.tv) lists.
 
