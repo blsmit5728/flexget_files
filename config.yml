@@ -104,9 +104,9 @@ tasks:
     template: no_global
     interval: 2 hours
     imdb_list:
-      user_id: ur34962140
-      username: blsmit5728@gmail.com
-      password: baseball1
+      user_id: ur3496****
+      username: ****@gmail.com
+      password: ****
       list: watchlist
     accept_all: yes
     queue_movies: yes
