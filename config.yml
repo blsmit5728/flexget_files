@@ -26,18 +26,32 @@ templates:
         - '*.rar'
       reject:
         - '*.m2ts'
-        - 'password.txt'
+        -  password: ***
+        - '*.wmv'
     pathscrub: windows
     retry_failed:
       retry_time: 1 hour
       retry_time_multiplier: 2
       max_retries: 5
+    #if these are enabled we need to make sure we don't hit them too fast.
+    domain_delay:
+      bt-chat.com: 5 seconds
+      torrentz.eu: 5 seconds
+    verify_ssl_certificates: no
+    magnets: no
       
   tv-global:
-    #inputs:
+    inputs:
+      - rss: { url: 'http://private.xxx/something', silent: yes }
+      #- rss: { url: 'http://kickass.to/tv/?rss=1', silent: yes }
       #- rss: { url: 'http://www.torlock.com/television/rss.xml', silent: yes }  # TorLock (TV)
       #- rss: { url: 'http://torrentz.eu/feed_verified?q=tv', silent: yes }      # Torrentz (Verified only, TV)
+      #- rss: { url: 'http://ezrss.it/feed/', silent: yes }                      # EZRSS
+      #- rss: { url: 'http://showrss.karmorra.info/feeds/all.rss', silent: yes } # Karmorra (All)
+      #- rss: { url: 'http://rss.bt-chat.com/?group=3', silent: yes }            # BT-Chat (EZTV)
+      #- rss: { url: 'https://rss.thepiratebay.se/208', silent: yes }            # The Pirate Bay (Highres - TV shows)
     include: 
+      - private/email.yml
       - series.yml
       - private/tl.yml                  
     content_size:
@@ -47,35 +61,76 @@ templates:
       - "/mnt/disk1/Library/TvShows/"
       - "/home/bsmith/Downloads/staging/TvShows"
     thetvdb_lookup: yes
+    trakt_lookup: yes
     set:
-      content_filename: "{{ series_name|replace('/', '_')|replace(':', ' -') }} - {{ tvdb_ep_id|default(series_id) }}{% if tvdb_ep_name|default(False) %} - {{ tvdb_ep_name|replace('/', '_')|replace(':', ' -') }}{% endif %} - {{ quality }}"
+      content_filename: "{{ series_name|replace('/', '_')|replace(':', ' ') }} - {{ tvdb_ep_id|default(series_id) }}{% if tvdb_ep_name|default(False) %} - {{ tvdb_ep_name|replace('/', '_')|replace(':', ' -') }}{% endif %} - {{ quality }}"
+      movedone: "/mnt/disk1/Library/TvShows/{{ series_name|replace('/', '_')|replace(':', ' ') }}/{% if series_id_type == 'ep' %}Season {{ tvdb_season|default(series_season) }}/{% endif %}"
       label: tv
-      movedone: "/mnt/disk1/Library/TvShows/{{ series_name|replace('/', '_')|replace(':', ' -') }}/{% if series_id_type == 'ep' %}Season {{ tvdb_season|default(series_season) }}/{% endif %}"
     content_sort:
       '*.rar': "/home/bsmith/Downloads/completed/TvShows/"
 
   movie-global:
-    include: 
-      - private/tl.yml 
+    include:
+      - private/email.yml
+      - private/tl.yml
+    inputs:
+      - rss: { url: 'http://private.xxx/something', silent: yes }
     content_size:
       # I don't like my Movies too big.
       max: 9000
       min: 500
     quality: 
-      - 720p-1080p bluray h264 
+      - 720p-1080p bluray h264 ac3+ 
     exists_movie:
       - "/mnt/disk1/Library/Movies/"
       - "/home/bsmith/Downloads/staging/Movies/"
     imdb_required: yes
     deluge:
-      content_filename: "{{ imdb_name|replace('/', '_')|replace(':', ' -') }} ({{ imdb_year }}) - {{ quality }}"
-      movedone: "/mnt/disk1/Library/Movies/{{ imdb_name|replace('/', '_')|replace(':', ' -') }} ({{ imdb_year }})"
+      content_filename: "{{ imdb_name|replace('/', '_')|replace(':', ' ') }} ({{ imdb_year }}) - {{ quality }}"
+      movedone: "/mnt/disk1/Library/Movies/{{ imdb_name|replace('/', '_')|replace(':', ' ') }} ({{ imdb_year }})"
       label: movie
     content_sort:
       '*.rar': "/home/bsmith/Downloads/completed/Movies/"
+    
+  music-global:
+    include:
+      - private/email.yml
+
+  movies-discover:
+    discover:
+      from:
+        - torrentleech:
+            rss_key: ***
+            username: ***
+            password: ***
+            category: ['BDRip', 'HD']
+        - flexget_archive: yes
+        - torrentz:
+            reputation: verified
+            extra_terms: "movie* hd"
+        - piratebay:
+            category: "highres movies"
+            sort_by: seeds
+      what:  
+        - filler: yes
+      interval: 2 hours
+
+  movies-queued:
+    movie_queue: yes
+    template: movies-discover
+    disable_plugin:
+      - seen_movies
+    discover:
+      what:
+        - emit_movie_queue: yes
+      from: 
+        - filler: yes
+    set:
+      label: my-movies
 
 tasks:
   tv-shows:
+    priority: 4
     template:
       - tv-global
     series:
@@ -95,26 +150,31 @@ tasks:
           propers: no
 
   movies:
+    priority: 3
     template: 
       - movie-global
-    movie_queue: yes
+      - movies-queued
+    torrent_alive:
+      min_seeds: 5
 
   imdb_queue:
-    priority: 10
+    priority: 2
     template: no_global
     interval: 2 hours
     imdb_list:
-      user_id: ur34962140
-      username: blsmit5728@gmail.com
-      password: baseball1
+      user_id: ***
+      username: ***
+      password: ***
       list: watchlist
     accept_all: yes
     queue_movies: yes
   
   Google_Music_Sync:
-    priority: 3
+    priority: 1
     disable_builtins: [seen, seen_info_hash]
-    template: no_global # None of the global templates make sense here
+    template: 
+      - no_global # None of the global templates make sense here
+      - music-global
     find:
       path: '/home/bsmith/Dropbox/Music/to_sync/'
       regexp: '.*\.(mp3|flac|m4a|ogg)$'
@@ -123,4 +183,7 @@ tasks:
     exec:
       on_output:
         for_accepted: '"/home/bsmith/repos/gmusicapi-scripts/gmsync.py" -q -l -m "{{location}}" && rm "{{location}}"'
+
   
+
+
