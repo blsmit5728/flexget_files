@@ -162,9 +162,15 @@ tasks:
     template: no_global
     interval: 2 hours
     imdb_list:
+<<<<<<< HEAD
       user_id: ***
       username: ***
       password: ***
+=======
+      user_id: ur3496****
+      username: ****@gmail.com
+      password: ****
+>>>>>>> 244a9bd8b38437f4e0ca5cb88b8aaaa215b0a3ff
       list: watchlist
     accept_all: yes
     queue_movies: yes
