@@ -26,7 +26,7 @@ templates:
         - '*.rar'
       reject:
         - '*.m2ts'
-        -  password: ***
+        - 'password.txt'
         - '*.wmv'
     pathscrub: windows
     retry_failed:
