@@ -15,6 +15,11 @@ series:
         name_regexp: ^bobs.burgers
     - "Cosmos A Space Time Oddyssey":
         name_regexp: ^cosmos.+a.space.time.odyssey
+    - Silicon Valley
+    - Fargo
+    - Resurrection
+    - Salem
+    - Sons of Anarchy
   Better:
     - American Dad!:
         name_regexp: ^american.dad(!)?
@@ -76,8 +81,10 @@ series:
     - Rake (US)
     - Almost Human
     - Masters of Sex
+    - Friends With Better Lives
   Average:
     - Downton Abbey
     - Moonshiners
     - Counting Cars
     - Pawn Stars
+    - Crisis

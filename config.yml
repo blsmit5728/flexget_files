@@ -26,7 +26,7 @@ templates:
         - '*.rar'
       reject:
         - '*.m2ts'
-        -  password: ***
+        - 'password.txt'
         - '*.wmv'
     pathscrub: windows
     retry_failed:
@@ -42,7 +42,7 @@ templates:
       
   tv-global:
     inputs:
-      - rss: { url: 'http://private.xxx/something', silent: yes }
+      - rss: { url: 'http://rss.DELETED.org/DELETED', silent: yes }
       #- rss: { url: 'http://kickass.to/tv/?rss=1', silent: yes }
       #- rss: { url: 'http://www.torlock.com/television/rss.xml', silent: yes }  # TorLock (TV)
       #- rss: { url: 'http://torrentz.eu/feed_verified?q=tv', silent: yes }      # Torrentz (Verified only, TV)
@@ -74,17 +74,19 @@ templates:
       - private/email.yml
       - private/tl.yml
     inputs:
-      - rss: { url: 'http://private.xxx/something', silent: yes }
+      - rss: { url: 'http://rss.DELETED.org/DELETED', silent: yes }
+      - rss: { url: 'http://kickass.to/movies/genre/news/?rss=1', silent: yes }
     content_size:
       # I don't like my Movies too big.
       max: 9000
       min: 500
     quality: 
-      - 720p-1080p bluray h264 ac3+ 
+      - 720p-1080p bluray h264 !aac !mp3 
     exists_movie:
       - "/mnt/disk1/Library/Movies/"
       - "/home/bsmith/Downloads/staging/Movies/"
     imdb_required: yes
+    trakt_lookup: yes
     deluge:
       content_filename: "{{ imdb_name|replace('/', '_')|replace(':', ' ') }} ({{ imdb_year }}) - {{ quality }}"
       movedone: "/mnt/disk1/Library/Movies/{{ imdb_name|replace('/', '_')|replace(':', ' ') }} ({{ imdb_year }})"
@@ -99,10 +101,10 @@ templates:
   movies-discover:
     discover:
       from:
-        - torrentleech:
-            rss_key: ***
-            username: ***
-            password: ***
+        - DELETED:
+            rss_key: DELETED
+            username: DELETED
+            password: "DELETED"
             category: ['BDRip', 'HD']
         - flexget_archive: yes
         - torrentz:
@@ -156,16 +158,26 @@ tasks:
       - movies-queued
     torrent_alive:
       min_seeds: 5
+    trakt_remove:
+      username: DELETED
+      password: DELETED
+      api_key: DELETED
+      list: Movie_Queue
+    trakt_add:
+      username: DELETED
+      password: DELETED
+      api_key: DELETED
+      list: watchlist 
 
-  imdb_queue:
+  trakt_queue:
     priority: 2
     template: no_global
     interval: 2 hours
-    imdb_list:
-      user_id: ur3496****
-      username: ****@gmail.com
-      password: ****
-      list: watchlist
+    trakt_list:
+      username: DELETED
+      password: DELETED
+      api_key: DELETED
+      custom: Movie_Queue
     accept_all: yes
     queue_movies: yes
   
@@ -184,6 +196,45 @@ tasks:
       on_output:
         for_accepted: '"/home/bsmith/repos/gmusicapi-scripts/gmsync.py" -q -l -m "{{location}}" && rm "{{location}}"'
 
-  
+  Local_Torrents-Movies:
+    priority: 2
+    template:
+      - movies-global
+    disable_builtins: [seen, seen_info_hash]
+    disable_plugin:
+      - configure_series
+      - inputs
+      - exists_movie
+      - seen_movies
+      - regexp
+      - content_size
+      - torrent_alive
+    filler: yes # To avoid warnings about non-functional input
+    # Mark movies as seen
+    movie_queue: yes
+    plugin_priority:
+      exec: 0
+    find:
+      path: '/home/bsmith/Dropbox/torrents/Movies'
+      regexp: '.*\.torrent$'
+      recursive: yes
+    exec:
+      on_output:
+        for_accepted: rm "{{location}}"
+    accept_all: yes
+    set:
+      label: local-movies
+    trakt_remove:
+      username: DELETED
+      password: DELETED
+      api_key: DELETED
+      list: Movie_Queue
+    trakt_add:
+      username: DELETED
+      password: DELETED
+      api_key: DELETED
+      list: watchlist
+
+schedules: []  
 
 

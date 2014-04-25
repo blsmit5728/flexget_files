@@ -57,6 +57,7 @@ tasks:
     find:
       path: '/home/bsmith/Downloads/staging/Movies/'
     imdb_lookup: yes
+    trakt_lookup: yes
     require_field: [imdb_url]
     move:
       to: >
@@ -64,3 +65,4 @@ tasks:
       filename: >
         {{ imdb_name|replace('/', '_')|replace(':', ' -') }} ({{ imdb_year }}) - {{ quality }}.{{ location[-3:] }}
       clean_source: 1000
+
