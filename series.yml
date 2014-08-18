@@ -20,6 +20,9 @@ series:
     - Resurrection
     - Salem
     - Sons of Anarchy
+    - Tyrant
+    - Extant
+    - The Last Ship
   Better:
     - American Dad!:
         name_regexp: ^american.dad(!)?
@@ -44,7 +47,7 @@ series:
     - Hostages
     - Inside Amy Schumer
     - Its Always Sunny In Philadelphia
-    - Low Winter Sun
+    #- Low Winter Sun
     - Mad Men
     - Marvel's Agents of S.H.I.E.L.D.
     - Men at Work
@@ -59,7 +62,7 @@ series:
     - The Blacklist
     - The Following
     - The Mindy Project
-    - The Michael J. Fox Show
+    #- The Michael J. Fox Show
     - The Newsroom (2012)
     - The Simpsons
     - Tosh.0
@@ -67,24 +70,29 @@ series:
     - Under the Dome
     - We Are Men
     - Workaholics
-    - Penny Dreadful
-    - Believe
+    #- Penny Dreadful
+    #- Believe
     - Crossbones
     - The Leftovers
     - Turn
     - Halt & Catch Fire:
         name_regexp: ^halt(.and|.&)?.catch.fire
     - The Strain
-    - Intelligence (2014):
-        name_regexp: ^intelligence(.US|2014)?
+    #- Intelligence (2014):
+    #    name_regexp: ^intelligence(.US|2014)?
     - Saturday Night Live
-    - Rake (US)
+    #- Rake (US)
     - Almost Human
     - Masters of Sex
     - Friends With Better Lives
+    #- The Maya Rudolph Show
   Average:
     - Downton Abbey
-    - Moonshiners
-    - Counting Cars
-    - Pawn Stars
-    - Crisis
+    #- Moonshiners
+    #- Counting Cars
+    #- Pawn Stars:
+    #    set:
+    #      thetvdb_lookup_season_offset: 2006
+    #      thetvdb_lookup_episode_offset: -22
+    #- Crisis
+

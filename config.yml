@@ -1,5 +1,31 @@
+secrets: secretfile.yml
 templates:
   global:
+    email:
+      from: '{{ secrets.em.from }}'
+      to: '{{ secrets.em.to }}'
+      smtp_host: '{{ secrets.em.smtp_host }}'
+      smtp_port: 587 
+      smtp_username: '{{ secrets.em.smtp_username }}'
+      smtp_password: '{{ secrets.em.smtp_password }}'
+      smtp_tls: yes
+      template: custom.template
+    domain_delay:
+      www.torrentleech.org: 10 seconds
+      rss.torrentleech.org: 10 minutes
+      bt-chat.com: 5 seconds
+      torrentz.eu: 5 seconds
+    if:
+      - "'torrentleech' in url":
+          deluge:
+            ratio: 3.0
+            removeatratio: yes
+            port: 58846
+      - "'torrentleech' not in url":
+          deluge:
+            ratio: 1.0
+            removeatratio: yes
+            port: 58846
     free_space:
       path: /mnt/disk1/
       space: 10000
@@ -33,29 +59,23 @@ templates:
       retry_time: 1 hour
       retry_time_multiplier: 2
       max_retries: 5
-    #if these are enabled we need to make sure we don't hit them too fast.
-    domain_delay:
-      bt-chat.com: 5 seconds
-      torrentz.eu: 5 seconds
     verify_ssl_certificates: no
     magnets: no
       
   tv-global:
     inputs:
-      - rss: { url: 'http://rss.DELETED.org/DELETED', silent: yes }
+      - rss: { url: '{{ secrets.tl.url }}', silent: yes }
       #- rss: { url: 'http://kickass.to/tv/?rss=1', silent: yes }
-      #- rss: { url: 'http://www.torlock.com/television/rss.xml', silent: yes }  # TorLock (TV)
-      #- rss: { url: 'http://torrentz.eu/feed_verified?q=tv', silent: yes }      # Torrentz (Verified only, TV)
-      #- rss: { url: 'http://ezrss.it/feed/', silent: yes }                      # EZRSS
-      #- rss: { url: 'http://showrss.karmorra.info/feeds/all.rss', silent: yes } # Karmorra (All)
-      #- rss: { url: 'http://rss.bt-chat.com/?group=3', silent: yes }            # BT-Chat (EZTV)
-      #- rss: { url: 'https://rss.thepiratebay.se/208', silent: yes }            # The Pirate Bay (Highres - TV shows)
+      #- rss: { url: 'http://www.torlock.com/television/rss.xml', silent: yes }  
+      #- rss: { url: 'http://torrentz.eu/feed_verified?q=tv', silent: yes }      
+      #- rss: { url: 'http://ezrss.it/feed/', silent: yes }                     
+      #- rss: { url: 'http://showrss.karmorra.info/feeds/all.rss', silent: yes } 
+      #- rss: { url: 'http://rss.bt-chat.com/?group=3', silent: yes }           
+      #- rss: { url: 'https://rss.thepiratebay.se/208', silent: yes }          
     include: 
-      - private/email.yml
       - series.yml
-      - private/tl.yml                  
     content_size:
-      max: 5000
+      max: 8000
       min: 20
     exists_series:
       - "/mnt/disk1/Library/TvShows/"
@@ -70,15 +90,11 @@ templates:
       '*.rar': "/home/bsmith/Downloads/completed/TvShows/"
 
   movie-global:
-    include:
-      - private/email.yml
-      - private/tl.yml
     inputs:
-      - rss: { url: 'http://rss.DELETED.org/DELETED', silent: yes }
-      - rss: { url: 'http://kickass.to/movies/genre/news/?rss=1', silent: yes }
+      - rss: { url: '{{ secrets.tl.url }}', silent: yes }
+      #- rss: { url: 'http://kickass.to/movies/genre/news/?rss=1', silent: yes }
     content_size:
-      # I don't like my Movies too big.
-      max: 9000
+      max: 20000
       min: 500
     quality: 
       - 720p-1080p bluray h264 !aac !mp3 
@@ -101,18 +117,18 @@ templates:
   movies-discover:
     discover:
       from:
-        - DELETED:
-            rss_key: DELETED
-            username: DELETED
-            password: "DELETED"
+        - torrentleech:
+            rss_key: '{{ secrets.tl.rss }}'
+            username: '{{ secrets.tl.user_name }}'
+            password: '{{ secrets.tl.password }}'
             category: ['BDRip', 'HD']
         - flexget_archive: yes
-        - torrentz:
-            reputation: verified
-            extra_terms: "movie* hd"
-        - piratebay:
-            category: "highres movies"
-            sort_by: seeds
+        #- torrentz:
+        #    reputation: verified
+        #    extra_terms: "movie* hd"
+        #- piratebay:
+        #    category: "highres movies"
+        #    sort_by: seeds
       what:  
         - filler: yes
       interval: 2 hours
@@ -132,7 +148,7 @@ templates:
 
 tasks:
   tv-shows:
-    priority: 4
+    priority: 5
     template:
       - tv-global
     series:
@@ -152,31 +168,30 @@ tasks:
           propers: no
 
   movies:
-    priority: 3
+    priority: 4
     template: 
       - movie-global
       - movies-queued
     torrent_alive:
       min_seeds: 5
     trakt_remove:
-      username: DELETED
-      password: DELETED
-      api_key: DELETED
+      username: '{{ secrets.trakt_info.user_name }}'
+      password: '{{ secrets.trakt_info.password }}'
+      api_key: '{{ secrets.trakt_info.api_key }}'
       list: Movie_Queue
     trakt_add:
-      username: DELETED
-      password: DELETED
-      api_key: DELETED
+      username: '{{ secrets.trakt_info.user_name }}'
+      password: '{{ secrets.trakt_info.password }}'
+      api_key: '{{ secrets.trakt_info.api_key }}'
       list: watchlist 
 
   trakt_queue:
-    priority: 2
+    priority: 3
     template: no_global
-    interval: 2 hours
     trakt_list:
-      username: DELETED
-      password: DELETED
-      api_key: DELETED
+      username: '{{ secrets.trakt_info.user_name }}'
+      password: '{{ secrets.trakt_info.password }}'
+      api_key: '{{ secrets.trakt_info.api_key }}'
       custom: Movie_Queue
     accept_all: yes
     queue_movies: yes
@@ -199,7 +214,7 @@ tasks:
   Local_Torrents-Movies:
     priority: 2
     template:
-      - movies-global
+      - movie-global
     disable_builtins: [seen, seen_info_hash]
     disable_plugin:
       - configure_series
@@ -209,13 +224,15 @@ tasks:
       - regexp
       - content_size
       - torrent_alive
-    filler: yes # To avoid warnings about non-functional input
+      - quality
+    # To avoid warnings about non-functional input
+    filler: yes 
     # Mark movies as seen
     movie_queue: yes
     plugin_priority:
       exec: 0
     find:
-      path: '/home/bsmith/Dropbox/torrents/Movies'
+      path: '/home/bsmith/Dropbox/torrents/Movies/'
       regexp: '.*\.torrent$'
       recursive: yes
     exec:
@@ -225,15 +242,72 @@ tasks:
     set:
       label: local-movies
     trakt_remove:
-      username: DELETED
-      password: DELETED
-      api_key: DELETED
+      username: '{{ secrets.trakt_info.user_name }}'
+      password: '{{ secrets.trakt_info.password }}'
+      api_key: '{{ secrets.trakt_info.api_key }}'
       list: Movie_Queue
     trakt_add:
-      username: DELETED
-      password: DELETED
-      api_key: DELETED
+      username: '{{ secrets.trakt_info.user_name }}'
+      password: '{{ secrets.trakt_info.password }}'
+      api_key: '{{ secrets.trakt_info.api_key }}'
       list: watchlist
+
+  Local_Torrents-TV:
+    priority: 2
+    template:
+      - tv-global
+    disable_builtins: [seen, seen_info_hash]
+    disable_plugin:
+      - configure_series
+      - trakt_list
+      - inputs
+      - exists_series
+      - regexp
+      - content_size
+      - torrent_alive
+    filler: yes # To avoid warnings about non-functional input
+    all_series:
+      parse_only: yes
+    plugin_priority:
+      exec: 0
+    find:
+      path: '/home/bsmith/Dropbox/torrents/TvShows/'
+      regexp: '.*\.torrent$'
+      recursive: yes
+    exec:
+      on_output:
+        for_accepted: rm "{{location}}"
+    accept_all: yes
+    set:
+      label: local-tv
+
+  Imdb_List_to_Trakt:
+    priority: 1
+    template: no_global
+    interval: 2 hours
+    imdb_list:
+      user_id: ur34962140
+      list: watchlist
+    trakt_add:
+      username: '{{ secrets.trakt_info.user_name }}'
+      password: '{{ secrets.trakt_info.password }}'
+      api_key: '{{ secrets.trakt_info.api_key }}'
+      list: Movie_Queue
+    accept_all: yes
+    queue_movies: yes  
+
+  trakt_new:
+    priority: 6
+    template: 
+      - tv-global
+    disable_plugin:
+      - inputs
+    trakt_list:
+      username: '{{ secrets.trakt_info.user_name }}'
+      password: '{{ secrets.trakt_info.password }}'
+      api_key: '{{ secrets.trakt_info.api_key }}'
+      custom: flexget_emit 
+
 
 schedules: []  
 

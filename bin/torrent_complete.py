@@ -2,7 +2,7 @@
 import sys
 import os
 import logging, logging.handlers
-from subprocess import call
+import subprocess
 
 LOG_FILE='/home/bsmith/.flexget/bin/torrent_complete.log'
 DOWNLOAD_PATH='/home/bsmith/Downloads/completed'
@@ -52,7 +52,7 @@ log.debug("%s called with torrent_id='%s', torrent_name='%s', torrent_path='%s'.
 def chain():
     log.debug("Updating XBMC Library")
     for xbmc in XBMC_LIST:
-        ret=call('/usr/bin/xbmc-send --host='+xbmc+' --action="XBMC.updatelibrary(video)"', shell=True)
+        ret=subprocess.call('/usr/bin/xbmc-send --host='+xbmc+' --action="XBMC.updatelibrary(video)"', shell=True)
     sys.exit(0)
 
 if DOWNLOAD_PATH not in torrent_path:
@@ -66,15 +66,38 @@ for path, task in FLEXGET_PATH_TASK.items():
         for root, dirs, files in os.walk(torrent_path+'/'+torrent_name, topdown=False):
             cmd='find "'+root+'" -type f -regex ".*\.\(\part[0-9]+\.\)?r\([0-9]+\|ar\)$" | head -1 | xargs -I {} unrar x -o+ "{}" '+STAGING_PATH+path+torrent_id+'/'
             log.debug('Shelling out: %s' % cmd)
-            ret = call(cmd, shell=True)
+            ret = subprocess.call(cmd, shell=True)
             if ret != 0:
                 log.warning('Unrar command returned non-zero value %d.' % ret)
 
+        cmd=['-c', 'find "'+STAGING_PATH+path+torrent_id+'" -type f -print0 | xargs -0 du -b | sort -nr | head -1']
+
+        try:
+            log.debug('Shelling out: %s' % cmd)
+            # check_ouptut is not available in python 2.6
+            #main_file_size, main_file = subprocess.check_output(cmd, shell=True).split()
+            main_file_size, main_file = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True).communicate()[0].split()
+            main_file_size = int(main_file_size)
+            cmd = 'du -b "'+STAGING_PATH+path+torrent_id+'"'
+            log.debug('Shelling out: %s' % cmd)
+            # check_ouptut is not available in python 2.6
+            #total_size = int(subprocess.check_output(cmd, shell=True).split()[0])
+            total_size = int(subprocess.Popen(cmd.split(), stdout=subprocess.PIPE, shell=True).communicate()[0].split()[0])
+            if main_file_size > (total_size * 0.9):
+                new_name = os.path.join(os.path.dirname(main_file), torrent_name+'.'+main_file.split('.')[-1])
+                log.debug('Renaming %s to %s because it is >90%% of the unpacked torrent'%(os.path.basename(main_file),  os.path.basename(new_name)))
+                os.rename(main_file, new_name)
+            else:
+                log.warning('Couldn\'t find any files that were >90% of the unpacked torrent')
+        except:
+            log.error('Failed attempting to rename the main unpacked file: %s' % sys.exc_info()[0])
+            raise   
+
         cmd=FLEXGET_COMMAND+' -c '+FLEXGET_SORTING_CONFIG+' execute --task '+FLEXGET_TASK_PREFIX + task + (' --disable-advancement' if 'tv' in path else '')
         log.debug('Shelling out: %s' % cmd)
-        ret = call(cmd, shell=True)
+        ret = subprocess.call(cmd, shell=True)
         if ret != 0:
             log.warning('Flexget command returned non-zero value %d.' % ret)
 
-chain()
+#chain()
 
