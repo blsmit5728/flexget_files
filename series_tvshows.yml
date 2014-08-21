@@ -1,0 +1,18 @@
+series:  
+  - American Dad!:
+      name_regexp: ^american.dad(!)?
+      set:
+        thetvdb_lookup_season_offset: 1
+  - Archer (2009):
+      name_regexp: ^archer(.2009)?
+  - "Bob's Burgers":
+      name_regexp: ^bobs.burgers
+  - "Cosmos A Spacetime Odyssey":
+      name_regexp: ^cosmos.+a.space.time.odyssey
+  - Dads (2013):
+      name_regexp: ^dads(.2013)?
+  - Halt and Catch Fire:
+      name_regexp: ^halt(.and|.&)?.catch.fire
+  - The Americans (2013):
+      name_regexp: ^the.americans(.2013)?
+        

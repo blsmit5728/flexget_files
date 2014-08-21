@@ -1,0 +1,4 @@
+series:
+  - "Fast N' Loud":
+      name_regexp: ^fast.n(.)?.loud
+
