@@ -300,14 +300,18 @@ tasks:
     priority: 6
     template: 
       - tv-global
-    disable_plugin:
-      - inputs
-    trakt_list:
-      username: '{{ secrets.trakt_info.user_name }}'
-      password: '{{ secrets.trakt_info.password }}'
-      api_key: '{{ secrets.trakt_info.api_key }}'
-      custom: flexget_emit 
-
+    configure_series:
+      from:
+        trakt_list:
+          username: '{{ secrets.trakt_info.user_name }}'
+          password: '{{ secrets.trakt_info.password }}'
+          api_key: '{{ secrets.trakt_info.api_key }}'
+          custom: Fall Shows 
+      settings:
+        timeframe: 2 hours
+        target: 720p+ 
+        quality: hdtv+ 
+        propers: 2 hours
 
 schedules: []  
 
