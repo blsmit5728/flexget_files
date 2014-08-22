@@ -72,8 +72,8 @@ templates:
       #- rss: { url: 'http://showrss.karmorra.info/feeds/all.rss', silent: yes } 
       #- rss: { url: 'http://rss.bt-chat.com/?group=3', silent: yes }           
       #- rss: { url: 'https://rss.thepiratebay.se/208', silent: yes }          
-    include: 
-      - series.yml
+      #    include: 
+      #- series.yml
     content_size:
       max: 8000
       min: 20
@@ -149,6 +149,7 @@ templates:
 tasks:
   tv-shows:
     priority: 5
+    include: [ series.yml ]
     template:
       - tv-global
     series:
@@ -167,6 +168,74 @@ tasks:
           quality: hdtv+
           propers: no
 
+#  tv-my-shows:
+#    priority: 5
+#    include: [ series_tvshows.yml ]
+#    template:
+#      - tv-global
+#    configure_series:
+#      from:
+#        trakt_list:
+#          username: '{{ secrets.trakt_info.user_name }}'
+#          password: '{{ secrets.trakt_info.password }}'
+#          api_key: '{{ secrets.trakt_info.api_key }}'
+#          custom: TvShows   
+#      settings:
+#        target: 720+ dvdscr+
+#        timeframe: 1 days
+#        quality: 480+ webrip+
+
+#  tv-interesting:
+#    priority: 6
+#    include: [ series_interesting.yml ]
+#    template:
+#      - tv-global
+#    configure_series:
+#      from:
+#        trakt_list:
+#          username: '{{ secrets.trakt_info.user_name }}'
+#          password: '{{ secrets.trakt_info.password }}'
+#          api_key: '{{ secrets.trakt_info.api_key }}'
+#          custom: Interesting   
+#      settings:
+#        target: 720+ dvdscr+
+#        timeframe: 3 days
+#        quality: 480+ webrip+
+
+#  tv-reality:
+#    priority: 7
+#    include: [ series_reality.yml ]
+#    template:
+#      - tv-global
+#    configure_series:
+#      from:
+#        trakt_list:
+#          username: '{{ secrets.trakt_info.user_name }}'
+#          password: '{{ secrets.trakt_info.password }}'
+#          api_key: '{{ secrets.trakt_info.api_key }}'
+#          custom: RealityTV   
+#      settings:
+#        target: hdtv+ dvdscr+
+#        timeframe: 3 days
+#        quality: 480+ webrip+             
+
+#  tv-laura:
+#    priority: 8
+#    include: [ series_wife.yml ]
+#    template:
+#      - tv-global
+#    configure_series:
+#      from:
+#        trakt_list:
+#          username: '{{ secrets.trakt_info.user_name }}'
+#          password: '{{ secrets.trakt_info.password }}'
+#          api_key: '{{ secrets.trakt_info.api_key }}'
+#          custom: Laura   
+#      settings:
+#        target: 720p+ dvdscr+
+#        timeframe: 2 days
+#        quality: 480+ webrip+             
+              
   movies:
     priority: 4
     template: 
@@ -185,7 +254,7 @@ tasks:
       api_key: '{{ secrets.trakt_info.api_key }}'
       list: watchlist 
 
-  trakt_queue:
+  trakt_list_to_queue:
     priority: 3
     template: no_global
     trakt_list:
@@ -196,7 +265,7 @@ tasks:
     accept_all: yes
     queue_movies: yes
   
-  Google_Music_Sync:
+  google_music_sync:
     priority: 1
     disable_builtins: [seen, seen_info_hash]
     template: 
@@ -211,7 +280,7 @@ tasks:
       on_output:
         for_accepted: '"/home/bsmith/repos/gmusicapi-scripts/gmsync.py" -q -l -m "{{location}}" && rm "{{location}}"'
 
-  Local_Torrents-Movies:
+  local_torrents_movies:
     priority: 2
     template:
       - movie-global
@@ -252,7 +321,7 @@ tasks:
       api_key: '{{ secrets.trakt_info.api_key }}'
       list: watchlist
 
-  Local_Torrents-TV:
+  local_torrents_tv:
     priority: 2
     template:
       - tv-global
@@ -281,7 +350,7 @@ tasks:
     set:
       label: local-tv
 
-  Imdb_List_to_Trakt:
+  imdb_list_to_trakt:
     priority: 1
     template: no_global
     interval: 2 hours
@@ -296,7 +365,7 @@ tasks:
     accept_all: yes
     queue_movies: yes  
 
-  trakt_new:
+  trakt_fall_shows:
     priority: 6
     template: 
       - tv-global
