@@ -43,3 +43,6 @@ Thumbs.db
 # Extra files that I create #
 # ###########################
 *.bak
+
+secretfile.yml
+
