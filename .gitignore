@@ -46,3 +46,6 @@ Thumbs.db
 
 secretfile.yml
 
+received
+flexget.log*
+
