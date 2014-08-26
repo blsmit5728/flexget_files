@@ -108,9 +108,9 @@ templates:
     content_sort:
       '*.rar': "/home/bsmith/Downloads/completed/Movies/"
     
-  music-global:
-    include:
-      - private/email.yml
+      #  music-global:
+      #    include:
+      #     - private/email.yml
 
   movies-discover:
     discover:
@@ -155,94 +155,94 @@ templates:
       list: watchlist
 
 tasks:
-  tv-shows:
+# tv-shows:
+#    priority: 5
+#    include: [ series.yml ]
+#    template:
+#      - tv-global
+#    series:
+#      settings:
+#        Best:
+#          timeframe: 2 hours
+#          target: 720p+ 
+#          quality: hdtv+ 
+#          propers: 4 hours
+#        Better:
+#          timeframe: 2 hours
+#          target: 720p+ 
+#          quality: hdtv+ 
+#          propers: 2 hours
+#        Average:
+#          quality: hdtv+
+#          propers: no
+
+  tv-my-shows:
     priority: 5
-    include: [ series.yml ]
+    include: [ series_tvshows.yml ]
     template:
       - tv-global
-    series:
+    configure_series:
+      from:
+        trakt_list:
+          username: '{{ secrets.trakt_info.user_name }}'
+          password: '{{ secrets.trakt_info.password }}'
+          api_key: '{{ secrets.trakt_info.api_key }}'
+          custom: TvShows   
       settings:
-        Best:
-          timeframe: 2 hours
-          target: 720p+ 
-          quality: hdtv+ 
-          propers: 4 hours
-        Better:
-          timeframe: 2 hours
-          target: 720p+ 
-          quality: hdtv+ 
-          propers: 2 hours
-        Average:
-          quality: hdtv+
-          propers: no
+        target: 720p+ dvdscr+
+        timeframe: 1 days
+        quality: 480p+ webrip+
 
-#  tv-my-shows:
-#    priority: 5
-#    include: [ series_tvshows.yml ]
-#    template:
-#      - tv-global
-#    configure_series:
-#      from:
-#        trakt_list:
-#          username: '{{ secrets.trakt_info.user_name }}'
-#          password: '{{ secrets.trakt_info.password }}'
-#          api_key: '{{ secrets.trakt_info.api_key }}'
-#          custom: TvShows   
-#      settings:
-#        target: 720+ dvdscr+
-#        timeframe: 1 days
-#        quality: 480+ webrip+
+  tv-interesting:
+    priority: 6
+    #include: [ series_interesting.yml ] #NOTHING IN HERE YET.
+    template:
+      - tv-global
+    configure_series:
+      from:
+        trakt_list:
+          username: '{{ secrets.trakt_info.user_name }}'
+          password: '{{ secrets.trakt_info.password }}'
+          api_key: '{{ secrets.trakt_info.api_key }}'
+          custom: Interesting   
+      settings:
+        target: 720p+ dvdscr+
+        timeframe: 3 days
+        quality: 480p+ webrip+
 
-#  tv-interesting:
-#    priority: 6
-#    include: [ series_interesting.yml ]
-#    template:
-#      - tv-global
-#    configure_series:
-#      from:
-#        trakt_list:
-#          username: '{{ secrets.trakt_info.user_name }}'
-#          password: '{{ secrets.trakt_info.password }}'
-#          api_key: '{{ secrets.trakt_info.api_key }}'
-#          custom: Interesting   
-#      settings:
-#        target: 720+ dvdscr+
-#        timeframe: 3 days
-#        quality: 480+ webrip+
+  tv-reality:
+    priority: 7
+    include: [ series_reality.yml ]
+    template:
+      - tv-global
+    configure_series:
+      from:
+        trakt_list:
+          username: '{{ secrets.trakt_info.user_name }}'
+          password: '{{ secrets.trakt_info.password }}'
+          api_key: '{{ secrets.trakt_info.api_key }}'
+          custom: RealityTV   
+      settings:
+        target: hdtv+ dvdscr+
+        timeframe: 3 days
+        quality: 480p+ webrip+             
 
-#  tv-reality:
-#    priority: 7
-#    include: [ series_reality.yml ]
-#    template:
-#      - tv-global
-#    configure_series:
-#      from:
-#        trakt_list:
-#          username: '{{ secrets.trakt_info.user_name }}'
-#          password: '{{ secrets.trakt_info.password }}'
-#          api_key: '{{ secrets.trakt_info.api_key }}'
-#          custom: RealityTV   
-#      settings:
-#        target: hdtv+ dvdscr+
-#        timeframe: 3 days
-#        quality: 480+ webrip+             
-
-#  tv-laura:
-#    priority: 8
-#    include: [ series_wife.yml ]
-#    template:
-#      - tv-global
-#    configure_series:
-#      from:
-#        trakt_list:
-#          username: '{{ secrets.trakt_info.user_name }}'
-#          password: '{{ secrets.trakt_info.password }}'
-#          api_key: '{{ secrets.trakt_info.api_key }}'
-#          custom: Laura   
-#      settings:
-#        target: 720p+ dvdscr+
-#        timeframe: 2 days
-#        quality: 480+ webrip+             
+  tv-laura:
+    priority: 8
+    #include: [ series_wife.yml ]
+    template:
+      - tv-global
+    configure_series:
+      from:
+        trakt_list:
+          username: '{{ secrets.trakt_info.user_name }}'
+          password: '{{ secrets.trakt_info.password }}'
+          api_key: '{{ secrets.trakt_info.api_key }}'
+          custom: Laura   
+      settings:
+        target: 720p+ dvdscr+
+        timeframe: 2 days
+        quality: 480p+ webrip+             
               
   movies_1080p:
     priority: 110
@@ -277,7 +277,7 @@ tasks:
     disable_builtins: [seen, seen_info_hash]
     template: 
       - no_global # None of the global templates make sense here
-      - music-global
+     #- music-global
     find:
       path: '/home/bsmith/Dropbox/Music/to_sync/'
       regexp: '.*\.(mp3|flac|m4a|ogg)$'
@@ -330,6 +330,11 @@ tasks:
 
   local_torrents_tv:
     priority: 2
+    include:
+     #- series_interesting.yml  
+      - series_reality.yml  
+      - series_tvshows.yml  
+     #- series_wife.yml
     template:
       - tv-global
     disable_builtins: [seen, seen_info_hash]
