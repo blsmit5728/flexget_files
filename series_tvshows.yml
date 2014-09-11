@@ -15,4 +15,5 @@ series:
       name_regexp: ^halt(.and|.&)?.catch.fire
   - The Americans (2013):
       name_regexp: ^the.americans(.2013)?
-        
+  # Trakt uses a wrong name for this Show.
+  - The Bridge US  
