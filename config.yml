@@ -155,27 +155,6 @@ templates:
       list: watchlist
 
 tasks:
-# tv-shows:
-#    priority: 5
-#    include: [ series.yml ]
-#    template:
-#      - tv-global
-#    series:
-#      settings:
-#        Best:
-#          timeframe: 2 hours
-#          target: 720p+ 
-#          quality: hdtv+ 
-#          propers: 4 hours
-#        Better:
-#          timeframe: 2 hours
-#          target: 720p+ 
-#          quality: hdtv+ 
-#          propers: 2 hours
-#        Average:
-#          quality: hdtv+
-#          propers: no
-
   tv-my-shows:
     priority: 5
     include: [ series_tvshows.yml ]
@@ -259,7 +238,7 @@ tasks:
     torrent_alive:
       min_seeds: 5
     quality: 720p+ bluray+ h264+ !mp3 !aac
-    delay: 5 days
+    delay: 7 days
 
   trakt_list_to_queue:
     priority: 3
