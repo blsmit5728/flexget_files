@@ -1,6 +1,11 @@
 secrets: secretfile.yml
 templates:
   global:
+    pushbullet:
+      apikey: '{{ secrets.pushb.apikey }}'
+      device: '{{ secrets.pushb.device }}'
+      title: "[Flexget] {{series_name}} {{series_id}}"
+      body: "{{task}} - {% if trakt_series_url is defined %}{{trakt_series_url}}/season/{{trakt_season}}/episode/{{trakt_episode}}{% endif %}"
     email:
       from: '{{ secrets.em.from }}'
       to: '{{ secrets.em.to }}'
