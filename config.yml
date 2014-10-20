@@ -85,11 +85,12 @@ templates:
     exists_series:
       - "/mnt/disk1/Library/TvShows/"
       - "/home/bsmith/Downloads/staging/TvShows"
-    thetvdb_lookup: yes
+    #thetvdb_lookup: yes
     trakt_lookup: yes
     set:
-      content_filename: "{{ series_name|replace('/', '_')|replace(':', ' ') }} - {{ tvdb_ep_id|default(series_id) }}{% if tvdb_ep_name|default(False) %} - {{ tvdb_ep_name|replace('/', '_')|replace(':', ' -') }}{% endif %} - {{ quality }}"
-      movedone: "/mnt/disk1/Library/TvShows/{{ series_name|replace('/', '_')|replace(':', ' ') }}/{% if series_id_type == 'ep' %}Season {{ tvdb_season|default(series_season) }}/{% endif %}"
+      content_filename: "{{ series_name|replace('/', '_')|replace(':', ' ') }} - {{ trakt_ep_id|default(series_id) }}{% if trakt_ep_name|default(False) %} - {{ trakt_ep_name|replace('/', '_')|replace(':', ' -') }}{% endif %} - {{ quality }}"
+      #content_filename: "{{ series_name|replace('/', '_')|replace(':', ' ') }} - {{ trakt_ep_id|default(series_id) }}{% if trakt_ep_name|default(False) %} - {{ trakt_ep_name|replace('/', '_')|replace(':', ' -') }}{% endif %} - {{ quality }}"
+      movedone: "/mnt/disk1/Library/TvShows/{{ series_name|replace('/', '_')|replace(':', ' ') }}/{% if series_id_type == 'ep' %}Season {{ trakt_season|default(series_season) }}/{% endif %}"
       label: tv
     content_sort:
       '*.rar': "/home/bsmith/Downloads/completed/TvShows/"
@@ -134,7 +135,7 @@ templates:
         #    sort_by: seeds
       what:  
         - filler: yes
-      interval: 2 hours
+      #interval: 2 hours
 
   movies-queued:
     movie_queue: yes
@@ -349,7 +350,7 @@ tasks:
   imdb_list_to_trakt:
     priority: 1
     template: no_global
-    interval: 2 hours
+    #interval: 2 hours
     imdb_list:
       user_id: ur34962140
       list: watchlist
@@ -378,6 +379,17 @@ tasks:
         quality: hdtv+ 
         propers: 2 hours
 
-schedules: []  
-
+schedules:            
+  - tasks: [ 'tv-my-shows', 'tv-interesting', 'tv-reality', 'tv-laura', 'trakt_fall_shows' ]
+    schedule:
+      minute: 3,18,33,48
+  - tasks: [ 'movies_1080p', 'movies_720p' ]
+    schedule:
+      minute: 30
+  - tasks: [ 'local_torrents_movies', 'google_music_sync', 'local_torrents_tv' ]  
+    schedule:
+      minute: 15
+  - tasks: [ 'trakt_list_to_queue', 'imdb_list_to_trakt' ]
+    schedule:
+      hour: 2
 
