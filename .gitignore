@@ -43,7 +43,7 @@ Thumbs.db
 # Extra files that I create #
 # ###########################
 *.bak
-
+db-backup
 secretfile.yml
 
 received
