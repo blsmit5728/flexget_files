@@ -6,15 +6,15 @@ templates:
       device: '{{ secrets.pushb.device }}'
       title: "[Flexget] {{series_name}} {{series_id}}"
       body: "{{task}} - {% if trakt_series_url is defined %}{{trakt_series_url}}/season/{{trakt_season}}/episode/{{trakt_episode}}{% endif %}"
-    email:
-      from: '{{ secrets.em.from }}'
-      to: '{{ secrets.em.to }}'
-      smtp_host: '{{ secrets.em.smtp_host }}'
-      smtp_port: 587 
-      smtp_username: '{{ secrets.em.smtp_username }}'
-      smtp_password: '{{ secrets.em.smtp_password }}'
-      smtp_tls: yes
-      template: custom.template
+    #email:
+    #  from: '{{ secrets.em.from }}'
+    #  to: '{{ secrets.em.to }}'
+    #  smtp_host: '{{ secrets.em.smtp_host }}'
+    #  smtp_port: 587 
+    #  smtp_username: '{{ secrets.em.smtp_username }}'
+    #  smtp_password: '{{ secrets.em.smtp_password }}'
+    #  smtp_tls: yes
+    #  template: custom.template
     domain_delay:
       www.torrentleech.org: 10 seconds
       rss.torrentleech.org: 10 minutes
@@ -379,17 +379,35 @@ tasks:
         quality: hdtv+ 
         propers: 2 hours
 
-schedules:            
-  - tasks: [ 'tv-my-shows', 'tv-interesting', 'tv-reality', 'tv-laura', 'trakt_fall_shows' ]
-    schedule:
-      minute: 3,18,33,48
-  - tasks: [ 'movies_1080p', 'movies_720p' ]
-    schedule:
-      minute: 30
-  - tasks: [ 'local_torrents_movies', 'google_music_sync', 'local_torrents_tv' ]  
-    schedule:
-      minute: 15
-  - tasks: [ 'trakt_list_to_queue', 'imdb_list_to_trakt' ]
-    schedule:
-      hour: 2
+  trakt_moms_shows:
+    priority: 6
+    template: 
+      - tv-global
+    configure_series:
+      from:
+        trakt_list:
+          username: '{{ secrets.trakt_info.user_name }}'
+          password: '{{ secrets.trakt_info.password }}'
+          api_key: '{{ secrets.trakt_info.api_key }}'
+          custom: Moms Shows 
+      settings:
+        timeframe: 2 hours
+        target: hdtv+ 
+        quality: hdtv+ 
+        propers: 2 hours
+
+    
+#schedules:            
+#  - tasks: [ 'tv-my-shows', 'tv-interesting', 'tv-reality', 'tv-laura', 'trakt_fall_shows','movies_1080p', 'movies_720p' ]
+#    schedule:
+#      minute: 3,18,33,48
+#  - tasks: [ 'movies_1080p', 'movies_720p' ]
+#    schedule:
+#      minute: 30
+#  - tasks: [ 'local_torrents_movies', 'google_music_sync', 'local_torrents_tv' ]  
+#    schedule:
+#      minute: 15
+#  - tasks: [ 'trakt_list_to_queue', 'imdb_list_to_trakt' ]
+#    schedule:
+#      hour: 2
 
