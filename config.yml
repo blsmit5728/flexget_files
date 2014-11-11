@@ -1,20 +1,6 @@
 secrets: secretfile.yml
 templates:
   global:
-      #pushbullet:
-      #apikey: '{{ secrets.pushb.apikey }}'
-      #device: '{{ secrets.pushb.device }}'
-      #title: "[Flexget] {{series_name}} {{series_id}}"
-      #body: "{{task}} - {% if trakt_series_url is defined %}{{trakt_series_url}}/season/{{trakt_season}}/episode/{{trakt_episode}}{% endif %}"
-    #email:
-    #  from: '{{ secrets.em.from }}'
-    #  to: '{{ secrets.em.to }}'
-    #  smtp_host: '{{ secrets.em.smtp_host }}'
-    #  smtp_port: 587 
-    #  smtp_username: '{{ secrets.em.smtp_username }}'
-    #  smtp_password: '{{ secrets.em.smtp_password }}'
-    #  smtp_tls: yes
-    #  template: custom.template
     domain_delay:
       www.torrentleech.org: 10 seconds
       rss.torrentleech.org: 10 minutes
@@ -26,11 +12,13 @@ templates:
             ratio: 3.0
             removeatratio: yes
             port: 58846
+            main_file_only: yes
       - "'torrentleech' not in url":
           deluge:
             ratio: 1.0
             removeatratio: yes
             port: 58846
+            main_file_only: yes
     free_space:
       path: /mnt/disk1/
       space: 10000
@@ -70,15 +58,6 @@ templates:
   tv-global:
     inputs:
       - rss: { url: '{{ secrets.tl.url }}', silent: yes }
-      #- rss: { url: 'http://kickass.to/tv/?rss=1', silent: yes }
-      #- rss: { url: 'http://www.torlock.com/television/rss.xml', silent: yes }  
-      #- rss: { url: 'http://torrentz.eu/feed_verified?q=tv', silent: yes }      
-      #- rss: { url: 'http://ezrss.it/feed/', silent: yes }                     
-      #- rss: { url: 'http://showrss.karmorra.info/feeds/all.rss', silent: yes } 
-      #- rss: { url: 'http://rss.bt-chat.com/?group=3', silent: yes }           
-      #- rss: { url: 'https://rss.thepiratebay.se/208', silent: yes }          
-      #    include: 
-      #- series.yml
     content_size:
       max: 8000
       min: 20
@@ -89,9 +68,7 @@ templates:
     trakt_lookup: yes
     set:
       content_filename: "{{ series_name|replace('/', '_')|replace(':', ' ') }} - {{ trakt_ep_id|default(series_id) }}{% if trakt_ep_name|default(False) %} - {{ trakt_ep_name|replace('/', '_')|replace(':', ' -') }}{% endif %} - {{ quality }}"
-      #content_filename: "{{ series_name|replace('/', '_')|replace(':', ' ') }} - {{ trakt_ep_id|default(series_id) }}{% if trakt_ep_name|default(False) %} - {{ trakt_ep_name|replace('/', '_')|replace(':', ' -') }}{% endif %} - {{ quality }}"
       movedone: "/mnt/disk1/Library/TvShows/{{ series_name|replace('/', '_')|replace(':', ' ') }}/{% if series_id_type == 'ep' %}Season {{ trakt_season|default(series_season) }}/{% endif %}"
-      label: tv
     content_sort:
       '*.rar': "/home/bsmith/Downloads/completed/TvShows/"
     pushbullet:
@@ -99,7 +76,6 @@ templates:
       device: '{{ secrets.pushb.device }}'
       title: "[Flexget] {{series_name}} {{series_id}}"
       body: "{{task}} - {% if trakt_series_url is defined %}{{trakt_series_url}}/season/{{trakt_season}}/episode/{{trakt_episode}}{% endif %}"
-
 
   movie-global:
     inputs:
@@ -113,10 +89,9 @@ templates:
       - "/home/bsmith/Downloads/staging/Movies/"
     tmdb_lookup: yes
     trakt_lookup: yes
-    deluge:
+    set:
       content_filename: "{{ tmdb_name|replace('/', '_')|replace(':', ' ') }} ({{ tmdb_year }}) - {{ quality }}"
       movedone: "/mnt/disk1/Library/Movies/{{ tmdb_name|replace('/', '_')|replace(':', ' ') }} ({{ tmdb_year }})"
-      label: movie
     content_sort:
       '*.rar': "/home/bsmith/Downloads/completed/Movies/"
     pushbullet:
@@ -124,11 +99,6 @@ templates:
       device: '{{ secrets.pushb.device }}'
       title: "[Flexget] Movie Downloaded"
       body: "{{task}} - {{ imdb_name }} {{ imdb_year }} - {{ quality }}"
-
-    
-      #  music-global:
-      #    include:
-      #     - private/email.yml
 
   movies-discover:
     discover:
