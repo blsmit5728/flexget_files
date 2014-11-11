@@ -361,7 +361,7 @@ tasks:
         quality: hdtv+ 
         propers: 2 hours
 
-  trakt_moms_shows:
+  trakt-moms-shows:
     priority: 6
     template: 
       - tv-global
@@ -377,8 +377,24 @@ tasks:
         target: hdtv+ 
         quality: hdtv+ 
         propers: 2 hours
+  
+  trakt-daily-shows:
+    priority: 2
+    template:
+      - tv-global
+    configure_series:
+      from:
+        trakt_list:
+          username: '{{ secrets.trakt_info.user_name }}'
+          password: '{{ secrets.trakt_info.password }}'
+          api_key: '{{ secrets.trakt_info.api_key }}'
+          custom: Daily
+      settings:
+        target: webrip+
+        timeframe: 12 hours
+        quality: preair+
+        tracking: backfill
 
-    
 #schedules:            
 #  - tasks: [ 'tv-my-shows', 'tv-interesting', 'tv-reality', 'tv-laura', 'trakt-fall-shows','movies-1080p', 'movies-720p' ]
 #    schedule:
