@@ -1,11 +1,11 @@
 secrets: secretfile.yml
 templates:
   global:
-    pushbullet:
-      apikey: '{{ secrets.pushb.apikey }}'
-      device: '{{ secrets.pushb.device }}'
-      title: "[Flexget] {{series_name}} {{series_id}}"
-      body: "{{task}} - {% if trakt_series_url is defined %}{{trakt_series_url}}/season/{{trakt_season}}/episode/{{trakt_episode}}{% endif %}"
+      #pushbullet:
+      #apikey: '{{ secrets.pushb.apikey }}'
+      #device: '{{ secrets.pushb.device }}'
+      #title: "[Flexget] {{series_name}} {{series_id}}"
+      #body: "{{task}} - {% if trakt_series_url is defined %}{{trakt_series_url}}/season/{{trakt_season}}/episode/{{trakt_episode}}{% endif %}"
     #email:
     #  from: '{{ secrets.em.from }}'
     #  to: '{{ secrets.em.to }}'
@@ -94,6 +94,12 @@ templates:
       label: tv
     content_sort:
       '*.rar': "/home/bsmith/Downloads/completed/TvShows/"
+    pushbullet:
+      apikey: '{{ secrets.pushb.apikey }}'
+      device: '{{ secrets.pushb.device }}'
+      title: "[Flexget] {{series_name}} {{series_id}}"
+      body: "{{task}} - {% if trakt_series_url is defined %}{{trakt_series_url}}/season/{{trakt_season}}/episode/{{trakt_episode}}{% endif %}"
+
 
   movie-global:
     inputs:
@@ -105,7 +111,6 @@ templates:
     exists_movie:
       - "/mnt/disk1/Library/Movies/"
       - "/home/bsmith/Downloads/staging/Movies/"
-    #imdb_lookup: yes
     tmdb_lookup: yes
     trakt_lookup: yes
     deluge:
@@ -114,6 +119,12 @@ templates:
       label: movie
     content_sort:
       '*.rar': "/home/bsmith/Downloads/completed/Movies/"
+    pushbullet:
+      apikey: '{{ secrets.pushb.apikey }}'
+      device: '{{ secrets.pushb.device }}'
+      title: "[Flexget] Movie Downloaded"
+      body: "{{task}} - {{ imdb_name }} {{ imdb_year }} - {{ quality }}"
+
     
       #  music-global:
       #    include:
