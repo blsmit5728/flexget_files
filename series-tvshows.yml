@@ -1,7 +1,8 @@
 series:  
   - American Dad!:
       name_regexp: ^american.dad(!)?
-      season_offset: 1
+      set:
+        thetvdb_lookup_season_offset: 1
   - Archer (2009):
       name_regexp: ^archer(.2009)?
   - "Bob's Burgers":

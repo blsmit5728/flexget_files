@@ -1,0 +1,6 @@
+# Shows for Fall
+series:
+  - The Newsroom (2012):
+      name_regexp: ^the.newsroom(.2012)?
+
+

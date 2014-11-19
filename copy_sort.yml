@@ -32,6 +32,7 @@ tasks:
       path: '/media/300GB/XBMC_LIBRARY/staged/tvshows/'
     # Where to get the metadata
     thetvdb_lookup: yes
+    trakt_lookup: yes
     # This is needed to get my TVDB offset values 
     include: [series.yml]
     all_series:

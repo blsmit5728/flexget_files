@@ -346,6 +346,7 @@ tasks:
 
   trakt-fall-shows:
     priority: 6
+    include: [ series-fall-shows.yml ]
     template: 
       - tv-global
     configure_series:
