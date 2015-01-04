@@ -6,12 +6,11 @@
 # This config file is not a standard Flexget config, it is used
 # to sort my unrared movies and TV shows into their proper place
 #
+secrets: secretfile.yml
 templates:
   global:
     # Each feed must be run manually
     manual: yes
-    include:
-      - private/email.yml
     # Disable seen, alway process files
     disable_builtins: [seen]
     accept_all: yes
@@ -51,6 +50,12 @@ tasks:
       filename: >
         {{ series_name|replace('/', '_')|replace(':', ' -') }} - {{ tvdb_ep_id|default(series_id) }}{% if tvdb_ep_name|default(False) %} - {{ tvdb_ep_name|replace('/', '_')|replace(':', ' -') }}{% endif %} - {{ quality }}.{{ location[-3:] }}
       clean_source: 40
+    pushbullet:
+      apikey: '{{ secrets.pushb.apikey }}'
+      device: '{{ secrets.pushb.device }}'
+      title: "[Flexget] Sorted TV Show"
+      body: "{{task}} - {% if trakt_series_url is defined %}{{trakt_series_url}}/season/{{trakt_season}}/episode/{{trakt_episode}}{% endif %}"
+
 
   # Same as above
   Sort_Unpacked_Movies:
@@ -65,4 +70,9 @@ tasks:
       filename: >
         {{ imdb_name|replace('/', '_')|replace(':', ' -') }} ({{ imdb_year }}) - {{ quality }}.{{ location[-3:] }}
       clean_source: 1000
+    pushbullet:
+      apikey: '{{ secrets.pushb.apikey }}'
+      device: '{{ secrets.pushb.device }}'
+      title: "[Flexget] Sorted Movie"
+      body: "{{task}} - {{ imdb_name }} {{ imdb_year }} - {{ quality }}"
 

@@ -120,7 +120,7 @@ templates:
       #interval: 2 hours
 
   movies-queued:
-    movie_queue: yes
+    movie_queue: accept
     template: movies-discover
     disable_plugin:
       - seen_movies
@@ -134,12 +134,10 @@ templates:
     trakt_remove:
       username: '{{ secrets.trakt_info.user_name }}'
       password: '{{ secrets.trakt_info.password }}'
-      api_key: '{{ secrets.trakt_info.api_key }}'
       list: Movie_Queue
     trakt_add:
       username: '{{ secrets.trakt_info.user_name }}'
       password: '{{ secrets.trakt_info.password }}'
-      api_key: '{{ secrets.trakt_info.api_key }}'
       list: watchlist
 
 tasks:
@@ -153,8 +151,8 @@ tasks:
         trakt_list:
           username: '{{ secrets.trakt_info.user_name }}'
           password: '{{ secrets.trakt_info.password }}'
-          api_key: '{{ secrets.trakt_info.api_key }}'
-          custom: TvShows   
+          list: TvShows   
+          type: shows
       settings:
         target: 720p+ dvdscr+
         timeframe: 1 days
@@ -170,8 +168,8 @@ tasks:
         trakt_list:
           username: '{{ secrets.trakt_info.user_name }}'
           password: '{{ secrets.trakt_info.password }}'
-          api_key: '{{ secrets.trakt_info.api_key }}'
-          custom: Interesting   
+          list: Interesting
+          type: shows
       settings:
         target: 720p+ dvdscr+
         timeframe: 3 days
@@ -187,8 +185,8 @@ tasks:
         trakt_list:
           username: '{{ secrets.trakt_info.user_name }}'
           password: '{{ secrets.trakt_info.password }}'
-          api_key: '{{ secrets.trakt_info.api_key }}'
-          custom: RealityTV   
+          list: RealityTV   
+          type: shows
       settings:
         target: hdtv+ dvdscr+
         timeframe: 3 days
@@ -204,8 +202,8 @@ tasks:
         trakt_list:
           username: '{{ secrets.trakt_info.user_name }}'
           password: '{{ secrets.trakt_info.password }}'
-          api_key: '{{ secrets.trakt_info.api_key }}'
-          custom: Laura   
+          list: Laura   
+          type: shows
       settings:
         target: 720p+ dvdscr+
         timeframe: 2 days
@@ -234,10 +232,10 @@ tasks:
     trakt_list:
       username: '{{ secrets.trakt_info.user_name }}'
       password: '{{ secrets.trakt_info.password }}'
-      api_key: '{{ secrets.trakt_info.api_key }}'
-      custom: Movie_Queue
+      list: Movie_Queue
+      type: movies
     accept_all: yes
-    queue_movies: yes
+    movie_queue: add
   
   google-music-sync:
     priority: 1
@@ -271,7 +269,7 @@ tasks:
     # To avoid warnings about non-functional input
     filler: yes 
     # Mark movies as seen
-    movie_queue: yes
+    movie_queue: accept
     plugin_priority:
       exec: 0
     find:
@@ -287,12 +285,10 @@ tasks:
     trakt_remove:
       username: '{{ secrets.trakt_info.user_name }}'
       password: '{{ secrets.trakt_info.password }}'
-      api_key: '{{ secrets.trakt_info.api_key }}'
       list: Movie_Queue
     trakt_add:
       username: '{{ secrets.trakt_info.user_name }}'
       password: '{{ secrets.trakt_info.password }}'
-      api_key: '{{ secrets.trakt_info.api_key }}'
       list: watchlist
 
   local-torrents-tv:
@@ -339,10 +335,9 @@ tasks:
     trakt_add:
       username: '{{ secrets.trakt_info.user_name }}'
       password: '{{ secrets.trakt_info.password }}'
-      api_key: '{{ secrets.trakt_info.api_key }}'
       list: Movie_Queue
     accept_all: yes
-    queue_movies: yes  
+    movie_queue: add  
 
   trakt-fall-shows:
     priority: 6
@@ -354,8 +349,8 @@ tasks:
         trakt_list:
           username: '{{ secrets.trakt_info.user_name }}'
           password: '{{ secrets.trakt_info.password }}'
-          api_key: '{{ secrets.trakt_info.api_key }}'
-          custom: Fall Shows 
+          list: Fall Shows 
+          type: shows
       settings:
         timeframe: 2 hours
         target: 720p+ 
@@ -371,8 +366,8 @@ tasks:
         trakt_list:
           username: '{{ secrets.trakt_info.user_name }}'
           password: '{{ secrets.trakt_info.password }}'
-          api_key: '{{ secrets.trakt_info.api_key }}'
-          custom: Moms Shows 
+          list: Moms Shows
+          type: shows
       settings:
         timeframe: 2 hours
         target: hdtv+ 
@@ -388,8 +383,8 @@ tasks:
         trakt_list:
           username: '{{ secrets.trakt_info.user_name }}'
           password: '{{ secrets.trakt_info.password }}'
-          api_key: '{{ secrets.trakt_info.api_key }}'
-          custom: Daily
+          list: Daily
+          type: shows
       settings:
         target: webrip+
         timeframe: 12 hours
