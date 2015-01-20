@@ -122,7 +122,7 @@ templates:
   movies-queued:
     movie_queue: accept
     template: movies-discover
-    disable_plugin:
+    disable:
       - seen_movies
     discover:
       what:
@@ -239,7 +239,7 @@ tasks:
   
   google-music-sync:
     priority: 1
-    disable_builtins: [seen, seen_info_hash]
+    disable: [seen, seen_info_hash]
     template: 
       - no_global # None of the global templates make sense here
      #- music-global
@@ -256,8 +256,9 @@ tasks:
     priority: 2
     template:
       - movie-global
-    disable_builtins: [seen, seen_info_hash]
-    disable_plugin:
+    disable:
+      - seen
+      - seen_info_hash
       - configure_series
       - inputs
       - exists_movie
@@ -300,8 +301,9 @@ tasks:
      #- series-wife.yml
     template:
       - tv-global
-    disable_builtins: [seen, seen_info_hash]
-    disable_plugin:
+    disable:
+      - seen
+      - seen_info_hash
       - configure_series
       - trakt_list
       - inputs
