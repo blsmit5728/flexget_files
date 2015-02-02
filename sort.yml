@@ -12,7 +12,7 @@ templates:
     # Each feed must be run manually
     manual: yes
     # Disable seen, alway process files
-    disable_builtins: [seen]
+    disable: [seen]
     accept_all: yes
     # Make sure all filenames are Windows safe (for samba)
     pathscrub: windows
@@ -36,7 +36,12 @@ tasks:
     thetvdb_lookup: yes
     trakt_lookup: yes
     # This is needed to get my TVDB offset values 
-    include: [series.yml]
+    include: 
+     #- series-interesting.yml
+      - series-reality.yml
+      - series-tvshows.yml
+     #- series-wife.yml
+      - series-moms-shows.yml
     all_series:
       # Don't actually filter
       parse_only: yes

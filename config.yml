@@ -146,6 +146,8 @@ tasks:
     include: [ series-tvshows.yml ]
     template:
       - tv-global
+    set:
+      label: tv-my-shows
     configure_series:
       from:
         trakt_list:
@@ -163,6 +165,8 @@ tasks:
     #include: [ series_interesting.yml ] #NOTHING IN HERE YET.
     template:
       - tv-global
+    set:
+      label: tv-interesting
     configure_series:
       from:
         trakt_list:
@@ -180,6 +184,8 @@ tasks:
     include: [ series-reality.yml ]
     template:
       - tv-global
+    set:
+      label: tv-reality
     configure_series:
       from:
         trakt_list:
@@ -197,6 +203,8 @@ tasks:
     #include: [ series-wife.yml ]
     template:
       - tv-global
+    set:
+      label: tv-laura
     configure_series:
       from:
         trakt_list:
@@ -361,8 +369,11 @@ tasks:
 
   trakt-moms-shows:
     priority: 6
+    include: [ series-moms-shows.yml ]
     template: 
       - tv-global
+    set:
+      label: tv-mom
     configure_series:
       from:
         trakt_list:
@@ -380,6 +391,8 @@ tasks:
     priority: 2
     template:
       - tv-global
+    set:
+      label: tv-daily
     configure_series:
       from:
         trakt_list:
