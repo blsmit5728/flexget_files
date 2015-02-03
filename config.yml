@@ -354,6 +354,8 @@ tasks:
     include: [ series-fall-shows.yml ]
     template: 
       - tv-global
+    set:
+      label: tv-fall-shows
     configure_series:
       from:
         trakt_list:

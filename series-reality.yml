@@ -3,4 +3,6 @@ series:
       name_regexp: ^fast.n(.)?.loud
   - Last Week Tonight With John Oliver:
       identified_by: ep
+  - Moonshiners:
+      specials: no
 
