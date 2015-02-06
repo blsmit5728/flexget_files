@@ -2,7 +2,9 @@ series:
   - "Fast N' Loud":
       name_regexp: ^fast.n(.)?.loud
   - Last Week Tonight With John Oliver:
+      name_regexp: last.week.tonight.with.john.oliver.(.2014)?
       identified_by: ep
   - Moonshiners:
+      name_regexp: ^moonshiners.(.2011)?
       specials: no
 
