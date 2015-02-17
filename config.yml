@@ -34,6 +34,7 @@ templates:
         - \bCam\b: {from: title} 
         - "{C_P}": {from: title}
         - \bFRENCH\b: {from: title}
+        - \bSPANiSH\b: {from: title}
         - \btrailer\b: {from: title}
         - "SCR": {from: title}
     content_filter:

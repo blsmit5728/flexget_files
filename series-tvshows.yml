@@ -17,3 +17,6 @@ series:
       name_regexp: ^the.americans(.2013)?
   # Trakt uses a wrong name for this Show.
   - The Bridge US  
+  - Parks and Recreation:
+      name_regexp: ^parks.and.recreation(.2009)?
+
