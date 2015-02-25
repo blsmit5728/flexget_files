@@ -19,4 +19,7 @@ series:
   - The Bridge US  
   - Parks and Recreation:
       name_regexp: ^parks.and.recreation(.2009)?
+  - Better Call Saul:
+      name_regexp: ^better.call.saul?
+
 

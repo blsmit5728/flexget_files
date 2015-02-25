@@ -13,7 +13,6 @@ FLEXGET_COMMAND='flexget --logfile /home/bsmith/.flexget/flexget-sorting.log'
 FLEXGET_SORTING_CONFIG='/home/bsmith/.flexget/sort.yml'
 FLEXGET_TASK_PREFIX='Sort_Unpacked_'
 
-XBMC_LIST = ["192.168.1.4","192.168.1.15","192.168.1.20","openelec","192.168.1.8","dsgburg-cgq63q1"]
 
 FLEXGET_PATH_TASK={
     '/Movies/': 'Movies',
@@ -49,16 +48,8 @@ torrent_path=sys.argv[3]
 log.debug("%s called with torrent_id='%s', torrent_name='%s', torrent_path='%s'." % (sys.argv[0],
     torrent_id, torrent_name, torrent_path))
 
-def chain():
-    log.debug("Updating XBMC Library")
-    for xbmc in XBMC_LIST:
-        ret=subprocess.call('/usr/bin/xbmc-send --host='+xbmc+' --action="XBMC.updatelibrary(video)"', shell=True)
-    sys.exit(0)
-
 if DOWNLOAD_PATH not in torrent_path:
     log.debug("Torrent '%s' path (%s) not in %s, skipping unrar" % (torrent_name,torrent_path,DOWNLOAD_PATH))
-    chain()
-
 
 for path, task in FLEXGET_PATH_TASK.items():
     if DOWNLOAD_PATH+path in torrent_path:
@@ -75,13 +66,11 @@ for path, task in FLEXGET_PATH_TASK.items():
         try:
             log.debug('Shelling out: %s' % cmd)
             # check_ouptut is not available in python 2.6
-            #main_file_size, main_file = subprocess.check_output(cmd, shell=True).split()
             main_file_size, main_file = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True).communicate()[0].split()
             main_file_size = int(main_file_size)
             cmd = 'du -b "'+STAGING_PATH+path+torrent_id+'"'
             log.debug('Shelling out: %s' % cmd)
             # check_ouptut is not available in python 2.6
-            #total_size = int(subprocess.check_output(cmd, shell=True).split()[0])
             total_size = int(subprocess.Popen(cmd.split(), stdout=subprocess.PIPE, shell=True).communicate()[0].split()[0])
             if main_file_size > (total_size * 0.9):
                 new_name = os.path.join(os.path.dirname(main_file), torrent_name+'.'+main_file.split('.')[-1])
@@ -99,5 +88,4 @@ for path, task in FLEXGET_PATH_TASK.items():
         if ret != 0:
             log.warning('Flexget command returned non-zero value %d.' % ret)
 
-#chain()
 
