@@ -21,5 +21,8 @@ series:
       name_regexp: ^parks.and.recreation(.2009)?
   - Better Call Saul:
       name_regexp: ^better.call.saul?
+  - House of Cards (2013):
+      name_regexp: ^house.of.cards(.2013)?
+
 
 
