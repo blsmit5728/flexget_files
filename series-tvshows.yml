@@ -23,6 +23,8 @@ series:
       name_regexp: ^better.call.saul?
   - House of Cards (2013):
       name_regexp: ^house.of.cards(.2013)?
+  - "Marvel's Agents of S.H.I.E.L.D.":
+      name_regexp: ^marvel(')?s.agents.of.(s.h.i.e.l.d.?|shield)
 
 
 

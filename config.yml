@@ -171,7 +171,7 @@ tasks:
 
   tv-interesting:
     priority: 6
-    #include: [ series_interesting.yml ] #NOTHING IN HERE YET.
+    include: [ series-interesting.yml ] 
     template:
       - tv-global
     set:
@@ -346,7 +346,7 @@ tasks:
   local-torrents-tv:
     priority: 201
     include:
-     #- series-interesting.yml  
+      - series-interesting.yml  
       - series-reality.yml  
       - series-tvshows.yml  
      #- series-wife.yml
@@ -420,6 +420,7 @@ tasks:
   
   trakt-daily-shows:
     priority: 2
+    include: [ series-daily-shows.yml ]
     template:
       - tv-global
     set:
@@ -434,7 +435,7 @@ tasks:
       settings:
         target: webrip+
         timeframe: 12 hours
-        quality: preair+
+        quality: hdtv
         tracking: backfill
 
 #schedules:            

@@ -1,0 +1,4 @@
+series:
+  - House of Lies:
+      name_regexp: ^house.of.lies.(2012)?
+
