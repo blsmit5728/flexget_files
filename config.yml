@@ -76,7 +76,9 @@ templates:
       apikey: '{{ secrets.pushb.apikey }}'
       device: '{{ secrets.pushb.device }}'
       title: "[Flexget] {{series_name}} {{series_id}}"
-      body: "{{task}} - {% if trakt_series_url is defined %}{{trakt_series_url}}/season/{{trakt_season}}/episode/{{trakt_episode}}{% endif %}"
+      body: "{{task}} - {{ tvdb_series_name|default(series_name) }} - {{ series_id }}{% if tvdb_ep_name|default(False) %} - {{ tvdb_ep_name }}{% endif %}\n{{ quality }}\nTorrent File: {{title}}"
+      url: "{% if trakt_series_url is defined and trakt_season is defined and trakt_episode is defined %}{{ trakt_series_url|replace('.','-')|replace(' ','-') }}/season/{{ trakt_season }}/episode/{{ trakt_episode }}{% endif %}"
+      #url: "imdb:///title/{{"
 
   movie-global:
     inputs:
@@ -106,7 +108,9 @@ templates:
       apikey: '{{ secrets.pushb.apikey }}'
       device: '{{ secrets.pushb.device }}'
       title: "[Flexget] Movie Downloaded"
-      body: "{{task}} - {{ imdb_name }} {{ imdb_year }} - {{ quality }}"
+      body: "{{task}} - {{ imdb_name }} {{ imdb_year }} - {{ quality }}\nTorrent File: {{title}}"
+      #url: "{% if imdb_url %}{{ imdb_url }}{% endif %}"
+      url: "imdb:///title/{{ imdb_id }}?src=mdot"
 
   movies-discover:
     discover:
@@ -117,9 +121,9 @@ templates:
             password: '{{ secrets.tl.password }}'
             category: ['HD', 'BDRip', 'DVDRip', 'DVDR', 'Documentaries']
         - flexget_archive: [movies]
-        - kat:
-            category: movies
-            verified: yes
+        #- kat:
+        #    category: movies
+        #    verified: yes
         #- torrentz:
         #    reputation: verified
         #    extra_terms: "movie* hd"

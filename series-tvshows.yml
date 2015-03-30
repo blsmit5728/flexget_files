@@ -25,6 +25,11 @@ series:
       name_regexp: ^house.of.cards(.2013)?
   - "Marvel's Agents of S.H.I.E.L.D.":
       name_regexp: ^marvel(')?s.agents.of.(s.h.i.e.l.d.?|shield)
+  - Brooklyn Nine-Nine:
+      name_regexp: ^brooklyn.nine.nine.(2013)?
+  - Tosh.0:
+      name_regexp: ^tosh.0.(2009)?
+
 
 
 
