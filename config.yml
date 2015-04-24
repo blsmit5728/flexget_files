@@ -329,7 +329,7 @@ tasks:
     plugin_priority:
       exec: 0
     find:
-      path: '/home/bsmith/Dropbox/torrents/Movies/'
+      path: '/home/bsmith/Dropbox/torrents/movies/'
       regexp: '.*\.torrent$'
       recursive: yes
     exec:
