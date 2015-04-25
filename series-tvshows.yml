@@ -29,6 +29,9 @@ series:
       name_regexp: ^brooklyn.nine.nine.(2013)?
   - Tosh.0:
       name_regexp: ^tosh.0.(2009)?
+  - "Turn":
+      name_regexp: ^turn.(2014)?
+
 
 
 

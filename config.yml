@@ -15,9 +15,11 @@ templates:
             main_file_only: yes
       - "'torrentleech' not in url":
           deluge:
+            username: bsmith
+            password: '{{ secrets.deluge.password }}'
             ratio: 1.0
             removeatratio: yes
-            port: 58846
+            port: 58847
             main_file_only: yes
     free_space:
       path: /mnt/disk1/
@@ -213,7 +215,7 @@ tasks:
 
   tv-laura:
     priority: 8
-    #include: [ series-wife.yml ]
+    include: [ series-wife.yml ]
     template:
       - tv-global
     set:
@@ -226,9 +228,9 @@ tasks:
           list: Laura   
           type: shows
       settings:
-        target: 720p+ dvdscr+
+        target: 360p+ sdtv+
         timeframe: 2 days
-        quality: 480p+ webrip+             
+        quality: 480p+ sdtv+             
               
   clean-movie-queue:
     priority: 90
@@ -353,7 +355,7 @@ tasks:
       - series-interesting.yml  
       - series-reality.yml  
       - series-tvshows.yml  
-     #- series-wife.yml
+      - series-wife.yml
     template:
       - tv-global
     disable:
