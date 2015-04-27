@@ -12,14 +12,16 @@ templates:
             ratio: 3.0
             removeatratio: yes
             port: 58846
-            main_file_only: yes
+            main_file_only: yes 
+            username: bsmith
+            password: '{{ secrets.deluge.password }}'
       - "'torrentleech' not in url":
           deluge:
             username: bsmith
             password: '{{ secrets.deluge.password }}'
             ratio: 1.0
             removeatratio: yes
-            port: 58847
+            port: 58846
             main_file_only: yes
     free_space:
       path: /mnt/disk1/

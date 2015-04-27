@@ -4,12 +4,12 @@ import os
 import logging, logging.handlers
 import subprocess
 
-LOG_FILE='/home/bsmith/.flexget/bin/torrent_complete.log'
+LOG_FILE='/home/bsmith/logs/tor_comp/torrent_complete.log'
 DOWNLOAD_PATH='/home/bsmith/Downloads/completed'
 STAGING_PATH='/home/bsmith/Downloads/staging/'
 # If you're using a local checkout of Flexget, use flexget_vanilla.
 # Otherwise use the one in your system
-FLEXGET_COMMAND='flexget --logfile /home/bsmith/.flexget/flexget-sorting.log'
+FLEXGET_COMMAND='flexget --logfile /home/bsmith/logs/flexget/flexget-sorting.log'
 FLEXGET_SORTING_CONFIG='/home/bsmith/.flexget/sort.yml'
 FLEXGET_TASK_PREFIX='Sort_Unpacked_'
 
