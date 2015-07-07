@@ -59,10 +59,12 @@ templates:
       max_retries: 5
     verify_ssl_certificates: no
     magnets: no
+    #download: "/home/bsmith/Downloads/torrents/"
       
   tv-global:
     inputs:
       - rss: { url: '{{ secrets.tl.url }}', silent: yes }
+      #- rss: { url: 'http://kickass.to/tv/?rss=1' , silent: yes }
     content_size:
       max: 8000
       min: 20
@@ -174,7 +176,7 @@ tasks:
           type: shows
       settings:
         target: 720p+ dvdscr+
-        timeframe: 1 days
+        timeframe: 4 hours 
         quality: 480p+ webrip+
 
   tv-interesting:
@@ -193,7 +195,7 @@ tasks:
           type: shows
       settings:
         target: 720p+ dvdscr+
-        timeframe: 3 days
+        timeframe: 3 hours
         quality: 480p+ webrip+
 
   tv-reality:
@@ -212,7 +214,7 @@ tasks:
           type: shows
       settings:
         target: hdtv+ dvdscr+
-        timeframe: 3 days
+        timeframe: 3 hours
         quality: 480p+ webrip+             
 
   tv-laura:
@@ -231,7 +233,7 @@ tasks:
           type: shows
       settings:
         target: 360p+ sdtv+
-        timeframe: 2 days
+        timeframe: 4 hours
         quality: 480p+ sdtv+             
               
   clean-movie-queue:
@@ -284,6 +286,19 @@ tasks:
       list: Movie_Queue
     accept_all: yes
     movie_queue: add
+  
+  #thurston_imdb_to_queue:
+  #  priority: 1
+  #  template: no_global
+  #  imdb_list:
+  #    user_id: urxxxxxxxx
+  #    list: watchlist
+  #  trakt_add:
+  #    username: '{{ secrets.trakt_info.user_name }}'
+  #    password: '{{ secrets.trakt_info.password }}'
+  #    list: Thurston_Queue
+  #  accept_all: yes
+  #  movie_queue: add
 
   trakt-list-to-movie-queue:
     priority: 2
@@ -371,6 +386,7 @@ tasks:
       - content_size
       - torrent_alive
     filler: yes # To avoid warnings about non-functional input
+    trakt_lookup: yes
     all_series:
       parse_only: yes
     plugin_priority:
