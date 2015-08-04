@@ -37,10 +37,10 @@ tasks:
     trakt_lookup: yes
     # This is needed to get my TVDB offset values 
     include: 
-     #- series-interesting.yml
+      - series-interesting.yml
       - series-reality.yml
       - series-tvshows.yml
-     #- series-wife.yml
+      - series-wife.yml
       - series-moms-shows.yml
     all_series:
       # Don't actually filter

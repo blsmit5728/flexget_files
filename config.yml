@@ -71,6 +71,7 @@ templates:
     exists_series:
       - "/mnt/disk1/Library/TvShows/"
       - "/home/bsmith/Downloads/staging/TvShows"
+      - "/mnt/disk2/Library/TvShows/"
     #thetvdb_lookup: yes
     trakt_lookup: yes
     set:
@@ -101,6 +102,7 @@ templates:
       min: 1000
     exists_movie:
       - "/mnt/disk1/Library/Movies/"
+      - "/mnt/disk3/Library/Movies/"
       - "/home/bsmith/Downloads/staging/Movies/"
     tmdb_lookup: yes
     imdb_lookup: yes
