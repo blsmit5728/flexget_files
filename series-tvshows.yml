@@ -1,8 +1,6 @@
 series:  
   - American Dad!:
       name_regexp: ^american.dad(!)?
-      set:
-        thetvdb_lookup_season_offset: 1
   - Archer (2009):
       name_regexp: ^archer(.2009)?
   - "Bob's Burgers":
@@ -31,7 +29,10 @@ series:
       name_regexp: ^tosh.0.(2009)?
   - "Turn":
       name_regexp: ^turn.(2014)?
-
+  - "Fear the Walking Dead (2015)":
+      name_regexp: ^fear.the.walking.dead.(2015)?
+  - "Mr Robot":
+      name_regexp: ^mr.robot.(2015)?
 
 
 

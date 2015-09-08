@@ -72,7 +72,10 @@ templates:
       - "/mnt/disk1/Library/TvShows/"
       - "/home/bsmith/Downloads/staging/TvShows"
       - "/mnt/disk2/Library/TvShows/"
-    #thetvdb_lookup: yes
+    thexem:
+      source: scene
+      destination: tvdb
+    thetvdb_lookup: yes
     trakt_lookup: yes
     set:
       content_filename: "{{ series_name|replace('/', '_')|replace(':', ' ') }} - {{ trakt_ep_id|default(series_id) }}{% if trakt_ep_name|default(False) %} - {{ trakt_ep_name|replace('/', '_')|replace(':', ' -') }}{% endif %} - {{ quality }}"
