@@ -33,6 +33,8 @@ series:
       name_regexp: ^fear.the.walking.dead.(2015)?
   - "Mr Robot":
       name_regexp: ^mr.robot.(2015)?
+  - "Scream Queens (2015)":
+      name_regexp: ^scream.queens.(2015)?
 
 
 

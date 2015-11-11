@@ -9,8 +9,8 @@ DOWNLOAD_PATH='/home/bsmith/Downloads/completed'
 STAGING_PATH='/home/bsmith/Downloads/staging/'
 # If you're using a local checkout of Flexget, use flexget_vanilla.
 # Otherwise use the one in your system
-FLEXGET_COMMAND='flexget --logfile /home/bsmith/logs/flexget/flexget-sorting.log'
-FLEXGET_SORTING_CONFIG='/home/bsmith/.flexget/sort.yml'
+FLEXGET_COMMAND='flexget --loglevel verbose --logfile /home/bsmith/logs/flexget/flexget-sorting.log'
+FLEXGET_SORTING_CONFIG='-c /home/bsmith/.flexget/sort.yml'
 FLEXGET_TASK_PREFIX='Sort_Unpacked_'
 
 
@@ -25,7 +25,7 @@ logformat = logging.Formatter("%(levelname)s\t%(asctime)s\t%(message)s")
 
 logfile = logging.FileHandler(LOG_FILE)
 logfile.setFormatter(logformat)
-logfile.setLevel(logging.INFO)
+logfile.setLevel(logging.DEBUG)
 log.addHandler(logfile)
 
 # Log to stdout and increase logging level if run from a console
@@ -36,9 +36,17 @@ if os.isatty(sys.stdin.fileno()):
     log.addHandler(ch)
     FLEXGET_COMMAND += ' --debug'
 
+if "/mnt/disk1/Library/" in sys.argv[3]:
+    log.info('NOT Processing %s, file does not need to be unpacked' % sys.argv[2])
+    sys.exit(0)
+
 if len(sys.argv) != 4:
     log.error('%s called with %d arguments, it requires 3.' % (sys.argv[0],(len(sys.argv)-1)))
-    log.error('%s' % (sys.argv[2]))
+    str_called = ""
+    for x in range(0,len(sys.argv)):
+        #log.error('%s' % (sys.argv[x]))
+        str_called = str_called + str(sys.argv[x]) + " "
+    log.error('args: %s' % str_called)
     sys.exit(-1)
 
 torrent_id=sys.argv[1]
@@ -82,7 +90,8 @@ for path, task in FLEXGET_PATH_TASK.items():
             log.error('Failed attempting to rename the main unpacked file: %s' % sys.exc_info()[0])
             raise   
 
-        cmd=FLEXGET_COMMAND+' --loglevel verbose -c '+FLEXGET_SORTING_CONFIG+' execute --task '+FLEXGET_TASK_PREFIX + task + (' --disable-advancement' if 'tv' in path else '')
+        #cmd=FLEXGET_COMMAND+' '+FLEXGET_SORTING_CONFIG+' execute --task '+FLEXGET_TASK_PREFIX + task + (' --disable-advancement' if 'tv' in path else '')
+        cmd='flexget --logfile /home/bsmith/.flexget/flexget-sorting.log -c /home/bsmith/.flexget/sort.yml execute --task ' + FLEXGET_TASK_PREFIX + task + (' --disable-advancement' if 'tv' in path else '')
         log.debug('Shelling out: %s' % cmd)
         ret = subprocess.call(cmd, shell=True)
         if ret != 0:

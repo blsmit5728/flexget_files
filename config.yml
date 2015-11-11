@@ -9,7 +9,7 @@ templates:
     if:
       - "'torrentleech' in url":
           deluge:
-            ratio: 3.0
+            ratio: 1.8
             removeatratio: yes
             port: 58846
             main_file_only: yes 
@@ -40,7 +40,11 @@ templates:
         - \bFRENCH\b: {from: title}
         - \bSPANiSH\b: {from: title}
         - \btrailer\b: {from: title}
-        - "SCR": {from: title}
+        - \bSCR\b: {from: title}
+        - TrTd TeaM: {from: title}
+        - \[TNTVillage\]: {from: title}
+        - \[facepalm\]: {from: title}
+        - \bASAP\b: {from: title}
     content_filter:
       require:
         - '*.avi'
@@ -76,9 +80,13 @@ templates:
       source: scene
       destination: tvdb
     thetvdb_lookup: yes
-    trakt_lookup: yes
+    trakt_lookup:
+      account: blsmit5728
+      username: blsmit5728
     set:
-      content_filename: "{{ series_name|replace('/', '_')|replace(':', ' ') }} - {{ trakt_ep_id|default(series_id) }}{% if trakt_ep_name|default(False) %} - {{ trakt_ep_name|replace('/', '_')|replace(':', ' -') }}{% endif %} - {{ quality }}"
+      queuetotop: yes
+      content_filename: >
+        /{{ tvdb_series_name|default(series_name)|replace('/', '_')|replace(':', ' -')|replace(',', '') }} - {{ series_id }}{% if tvdb_ep_name|default(False) %} - {{ tvdb_ep_name|replace('/', '_')|replace(':', ' -')|replace(',', '') }}{% endif %} - {{ quality }}
       movedone: "/mnt/disk1/Library/TvShows/{{ series_name|replace('/', '_')|replace(':', ' ') }}/{% if series_id_type == 'ep' %}Season {{ trakt_season|default(series_season) }}/{% endif %}"
     content_sort:
       '*.rar': "/home/bsmith/Downloads/completed/TvShows/"
@@ -87,7 +95,7 @@ templates:
       device: '{{ secrets.pushb.device }}'
       title: "[Flexget] {{series_name}} {{series_id}}"
       body: "{{task}} - {{ tvdb_series_name|default(series_name) }} - {{ series_id }}{% if tvdb_ep_name|default(False) %} - {{ tvdb_ep_name }}{% endif %}\n{{ quality }}\nTorrent File: {{title}}"
-      url: "{% if trakt_series_url is defined and trakt_season is defined and trakt_episode is defined %}{{ trakt_series_url|replace('.','-')|replace(' ','-') }}/season/{{ trakt_season }}/episode/{{ trakt_episode }}{% endif %}"
+      #url: "{% if trakt_series_url is defined and trakt_season is defined and trakt_episode is defined %}{{ trakt_series_url|replace('.','-')|replace(' ','-') }}/season/{{ trakt_season }}/episode/{{ trakt_episode }}{% endif %}"
       #url: "imdb:///title/{{"
 
   movie-global:
@@ -109,7 +117,9 @@ templates:
       - "/home/bsmith/Downloads/staging/Movies/"
     tmdb_lookup: yes
     imdb_lookup: yes
-    trakt_lookup: yes
+    trakt_lookup:
+      account: blsmit5728
+      username: blsmit5728
     set:
       content_filename: "{{ tmdb_name|replace('/', '_')|replace(':', ' ') }} ({{ tmdb_year }}) - {{ quality }}"
       movedone: "/mnt/disk1/Library/Movies/{{ tmdb_name|replace('/', '_')|replace(':', ' ') }} ({{ tmdb_year }})"
@@ -157,11 +167,11 @@ templates:
       label: my-movies
     trakt_remove:
       username: '{{ secrets.trakt_info.user_name }}'
-      password: '{{ secrets.trakt_info.password }}'
+      #password: '{{ secrets.trakt_info.password }}'
       list: Movie_Queue
     trakt_add:
       username: '{{ secrets.trakt_info.user_name }}'
-      password: '{{ secrets.trakt_info.password }}'
+      #password: '{{ secrets.trakt_info.password }}'
       list: watchlist
 
 tasks:
@@ -176,7 +186,8 @@ tasks:
       from:
         trakt_list:
           username: '{{ secrets.trakt_info.user_name }}'
-          password: '{{ secrets.trakt_info.password }}'
+          #password: '{{ secrets.trakt_info.password }}'
+          account: blsmit5728
           list: TvShows   
           type: shows
       settings:
@@ -195,7 +206,8 @@ tasks:
       from:
         trakt_list:
           username: '{{ secrets.trakt_info.user_name }}'
-          password: '{{ secrets.trakt_info.password }}'
+          #password: '{{ secrets.trakt_info.password }}'
+          account: blsmit5728
           list: Interesting
           type: shows
       settings:
@@ -214,7 +226,8 @@ tasks:
       from:
         trakt_list:
           username: '{{ secrets.trakt_info.user_name }}'
-          password: '{{ secrets.trakt_info.password }}'
+          #password: '{{ secrets.trakt_info.password }}'
+          account: blsmit5728
           list: RealityTV   
           type: shows
       settings:
@@ -233,7 +246,8 @@ tasks:
       from:
         trakt_list:
           username: '{{ secrets.trakt_info.user_name }}'
-          password: '{{ secrets.trakt_info.password }}'
+          #password: '{{ secrets.trakt_info.password }}'
+          account: blsmit5728
           list: Laura   
           type: shows
       settings:
@@ -249,16 +263,18 @@ tasks:
       - seen_info_hash
       - seen_movies
     accept_all: yes
-    listdir:
+    filesystem:
       - /mnt/disk1/Library/Movies/
     imdb_lookup: yes
-    trakt_lookup: yes
+    trakt_lookup:
+      account: blsmit5728
+      username: blsmit5728
     tmdb_lookup: yes
     require_field: [movie_name, movie_year]
     movie_queue: accept
     trakt_remove:
       username: '{{ secrets.trakt_info.user_name }}'
-      password: '{{ secrets.trakt_info.password }}'
+      #password: '{{ secrets.trakt_info.password }}'
       list: Movie_Queue
 
   movies-1080p:
@@ -287,7 +303,7 @@ tasks:
       list: watchlist
     trakt_add:
       username: '{{ secrets.trakt_info.user_name }}'
-      password: '{{ secrets.trakt_info.password }}'
+      #password: '{{ secrets.trakt_info.password }}'
       list: Movie_Queue
     accept_all: yes
     movie_queue: add
@@ -310,7 +326,8 @@ tasks:
     template: no_global
     trakt_list:
       username: '{{ secrets.trakt_info.user_name }}'
-      password: '{{ secrets.trakt_info.password }}'
+      #password: '{{ secrets.trakt_info.password }}'
+      account: blsmit5728
       list: Movie_Queue
       type: movies
     accept_all: yes
@@ -322,7 +339,7 @@ tasks:
     template: 
       - no_global # None of the global templates make sense here
      #- music-global
-    find:
+    filesystem:
       path: '/home/bsmith/Dropbox/Music/to_sync/'
       regexp: '.*\.(mp3|flac|m4a|ogg)$'
       recursive: yes
@@ -352,7 +369,7 @@ tasks:
     movie_queue: accept
     plugin_priority:
       exec: 0
-    find:
+    filesystem:
       path: '/home/bsmith/Dropbox/torrents/movies/'
       regexp: '.*\.torrent$'
       recursive: yes
@@ -364,11 +381,11 @@ tasks:
       label: local-movies
     trakt_remove:
       username: '{{ secrets.trakt_info.user_name }}'
-      password: '{{ secrets.trakt_info.password }}'
+      #password: '{{ secrets.trakt_info.password }}'
       list: Movie_Queue
     trakt_add:
       username: '{{ secrets.trakt_info.user_name }}'
-      password: '{{ secrets.trakt_info.password }}'
+      #password: '{{ secrets.trakt_info.password }}'
       list: watchlist
 
   local-torrents-tv:
@@ -391,12 +408,14 @@ tasks:
       - content_size
       - torrent_alive
     filler: yes # To avoid warnings about non-functional input
-    trakt_lookup: yes
+    trakt_lookup:
+      username: blsmit5728
+      account: blsmit5728
     all_series:
       parse_only: yes
     plugin_priority:
       exec: 0
-    find:
+    filesystem:
       path: '/home/bsmith/Dropbox/torrents/TvShows/'
       regexp: '.*\.torrent$'
       recursive: yes
@@ -418,7 +437,8 @@ tasks:
       from:
         trakt_list:
           username: '{{ secrets.trakt_info.user_name }}'
-          password: '{{ secrets.trakt_info.password }}'
+          #password: '{{ secrets.trakt_info.password }}'
+          account: blsmit5728
           list: Fall Shows 
           type: shows
       settings:
@@ -438,7 +458,8 @@ tasks:
       from:
         trakt_list:
           username: '{{ secrets.trakt_info.user_name }}'
-          password: '{{ secrets.trakt_info.password }}'
+          #password: '{{ secrets.trakt_info.password }}'
+          account: blsmit5728
           list: Moms Shows
           type: shows
       settings:
@@ -458,7 +479,8 @@ tasks:
       from:
         trakt_list:
           username: '{{ secrets.trakt_info.user_name }}'
-          password: '{{ secrets.trakt_info.password }}'
+          #password: '{{ secrets.trakt_info.password }}'
+          account: blsmit5728
           list: Daily
           type: shows
       settings:
