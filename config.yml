@@ -9,7 +9,7 @@ templates:
     if:
       - "'torrentleech' in url":
           deluge:
-            ratio: 1.8
+            ratio: 1.7
             removeatratio: yes
             port: 58846
             main_file_only: yes 
@@ -19,7 +19,7 @@ templates:
           deluge:
             username: bsmith
             password: '{{ secrets.deluge.password }}'
-            ratio: 1.0
+            ratio: 0.1
             removeatratio: yes
             port: 58846
             main_file_only: yes
