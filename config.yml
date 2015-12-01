@@ -9,7 +9,7 @@ templates:
     if:
       - "'torrentleech' in url":
           deluge:
-            ratio: 1.7
+            ratio: 1.4
             removeatratio: yes
             port: 58846
             main_file_only: yes 

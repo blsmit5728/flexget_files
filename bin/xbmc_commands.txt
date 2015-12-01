@@ -1,2 +1,0 @@
-curl --data-binary '{ "jsonrpc": "2.0", "method": "VideoLibrary.Scan", "id": "mybash"}' -H 'content-type: application/json;' http://xbmc:xbmc@192.168.1.4:8080/jsonrpc
-curl --data-binary '{ "jsonrpc": "2.0", "method": "VideoLibrary.Scan", "id": "mybash"}' -H 'content-type: application/json;' http://xbmc:xbmc@192.168.1.6:8080/jsonrpc
