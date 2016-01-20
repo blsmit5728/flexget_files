@@ -3,3 +3,6 @@ series:
       name_regexp: ^house.of.lies.(2012)?
   - Zoo:
       name_regexp: ^zoo.(2015)?
+  - Bordertown (2016):
+      name_regexp: ^bordertown.(2016)?
+

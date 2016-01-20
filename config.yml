@@ -9,7 +9,7 @@ templates:
     if:
       - "'torrentleech' in url":
           deluge:
-            ratio: 1.4
+            #ratio: 1.4
             removeatratio: yes
             port: 58846
             main_file_only: yes 
@@ -76,6 +76,8 @@ templates:
       - "/mnt/disk1/Library/TvShows/"
       - "/home/bsmith/Downloads/staging/TvShows"
       - "/mnt/disk2/Library/TvShows/"
+    deluge:
+      ratio: 1.4
     thexem:
       source: scene
       destination: tvdb
@@ -85,8 +87,7 @@ templates:
       username: blsmit5728
     set:
       queuetotop: yes
-      content_filename: >
-        /{{ tvdb_series_name|default(series_name)|replace('/', '_')|replace(':', ' -')|replace(',', '') }} - {{ series_id }}{% if tvdb_ep_name|default(False) %} - {{ tvdb_ep_name|replace('/', '_')|replace(':', ' -')|replace(',', '') }}{% endif %} - {{ quality }}
+      content_filename: "{{ tvdb_series_name|default(series_name)|replace('/', '_')|replace(':', ' -')|replace(',', '') }} - {{ series_id }}{% if tvdb_ep_name|default(False) %} - {{ tvdb_ep_name|replace('/', '_')|replace(':', ' -')|replace(',', '') }}{% endif %} - {{ quality }}"
       movedone: "/mnt/disk1/Library/TvShows/{{ series_name|replace('/', '_')|replace(':', ' ') }}/{% if series_id_type == 'ep' %}Season {{ trakt_season|default(series_season) }}/{% endif %}"
     content_sort:
       '*.rar': "/home/bsmith/Downloads/completed/TvShows/"
@@ -120,6 +121,8 @@ templates:
     trakt_lookup:
       account: blsmit5728
       username: blsmit5728
+    deluge:
+      ratio: 3.0
     set:
       content_filename: "{{ tmdb_name|replace('/', '_')|replace(':', ' ') }} ({{ tmdb_year }}) - {{ quality }}"
       movedone: "/mnt/disk1/Library/Movies/{{ tmdb_name|replace('/', '_')|replace(':', ' ') }} ({{ tmdb_year }})"
@@ -226,7 +229,6 @@ tasks:
       from:
         trakt_list:
           username: '{{ secrets.trakt_info.user_name }}'
-          #password: '{{ secrets.trakt_info.password }}'
           account: blsmit5728
           list: RealityTV   
           type: shows
@@ -246,7 +248,6 @@ tasks:
       from:
         trakt_list:
           username: '{{ secrets.trakt_info.user_name }}'
-          #password: '{{ secrets.trakt_info.password }}'
           account: blsmit5728
           list: Laura   
           type: shows
@@ -307,7 +308,19 @@ tasks:
       list: Movie_Queue
     accept_all: yes
     movie_queue: add
-  
+
+  alex-imdb-to-trakt:
+    priority: 1
+    template: no_global
+    imdb_list:
+      user_id: ur64871269 
+      list: watchlist 
+    trakt_add:
+      username: '{{ secrets.trakt_info.user_name }}'
+      list: Movie_Queue
+    accept_all: yes
+    movie_queue: add
+
   #thurston_imdb_to_queue:
   #  priority: 1
   #  template: no_global
@@ -332,7 +345,7 @@ tasks:
       type: movies
     accept_all: yes
     movie_queue: add
-  
+   
   google-music-sync:
     priority: 1
     disable: [seen, seen_info_hash]
