@@ -6,7 +6,8 @@ import subprocess
 
 LOG_FILE='/home/bsmith/logs/tor_comp/torrent_complete.log'
 DOWNLOAD_PATH='/home/bsmith/Downloads/completed'
-STAGING_PATH='/home/bsmith/Downloads/staging/'
+#STAGING_PATH='/home/bsmith/Downloads/staging/'
+STAGING_PATH='/home/bsmith/tor_staging/'
 # If you're using a local checkout of Flexget, use flexget_vanilla.
 # Otherwise use the one in your system
 FLEXGET_COMMAND='flexget --loglevel verbose --logfile /home/bsmith/logs/flexget/flexget-sorting.log'
@@ -63,11 +64,13 @@ for path, task in FLEXGET_PATH_TASK.items():
     if DOWNLOAD_PATH+path in torrent_path:
         log.info('Processing %s as part of task %s.' % (torrent_name,task))
         for root, dirs, files in os.walk(torrent_path+'/'+torrent_name, topdown=False):
-            cmd='find "'+root+'" -type f -regex ".*\.\(\part[0-9]+\.\)?r\([0-9]+\|ar\)$" | head -1 | xargs -I {} unrar x -o+ "{}" '+STAGING_PATH+path+torrent_id+'/'
-            log.debug('Shelling out: %s' % cmd)
-            ret = subprocess.call(cmd, shell=True)
-            if ret != 0:
-                log.warning('Unrar command returned non-zero value %d.' % ret)
+            if "Sample" not in root:
+                log.info('root=%s dirs=%s files=%s' % (root,dirs,files))
+                cmd='find "'+root+'" -type f -regex ".*\.\(\part[0-9]+\.\)?r\([0-9]+\|ar\)$" | head -1 | xargs -I {} unrar x -o+ "{}" '+STAGING_PATH+path+torrent_id+'/'
+                log.debug('Shelling out: %s' % cmd)
+                ret = subprocess.call(cmd, shell=True)
+                if ret != 0:
+                    log.warning('Unrar command returned non-zero value %d.' % ret)
 
         cmd=['-c', 'find "'+STAGING_PATH+path+torrent_id+'" -type f -print0 | xargs -0 du -b | sort -nr | head -1']
 

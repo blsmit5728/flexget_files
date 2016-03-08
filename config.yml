@@ -74,8 +74,7 @@ templates:
       min: 20
     exists_series:
       - "/mnt/disk1/Library/TvShows/"
-      - "/home/bsmith/Downloads/staging/TvShows"
-      - "/mnt/disk2/Library/TvShows/"
+      - "/home/bsmith/tor_staging/TvShows"
     deluge:
       ratio: 1.4
     thexem:
@@ -83,8 +82,8 @@ templates:
       destination: tvdb
     thetvdb_lookup: yes
     trakt_lookup:
-      account: blsmit5728
-      username: blsmit5728
+      account: '{{ secrets.trakt_info.user_name }}' 
+      username: '{{ secrets.trakt_info.user_name }}'
     set:
       queuetotop: yes
       content_filename: "{{ tvdb_series_name|default(series_name)|replace('/', '_')|replace(':', ' -')|replace(',', '') }} - {{ series_id }}{% if tvdb_ep_name|default(False) %} - {{ tvdb_ep_name|replace('/', '_')|replace(':', ' -')|replace(',', '') }}{% endif %} - {{ quality }}"
@@ -114,8 +113,7 @@ templates:
       min: 1000
     exists_movie:
       - "/mnt/disk1/Library/Movies/"
-      - "/mnt/disk3/Library/Movies/"
-      - "/home/bsmith/Downloads/staging/Movies/"
+      - "/home/bsmith/tor_staging/Movies/"
     tmdb_lookup: yes
     imdb_lookup: yes
     trakt_lookup:
@@ -169,10 +167,12 @@ templates:
     set:
       label: my-movies
     trakt_remove:
+      account: '{{ secrets.trakt_info.user_name }}'
       username: '{{ secrets.trakt_info.user_name }}'
       #password: '{{ secrets.trakt_info.password }}'
       list: Movie_Queue
     trakt_add:
+      account: '{{ secrets.trakt_info.user_name }}'
       username: '{{ secrets.trakt_info.user_name }}'
       #password: '{{ secrets.trakt_info.password }}'
       list: watchlist
@@ -274,6 +274,7 @@ tasks:
     require_field: [movie_name, movie_year]
     movie_queue: accept
     trakt_remove:
+      account: '{{ secrets.trakt_info.user_name }}'
       username: '{{ secrets.trakt_info.user_name }}'
       #password: '{{ secrets.trakt_info.password }}'
       list: Movie_Queue
@@ -303,6 +304,7 @@ tasks:
       user_id: ur34962140
       list: watchlist
     trakt_add:
+      account: '{{ secrets.trakt_info.user_name }}'
       username: '{{ secrets.trakt_info.user_name }}'
       #password: '{{ secrets.trakt_info.password }}'
       list: Movie_Queue
@@ -316,6 +318,7 @@ tasks:
       user_id: ur64871269 
       list: watchlist 
     trakt_add:
+      account: '{{ secrets.trakt_info.user_name }}'
       username: '{{ secrets.trakt_info.user_name }}'
       list: Movie_Queue
     accept_all: yes
@@ -393,10 +396,12 @@ tasks:
     set:
       label: local-movies
     trakt_remove:
+      account: '{{ secrets.trakt_info.user_name }}'
       username: '{{ secrets.trakt_info.user_name }}'
       #password: '{{ secrets.trakt_info.password }}'
       list: Movie_Queue
     trakt_add:
+      account: '{{ secrets.trakt_info.user_name }}'
       username: '{{ secrets.trakt_info.user_name }}'
       #password: '{{ secrets.trakt_info.password }}'
       list: watchlist
