@@ -15,8 +15,8 @@ FLEXGET_TASK_PREFIX='Sort_Unpacked_'
 
 
 FLEXGET_PATH_TASK={
-    '/Movies': 'Movies',
-    '/TvShows': 'TV_Shows',
+    '/Movies/': 'Movies',
+    '/TvShows/': 'TV_Shows',
     }
 
 log = logging.getLogger("torrent_complete")
@@ -51,6 +51,7 @@ if len(sys.argv) != 4:
 torrent_id=sys.argv[1]
 torrent_name=sys.argv[2]
 torrent_path=sys.argv[3]
+torrent_path=torrent_path+'/'
 
 log.debug("%s called with torrent_id='%s', torrent_name='%s', torrent_path='%s'." % (sys.argv[0],
     torrent_id, torrent_name, torrent_path))
@@ -67,11 +68,18 @@ for path, task in FLEXGET_PATH_TASK.items():
         for root, dirs, files in os.walk(torrent_path+'/'+torrent_name, topdown=False):
             if "Sample" not in root:
                 log.info('root=%s dirs=%s files=%s' % (root,dirs,files))
-                cmd='find "'+root+'" -type f -regex ".*\.\(\part[0-9]+\.\)?r\([0-9]+\|ar\)$" | head -1'                
-                log.debug('Shelling out  : %s' % cmd)
+                cmd='find "'+root+'" -type f -regex ".*\.\(\part[0-9]+\.\)?r\([0-9]+\|ar\)$" | grep "rar"'
                 ret = subprocess.check_output(cmd, shell=True)
                 ret = ret.rstrip()
                 log.debug('Find Returned : %s' % ret)
+                #cmd = 'mkdir "'+STAGING_PATH+path+torrent_id+'/" && cd "'+STAGING_PATH+path+torrent_id+'/" && easy_extract --force '+root                
+                #log.debug('Shelling out  : %s' % cmd)
+                #ret = subprocess.call(cmd, shell=True)
+                # THIS IS THE RARFILE method
+                #rar_file = '"'+ret'"'
+                #out_path = '"'+STAGING_PATH+path+torrent_id+'/"'
+                #with RarFile(rar_file,path=out_path) as rf:
+                #    rf.extractall()
                 cmd='/home/bsmith/src/unrar/unrar x -o+ "'+ret+'" "'+STAGING_PATH+path+torrent_id+'/"' 
                 log.debug('Shelling out  : %s' % cmd)
                 ret = subprocess.call(cmd, shell=True)
