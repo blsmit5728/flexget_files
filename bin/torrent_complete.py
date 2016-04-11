@@ -59,17 +59,14 @@ log.debug("RECALL: '%s %s %s %s'" % (sys.argv[0],torrent_id, torrent_name, torre
 if DOWNLOAD_PATH not in torrent_path:
     log.debug("Torrent '%s' path (%s) not in %s, skipping unrar" % (torrent_name,torrent_path,DOWNLOAD_PATH))
 
+unrar_success = False
+    
 for path, task in FLEXGET_PATH_TASK.items():
     if DOWNLOAD_PATH+path in torrent_path:
         log.info('Processing %s as part of task %s.' % (torrent_name,task))
         for root, dirs, files in os.walk(torrent_path+'/'+torrent_name, topdown=False):
             if "Sample" not in root:
                 log.info('root=%s dirs=%s files=%s' % (root,dirs,files))
-                #cmd='find "'+root+'" -type f -regex ".*\.\(\part[0-9]+\.\)?r\([0-9]+\|ar\)$"'
-                #log.debug('Shelling out: %s' % cmd)
-                #ret = subprocess.call(cmd, shell=True)
-                #log.debug("Find Returned: %d" % ret)
-                #cmd='find "'+root+'" -type f -regex ".*\.\(\part[0-9]+\.\)?r\([0-9]+\|ar\)$" | head -1 | xargs -I {} unrar x -o+ "{}" '+STAGING_PATH+path+torrent_id+'/'
                 cmd='find "'+root+'" -type f -regex ".*\.\(\part[0-9]+\.\)?r\([0-9]+\|ar\)$" | head -1'                
                 log.debug('Shelling out  : %s' % cmd)
                 ret = subprocess.check_output(cmd, shell=True)
@@ -81,35 +78,40 @@ for path, task in FLEXGET_PATH_TASK.items():
                 if ret != 0:
                     log.warning('Unrar command returned non-zero value %d.' % ret)
                     sys.exit(-1)
-        cmd='find "'+STAGING_PATH+path+torrent_id+'" -type f -print0 | xargs -0 du -b | sort -nr | head -1'
-        try:
-            log.debug('Shelling out: %s' % cmd)
-            # check_ouptut is not available in python 2.6
-            main_file_size, main_file = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True).communicate()[0].split()
-            main_file_size = int(main_file_size)
-            cmd = 'du -b "'+STAGING_PATH+path+torrent_id+'"'
-            log.debug('Shelling out: %s' % cmd)
-            # check_ouptut is not available in python 2.6
-            #total_size = int(subprocess.Popen(cmd.split(), stdout=subprocess.PIPE, shell=True).communicate()[0].split()[0])
-            total_size = int(subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True).communicate()[0].split()[0])
-            log.debug('Total size: %d' % total_size)
-            if main_file_size > (total_size * 0.9):
-                new_name = os.path.join(os.path.dirname(main_file), torrent_name+'.'+main_file.split('.')[-1])
-                log.debug('Names: %s,%s,%s' % (main_file, torrent_name, new_name));
-                log.debug('Renaming %s to %s because it is >90%% of the unpacked torrent'%(os.path.basename(main_file),  os.path.basename(new_name)))
-                os.rename(main_file, new_name)
-            else:
-                log.warning('Couldn\'t find any files that were >90% of the unpacked torrent')
-        except:
-            log.error('Failed attempting to rename the main unpacked file: %s' % sys.exc_info()[0])
-            raise   
+                else:
+                    unrar_success = True
+        if unrar_success == True:
+            cmd='find "'+STAGING_PATH+path+torrent_id+'" -type f -print0 | xargs -0 du -b | sort -nr | head -1'
+            try:
+                log.debug('Shelling out: %s' % cmd)
+                # check_ouptut is not available in python 2.6
+                main_file_size, main_file = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True).communicate()[0].split()
+                main_file_size = int(main_file_size)
+                cmd = 'du -b "'+STAGING_PATH+path+torrent_id+'"'
+                log.debug('Shelling out: %s' % cmd)
+                # check_ouptut is not available in python 2.6
+                #total_size = int(subprocess.Popen(cmd.split(), stdout=subprocess.PIPE, shell=True).communicate()[0].split()[0])
+                total_size = int(subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True).communicate()[0].split()[0])
+                log.debug('Total size: %d' % total_size)
+                if main_file_size > (total_size * 0.9):
+                    new_name = os.path.join(os.path.dirname(main_file), torrent_name+'.'+main_file.split('.')[-1])
+                    log.debug('Names: %s,%s,%s' % (main_file, torrent_name, new_name));
+                    log.debug('Renaming %s to %s because it is >90%% of the unpacked torrent'%(os.path.basename(main_file),  os.path.basename(new_name)))
+                    os.rename(main_file, new_name)
+                else:
+                    log.warning('Couldn\'t find any files that were >90% of the unpacked torrent')
+            except:
+                log.error('Failed attempting to rename the main unpacked file: %s' % sys.exc_info()[0])
+                raise   
 
-        #cmd=FLEXGET_COMMAND+' '+FLEXGET_SORTING_CONFIG+' execute --task '+FLEXGET_TASK_PREFIX + task + (' --disable-advancement' if 'tv' in path else '')
-        cmd='flexget --logfile /home/bsmith/.flexget/flexget-sorting.log -c /home/bsmith/.flexget/sort.yml execute --task ' + FLEXGET_TASK_PREFIX + task + (' --disable-advancement' if 'tv' in path else '')
-        log.debug('Shelling out: %s' % cmd)
-        ret = subprocess.call(cmd, shell=True)
-        if ret != 0:
-            log.warning('Flexget command returned non-zero value %d.' % ret)
+            #cmd=FLEXGET_COMMAND+' '+FLEXGET_SORTING_CONFIG+' execute --task '+FLEXGET_TASK_PREFIX + task + (' --disable-advancement' if 'tv' in path else '')
+            cmd='flexget --logfile /home/bsmith/.flexget/flexget-sorting.log -c /home/bsmith/.flexget/sort.yml execute --task ' + FLEXGET_TASK_PREFIX + task + (' --disable-advancement' if 'tv' in path else '')
+            log.debug('Shelling out: %s' % cmd)
+            ret = subprocess.call(cmd, shell=True)
+            if ret != 0:
+                log.warning('Flexget command returned non-zero value %d.' % ret)
+        else:
+            log.debug("Unrar Failed, or True never set")
     else:
         log.debug("Path %s not in %s" % (DOWNLOAD_PATH+path, torrent_path))
 
