@@ -31,8 +31,7 @@ tasks:
   Sort_Unpacked_TV_Shows:
     # Where to get the unpacked (staged) files from
     filesystem:
-        #path: '/home/bsmith/Downloads/staging/TvShows/'
-      path: '/home/bsmith/tor_staging/TvShows/'
+      path: "/mnt/disk1/Downloads/staging/TvShows/"
     # Where to get the metadata
     thexem:
       source: scene
@@ -64,14 +63,11 @@ tasks:
       device: '{{ secrets.pushb.device }}'
       title: "[Flexget] Sorted TV Show"
       body: "{{task}} - {{ series_name|replace('/', '_')|replace(':', ' -') }} - {{ tvdb_ep_id|default(series_id) }}{% if tvdb_ep_name|default(False) %} - {{ tvdb_ep_name|replace('/', '_')|replace(':', ' -') }}{% endif %} - {{ quality }}.{{ location[-3:] }}"
-      #body: "{{task}} - {% if trakt_series_url is defined %}{{trakt_series_url}}/season/{{trakt_season}}/episode/{{trakt_episode}}{% endif %}"
-
 
   # Same as above
   Sort_Unpacked_Movies:
     filesystem:
-        #path: '/home/bsmith/Downloads/staging/Movies/'
-      path: '/home/bsmith/tor_staging/Movies/'
+      path: "/mnt/disk1/Downloads/staging/Movies/"
     imdb_lookup: yes
     trakt_lookup: yes
     require_field: [imdb_url]

@@ -45,6 +45,7 @@ templates:
         - \[TNTVillage\]: {from: title}
         - \[facepalm\]: {from: title}
         - \bASAP\b: {from: title}
+        - \MULTi: {from: title}
     content_filter:
       require:
         - '*.avi'
@@ -74,7 +75,7 @@ templates:
       min: 20
     exists_series:
       - "/mnt/disk1/Library/TvShows/"
-      - "/home/bsmith/tor_staging/TvShows"
+      - "/mnt/disk1/Downloads/staging/TvShows"
     deluge:
       ratio: 1.4
     thexem:
@@ -89,7 +90,7 @@ templates:
       content_filename: "{{ tvdb_series_name|default(series_name)|replace('/', '_')|replace(':', ' -')|replace(',', '') }} - {{ series_id }}{% if tvdb_ep_name|default(False) %} - {{ tvdb_ep_name|replace('/', '_')|replace(':', ' -')|replace(',', '') }}{% endif %} - {{ quality }}"
       movedone: "/mnt/disk1/Library/TvShows/{{ series_name|replace('/', '_')|replace(':', ' ') }}/{% if series_id_type == 'ep' %}Season {{ trakt_season|default(series_season) }}/{% endif %}"
     content_sort:
-      '*.rar': "/home/bsmith/Downloads/completed/TvShows/"
+      '*.rar': "/mnt/disk1/Downloads/completed/TvShows/"
     pushbullet:
       apikey: '{{ secrets.pushb.apikey }}'
       device: '{{ secrets.pushb.device }}'
@@ -113,7 +114,7 @@ templates:
       min: 1000
     exists_movie:
       - "/mnt/disk1/Library/Movies/"
-      - "/home/bsmith/tor_staging/Movies/"
+      - "/mnt/disk1/Downloads/staging/Movies/"
     tmdb_lookup: yes
     imdb_lookup: yes
     trakt_lookup:
@@ -125,7 +126,7 @@ templates:
       content_filename: "{{ tmdb_name|replace('/', '_')|replace(':', ' ') }} ({{ tmdb_year }}) - {{ quality }}"
       movedone: "/mnt/disk1/Library/Movies/{{ tmdb_name|replace('/', '_')|replace(':', ' ') }} ({{ tmdb_year }})"
     content_sort:
-      '*.rar': "/home/bsmith/Downloads/completed/Movies/"
+      '*.rar': "/mnt/temp/completed/Movies/"
     pushbullet:
       apikey: '{{ secrets.pushb.apikey }}'
       device: '{{ secrets.pushb.device }}'
