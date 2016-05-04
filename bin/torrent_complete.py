@@ -3,6 +3,15 @@ import sys
 import os
 import logging, logging.handlers
 import subprocess
+from rarfile import RarFile
+import time
+
+from pushbullet import Pushbullet
+ff = open('/home/bsmith/repos/flexget_files/bin/pb.key','r')
+l = ff.readline()
+key = l.rstrip()
+pb = Pushbullet(key)
+
 
 LOG_FILE='/home/bsmith/logs/tor_comp/torrent_complete.log'
 DOWNLOAD_PATH='/mnt/disk1/Downloads/completed'
@@ -12,7 +21,6 @@ STAGING_PATH='/mnt/disk1/Downloads/staging'
 FLEXGET_COMMAND='flexget --loglevel verbose --logfile /home/bsmith/logs/flexget/flexget-sorting.log'
 FLEXGET_SORTING_CONFIG='-c /home/bsmith/.flexget/sort.yml'
 FLEXGET_TASK_PREFIX='Sort_Unpacked_'
-
 
 FLEXGET_PATH_TASK={
     '/Movies/': 'Movies',
@@ -53,41 +61,80 @@ torrent_name=sys.argv[2]
 torrent_path=sys.argv[3]
 torrent_path=torrent_path+'/'
 
+
+if "Movies" in torrent_path:
+    sleep_time = 60
+else:
+    sleep_time = 30
+
+
+log.debug('Sleeping %d seconds to allow for copy time...' % sleep_time)
+time.sleep(sleep_time)
 log.debug("%s called with torrent_id='%s', torrent_name='%s', torrent_path='%s'." % (sys.argv[0],
     torrent_id, torrent_name, torrent_path))
 
 log.debug("RECALL: '%s %s %s %s'" % (sys.argv[0],torrent_id, torrent_name, torrent_path))
+
+fd = open('/home/bsmith/logs/tor_comp/deluge_call.log','a')
+s = sys.argv[0] + " " + torrent_id + " " + torrent_name + " " + torrent_path
+fd.write(s)
+fd.close()
+
 if DOWNLOAD_PATH not in torrent_path:
     log.debug("Torrent '%s' path (%s) not in %s, skipping unrar" % (torrent_name,torrent_path,DOWNLOAD_PATH))
 
 unrar_success = False
-    
+
+strings = ("Sample", "sample", "subs", "Subs", "Proof")
+
 for path, task in FLEXGET_PATH_TASK.items():
     if DOWNLOAD_PATH+path in torrent_path:
         log.info('Processing %s as part of task %s.' % (torrent_name,task))
         for root, dirs, files in os.walk(torrent_path+'/'+torrent_name, topdown=False):
-            if "Sample" not in root:
+            #if "Sample" not in root and "Subs" not in root:
+            if any(s in root for s in strings):
+                log.debug('Not real directory: %s' % root)
+            else:
                 log.info('root=%s dirs=%s files=%s' % (root,dirs,files))
-                cmd='find "'+root+'" -type f -regex ".*\.\(\part[0-9]+\.\)?r\([0-9]+\|ar\)$" | grep "rar"'
-                ret = subprocess.check_output(cmd, shell=True)
+                #cmd='find "'+root+'" -type f -regex ".*\.\(\part[0-9]+\.\)?r\([0-9]+\|ar\)$" | head -1'
+                cmd='find "'+root+'" -type f -regex ".*\.\(\part[0-9]+\.\)?r\([0-9]+\|ar\)$" | grep "rar" | grep -v "Subs"'
+                log.debug('Shelling out: %s' % cmd)
+                try:
+                    ret = subprocess.check_output(cmd, shell=True)
+                except subprocess.CalledProcessError:
+                    log.error('Error on Find with: %s' % ret)
+                    str_err = "Error on Find command, rerun" + torrent_name
+                    push = pb.push_note("[Tor Complete]",str_err)
+                    sys.exit(-2)
                 ret = ret.rstrip()
                 log.debug('Find Returned : %s' % ret)
                 #cmd = 'mkdir "'+STAGING_PATH+path+torrent_id+'/" && cd "'+STAGING_PATH+path+torrent_id+'/" && easy_extract --force '+root                
                 #log.debug('Shelling out  : %s' % cmd)
                 #ret = subprocess.call(cmd, shell=True)
                 # THIS IS THE RARFILE method
-                #rar_file = '"'+ret'"'
-                #out_path = '"'+STAGING_PATH+path+torrent_id+'/"'
+                rar_file = ret
+                out_path = STAGING_PATH+path+torrent_id+'/'
+                log.debug('file=%s dest=%s' % (rar_file,out_path))
+                rf = RarFile(rar_file)
+                try:
+                    rf.extractall(path=out_path)
+                    unrar_success = True
+                except:
+                    e = sys.exc_info()[0]
+                    log.error("Error on Extraction with %s" % e)
+                    str_err = "Error on Extraction, error: " + e
+                    push = pb.push_note("[Tor Complete]",str_err)
+                    sys.exit(-2)
                 #with RarFile(rar_file,path=out_path) as rf:
                 #    rf.extractall()
-                cmd='/home/bsmith/src/unrar/unrar x -o+ "'+ret+'" "'+STAGING_PATH+path+torrent_id+'/"' 
-                log.debug('Shelling out  : %s' % cmd)
-                ret = subprocess.call(cmd, shell=True)
-                if ret != 0:
-                    log.warning('Unrar command returned non-zero value %d.' % ret)
-                    sys.exit(-1)
-                else:
-                    unrar_success = True
+                #cmd='/home/bsmith/src/unrar/unrar x -o+ "'+ret+'" "'+STAGING_PATH+path+torrent_id+'/"' 
+                #log.debug('Shelling out  : %s' % cmd)
+                #ret = subprocess.call(cmd, shell=True)
+                #if ret != 0:
+                #    log.warning('Unrar command returned non-zero value %d.' % ret)
+                #    sys.exit(-1)
+                #else:
+                #    unrar_success = True
         if unrar_success == True:
             cmd='find "'+STAGING_PATH+path+torrent_id+'" -type f -print0 | xargs -0 du -b | sort -nr | head -1'
             try:
