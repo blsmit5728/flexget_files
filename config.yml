@@ -134,7 +134,6 @@ templates:
       device: '{{ secrets.pushb.device }}'
       title: "[Flexget] Movie Downloaded"
       body: "{{task}} - {{ imdb_name }} {{ imdb_year }} - {{ quality }}\nTorrent File: {{title}}"
-      #url: "{% if imdb_url %}{{ imdb_url }}{% endif %}"
       url: "imdb:///title/{{ imdb_id }}?src=mdot"
 
   movies-discover:
@@ -146,39 +145,30 @@ templates:
             password: '{{ secrets.tl.password }}'
             category: ['HD', 'BDRip', 'DVDRip', 'DVDR', 'Documentaries']
         - flexget_archive: [movies]
-        #- kat:
-        #    category: movies
-        #    verified: yes
-        #- torrentz:
-        #    reputation: verified
-        #    extra_terms: "movie* hd"
-        #- piratebay:
-        #    category: "highres movies"
-        #    sort_by: seeds
       what: [filler: yes]
 
-  movies-queued:
-    movie_queue: accept
+  movies-queued:   
     template: movies-discover
     disable:
       - seen_movies
     discover:
       what:
-        - emit_movie_queue: yes
+        - movie_list: my_movies
       from: 
         - filler: yes
     set:
       label: my-movies
-    trakt_remove:
-      account: '{{ secrets.trakt_info.user_name }}'
-      username: '{{ secrets.trakt_info.user_name }}'
-      #password: '{{ secrets.trakt_info.password }}'
-      list: Movie_Queue
-    trakt_add:
-      account: '{{ secrets.trakt_info.user_name }}'
-      username: '{{ secrets.trakt_info.user_name }}'
-      #password: '{{ secrets.trakt_info.password }}'
-      list: watchlist
+    list_remove:
+      - trakt_list:
+          account: '{{ secrets.trakt_info.user_name }}'
+          username: '{{ secrets.trakt_info.user_name }}'
+          list: Movie_Queue
+    list_add:
+      - movie_list: my_movies
+      - trakt_list:
+          account: '{{ secrets.trakt_info.user_name }}'
+          username: '{{ secrets.trakt_info.user_name }}'
+          list: watchlist
 
 tasks:
   tv-my-shows:
@@ -197,9 +187,9 @@ tasks:
           list: TvShows   
           type: shows
       settings:
-        target: 720p+ dvdscr+
         timeframe: 4 hours 
-        quality: 480p+ webrip+
+        target: 720p+ 
+        quality: 480p+
 
   tv-interesting:
     priority: 6
@@ -212,14 +202,13 @@ tasks:
       from:
         trakt_list:
           username: '{{ secrets.trakt_info.user_name }}'
-          #password: '{{ secrets.trakt_info.password }}'
           account: blsmit5728
           list: Interesting
           type: shows
       settings:
-        target: 720p+ dvdscr+
         timeframe: 3 hours
-        quality: 480p+ webrip+
+        target: 720p+
+        quality: 480p+
 
   tv-reality:
     priority: 7
@@ -236,9 +225,9 @@ tasks:
           list: RealityTV   
           type: shows
       settings:
-        target: hdtv+ dvdscr+
         timeframe: 3 hours
-        quality: 480p+ webrip+             
+        target: hdtv+ dvdscr+        
+        quality: 480p+ sdtv+             
 
   tv-laura:
     priority: 8
@@ -255,9 +244,9 @@ tasks:
           list: Laura   
           type: shows
       settings:
-        target: 360p+ sdtv+
         timeframe: 4 hours
-        quality: 480p+ sdtv+             
+        target: 480p+       
+        quality: 360p+             
               
   clean-movie-queue:
     priority: 90
@@ -275,12 +264,13 @@ tasks:
       username: blsmit5728
     tmdb_lookup: yes
     require_field: [movie_name, movie_year]
-    movie_queue: accept
-    trakt_remove:
-      account: '{{ secrets.trakt_info.user_name }}'
-      username: '{{ secrets.trakt_info.user_name }}'
-      #password: '{{ secrets.trakt_info.password }}'
-      list: Movie_Queue
+    movie_list:
+      list_name: my_movies
+    list_remove:
+      - trakt_list:
+          account: '{{ secrets.trakt_info.user_name }}'
+          username: '{{ secrets.trakt_info.user_name }}'
+          list: Movie_Queue
 
   movies-1080p:
     priority: 110
@@ -302,62 +292,51 @@ tasks:
   imdb-list-to-trakt:
     priority: 1
     template: no_global
-    #interval: 2 hours
-    imdb_list:
-      user_id: ur34962140
-      list: watchlist
-    trakt_add:
-      account: '{{ secrets.trakt_info.user_name }}'
-      username: '{{ secrets.trakt_info.user_name }}'
-      #password: '{{ secrets.trakt_info.password }}'
-      list: Movie_Queue
+    list_accept:
+      - imdb_list:
+          login: '{{ secrets.imdb.login }}'
+          password: '{{ secrets.imdb.password }}'
+          list: watchlist
+    list_add:
+      - movie_list: my_movies
+      - trakt_list:
+          account: '{{ secrets.trakt_info.user_name }}'
+          username: '{{ secrets.trakt_info.user_name }}'
+          list: Movie_Queue
     accept_all: yes
-    movie_queue: add
+      
 
-  alex-imdb-to-trakt:
-    priority: 1
-    template: no_global
-    imdb_list:
-      user_id: ur64871269 
-      list: watchlist 
-    trakt_add:
-      account: '{{ secrets.trakt_info.user_name }}'
-      username: '{{ secrets.trakt_info.user_name }}'
-      list: Movie_Queue
-    accept_all: yes
-    movie_queue: add
-
-  #thurston_imdb_to_queue:
-  #  priority: 1
-  #  template: no_global
-  #  imdb_list:
-  #    user_id: urxxxxxxxx
-  #    list: watchlist
-  #  trakt_add:
-  #    username: '{{ secrets.trakt_info.user_name }}'
-  #    password: '{{ secrets.trakt_info.password }}'
-  #    list: Thurston_Queue
-  #  accept_all: yes
-  #  movie_queue: add
+ #alex-imdb-to-trakt:
+ #  priority: 1
+ #  template: no_global
+ #  imdb_list:
+ #    user_id: ur64871269 
+ #    list: watchlist 
+ #  trakt_add:
+ #    account: '{{ secrets.trakt_info.user_name }}'
+ #    username: '{{ secrets.trakt_info.user_name }}'
+ #    list: Movie_Queue
+ #  accept_all: yes
+ #  list_add:
+ #    movie_list: my_movies
 
   trakt-list-to-movie-queue:
     priority: 2
     template: no_global
     trakt_list:
       username: '{{ secrets.trakt_info.user_name }}'
-      #password: '{{ secrets.trakt_info.password }}'
       account: blsmit5728
       list: Movie_Queue
       type: movies
     accept_all: yes
-    movie_queue: add
+    list_add:
+      - movie_list: my_movies
    
   google-music-sync:
     priority: 1
     disable: [seen, seen_info_hash]
     template: 
       - no_global # None of the global templates make sense here
-     #- music-global
     filesystem:
       path: '/home/bsmith/Dropbox/Music/to_sync/'
       regexp: '.*\.(mp3|flac|m4a|ogg)$'
@@ -385,7 +364,8 @@ tasks:
     # To avoid warnings about non-functional input
     filler: yes 
     # Mark movies as seen
-    movie_queue: accept
+    list_accept:
+      - movie_list: my_movies
     plugin_priority:
       exec: 0
     filesystem:
@@ -398,16 +378,16 @@ tasks:
     accept_all: yes
     set:
       label: local-movies
-    trakt_remove:
-      account: '{{ secrets.trakt_info.user_name }}'
-      username: '{{ secrets.trakt_info.user_name }}'
-      #password: '{{ secrets.trakt_info.password }}'
-      list: Movie_Queue
-    trakt_add:
-      account: '{{ secrets.trakt_info.user_name }}'
-      username: '{{ secrets.trakt_info.user_name }}'
-      #password: '{{ secrets.trakt_info.password }}'
-      list: watchlist
+    list_remove:
+      - trakt_list:
+          account: '{{ secrets.trakt_info.user_name }}'
+          username: '{{ secrets.trakt_info.user_name }}'
+          list: Movie_Queue
+    list_add:
+      - trakt_list:
+          account: '{{ secrets.trakt_info.user_name }}'
+          username: '{{ secrets.trakt_info.user_name }}'
+          list: watchlist
 
   local-torrents-tv:
     priority: 201
@@ -466,7 +446,6 @@ tasks:
       from:
         trakt_list:
           username: '{{ secrets.trakt_info.user_name }}'
-          #password: '{{ secrets.trakt_info.password }}'
           account: blsmit5728
           list: Fall Shows 
           type: shows
@@ -487,14 +466,13 @@ tasks:
       from:
         trakt_list:
           username: '{{ secrets.trakt_info.user_name }}'
-          #password: '{{ secrets.trakt_info.password }}'
           account: blsmit5728
           list: Moms Shows
           type: shows
       settings:
         timeframe: 2 hours
-        target: hdtv+ 
-        quality: hdtv+ 
+        target: 720p+ hdtv+ 
+        quality: 360p+ tvrip+ 
         propers: 2 hours
   
   trakt-daily-shows:
@@ -508,27 +486,12 @@ tasks:
       from:
         trakt_list:
           username: '{{ secrets.trakt_info.user_name }}'
-          #password: '{{ secrets.trakt_info.password }}'
           account: blsmit5728
           list: Daily
           type: shows
       settings:
-        target: webrip+
+        target: 720p+ webrip+
         timeframe: 12 hours
-        quality: hdtv
+        quality: 360p+ tvrip+ 
         tracking: backfill
-
-#schedules:            
-#  - tasks: [ 'tv-my-shows', 'tv-interesting', 'tv-reality', 'tv-laura', 'trakt-fall-shows','movies-1080p', 'movies-720p' ]
-#    schedule:
-#      minute: 3,18,33,48
-#  - tasks: [ 'movies-1080p', 'movies-720p' ]
-#    schedule:
-#      minute: 30
-#  - tasks: [ 'local-torrents-movie', 'google-music-sync', 'local-torrents-tv' ]  
-#    schedule:
-#      minute: 15
-#  - tasks: [ 'trakt-list-to-movie-queue', 'imdb-list-to-trakt' ]
-#    schedule:
-#      hour: 2
 

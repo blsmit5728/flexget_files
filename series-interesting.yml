@@ -7,5 +7,8 @@ series:
       name_regexp: ^bordertown.(2016)?
   - The Detour (2016):
       name_regexp: ^the.detour.(2016)?
+  - The Knick (2016):
+      name_regexp: ^the.knick.(2016)?
+
 
 
