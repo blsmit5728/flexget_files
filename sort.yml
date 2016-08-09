@@ -26,6 +26,26 @@ templates:
         - \bsample\b: {from: title}
     content_size:
       min: 60
+    slack:
+      webhook-url: '{{secrets.slack.url}}'
+      text: "[{{task}}] - Sorted:
+        {% if series_name is defined %}
+        {% if trakt_series_slug is defined and trakt_season is defined and trakt_episode is defined %}
+        <https://trakt.tv/shows/{{ trakt_series_slug }}/seasons/{{ trakt_season }}/episodes/{{ trakt_episode }}|{{tvdb_series_name|d(series_name)}} - {{series_id}}{{tvdb_ep_name|d('')}}>
+        {% else %}
+        {{tvdb_series_name|d(series_name)}} - {{series_id}}{{tvdb_ep_name|d('')}}
+        {% endif %}
+        - {{quality}}
+        {% elif imdb_name is defined %}
+        {% if imdb_url is defined %}
+        imdb:///title/{{ imdb_id }}?src=mdot
+        {% else %}
+        {{imdb_name}} {{imdb_year}}
+        {% endif %}
+        - {{quality}}
+        {% else %}
+        {{title}}
+        {% endif %}"
 
 tasks:
   Sort_Unpacked_TV_Shows:
@@ -58,11 +78,11 @@ tasks:
       filename: >
         {{ series_name|replace('/', '_')|replace(':', ' -') }} - {{ tvdb_ep_id|default(series_id) }}{% if tvdb_ep_name|default(False) %} - {{ tvdb_ep_name|replace('/', '_')|replace(':', ' -') }}{% endif %} - {{ quality }}.{{ location[-3:] }}
       clean_source: 40
-    pushbullet:
-      apikey: '{{ secrets.pushb.apikey }}'
-      device: '{{ secrets.pushb.device }}'
-      title: "[Flexget] Sorted TV Show"
-      body: "{{task}} - {{ series_name|replace('/', '_')|replace(':', ' -') }} - {{ tvdb_ep_id|default(series_id) }}{% if tvdb_ep_name|default(False) %} - {{ tvdb_ep_name|replace('/', '_')|replace(':', ' -') }}{% endif %} - {{ quality }}.{{ location[-3:] }}"
+    #pushbullet:
+    #  apikey: '{{ secrets.pushb.apikey }}'
+    #  device: '{{ secrets.pushb.device }}'
+    #  title: "[Flexget] Sorted TV Show"
+    #  body: "{{task}} - {{ series_name|replace('/', '_')|replace(':', ' -') }} - {{ tvdb_ep_id|default(series_id) }}{% if tvdb_ep_name|default(False) %} - {{ tvdb_ep_name|replace('/', '_')|replace(':', ' -') }}{% endif %} - {{ quality }}.{{ location[-3:] }}"
 
   # Same as above
   Sort_Unpacked_Movies:
@@ -77,9 +97,9 @@ tasks:
       filename: >
         {{ imdb_name|replace('/', '_')|replace(':', ' -') }} ({{ imdb_year }}) - {{ quality }}.{{ location[-3:] }}
       clean_source: 1000
-    pushbullet:
-      apikey: '{{ secrets.pushb.apikey }}'
-      device: '{{ secrets.pushb.device }}'
-      title: "[Flexget] Sorted Movie"
-      body: "{{task}} - {{ imdb_name }} {{ imdb_year }} - {{ quality }} http://www.imdb.com/title/{{imdb_id}}"
+    #pushbullet:
+    #  apikey: '{{ secrets.pushb.apikey }}'
+    #  device: '{{ secrets.pushb.device }}'
+    #  title: "[Flexget] Sorted Movie"
+    #  body: "{{task}} - {{ imdb_name }} {{ imdb_year }} - {{ quality }} http://www.imdb.com/title/{{imdb_id}}"
 

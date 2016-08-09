@@ -66,6 +66,26 @@ templates:
       max_retries: 5
     verify_ssl_certificates: no
     magnets: no
+    slack:
+      webhook-url: '{{secrets.slack.url}}'
+      text: "[{{task}}] - Download started:
+        {% if series_name is defined %}
+        {% if trakt_series_slug is defined and trakt_season is defined and trakt_episode is defined %}
+        <https://trakt.tv/shows/{{ trakt_series_slug }}/seasons/{{ trakt_season }}/episodes/{{ trakt_episode }}|{{tvdb_series_name|d(series_name)}} - {{series_id}}{{tvdb_ep_name|d('')}}>
+        {% else %}
+        {{tvdb_series_name|d(series_name)}} - {{series_id}}{{tvdb_ep_name|d('')}}
+        {% endif %}
+        - {{quality}}
+        {% elif imdb_name is defined %}
+        {% if imdb_url is defined %}
+        {{imdb_url}} {{imdb_name}} {{imdb_year}}
+        {% else %}
+        {{imdb_name}} {{imdb_year}}
+        {% endif %}
+        - {{quality}}
+        {% else %}
+        {{title}}
+        {% endif %}"
     #download: "/home/bsmith/Downloads/torrents/"
       
   tv-global:
@@ -93,18 +113,18 @@ templates:
       movedone: "/mnt/disk1/Library/TvShows/{{ series_name|replace('/', '_')|replace(':', ' ') }}/{% if series_id_type == 'ep' %}Season {{ trakt_season|default(series_season) }}/{% endif %}"
     content_sort:
       '*.rar': "/mnt/disk1/Downloads/completed/TvShows/"
-    pushbullet:
-      apikey: '{{ secrets.pushb.apikey }}'
-      device: '{{ secrets.pushb.device }}'
-      title: "[Flexget] {{series_name}} {{series_id}}"
-      body: "{{task}} - {{ tvdb_series_name|default(series_name) }} - {{ series_id }}{% if tvdb_ep_name|default(False) %} - {{ tvdb_ep_name }}{% endif %}\n{{ quality }}\nTorrent File: {{title}}"
-      #url: "{% if trakt_series_url is defined and trakt_season is defined and trakt_episode is defined %}{{ trakt_series_url|replace('.','-')|replace(' ','-') }}/season/{{ trakt_season }}/episode/{{ trakt_episode }}{% endif %}"
-      #url: "imdb:///title/{{"
+    
+    #pushbullet:
+    #  apikey: '{{ secrets.pushb.apikey }}'
+    #  device: '{{ secrets.pushb.device }}'
+    #  title: "[Flexget] {{series_name}} {{series_id}}"
+    #  body: "{{task}} - {{ tvdb_series_name|default(series_name) }} - {{ series_id }}{% if tvdb_ep_name|default(False) %} - {{ tvdb_ep_name }}{% endif %}\n{{ quality }}\nTorrent File: {{title}}"
+    #  #url: "{% if trakt_series_url is defined and trakt_season is defined and trakt_episode is defined %}{{ trakt_series_url|replace('.','-')|replace(' ','-') }}/season/{{ trakt_season }}/episode/{{ trakt_episode }}{% endif %}"
+    #  #url: "imdb:///title/{{"
 
   movie-global:
     inputs:
       - rss: { url: '{{ secrets.tl.url }}', silent: yes }
-      #- rss: { url: 'http://kickass.to/movies/genre/news/?rss=1', silent: yes }
     if:
       - "has_field('category')":
           regexp:
@@ -129,12 +149,12 @@ templates:
       movedone: "/mnt/disk1/Library/Movies/{{ tmdb_name|replace('/', '_')|replace(':', ' ') }} ({{ tmdb_year }})"
     content_sort:
       '*.rar': "/mnt/disk1/Downloads/completed/Movies/"
-    pushbullet:
-      apikey: '{{ secrets.pushb.apikey }}'
-      device: '{{ secrets.pushb.device }}'
-      title: "[Flexget] Movie Downloaded"
-      body: "{{task}} - {{ imdb_name }} {{ imdb_year }} - {{ quality }}\nTorrent File: {{title}}"
-      url: "imdb:///title/{{ imdb_id }}?src=mdot"
+    #pushbullet:
+    #  apikey: '{{ secrets.pushb.apikey }}'
+    #  device: '{{ secrets.pushb.device }}'
+    #  title: "[Flexget] Movie Downloaded"
+    #  body: "{{task}} - {{ imdb_name }} {{ imdb_year }} - {{ quality }}\nTorrent File: {{title}}"
+    #  url: "imdb:///title/{{ imdb_id }}?src=mdot"
 
   movies-discover:
     discover:
@@ -147,15 +167,18 @@ templates:
         - flexget_archive: [movies]
       what: [filler: yes]
 
-  movies-queued:   
+  movies-queued:
+    list_match:
+      from:
+        - movie_list: my_movies    
+      single_match: no
     template: movies-discover
     disable:
       - seen_movies
     discover:
       what:
         - movie_list: my_movies
-      from: 
-        - filler: yes
+      from: [ filler: yes ]
     set:
       label: my-movies
     list_remove:
@@ -163,13 +186,13 @@ templates:
           account: '{{ secrets.trakt_info.user_name }}'
           username: '{{ secrets.trakt_info.user_name }}'
           list: Movie_Queue
+          type: movies
     list_add:
-      - movie_list: my_movies
       - trakt_list:
           account: '{{ secrets.trakt_info.user_name }}'
           username: '{{ secrets.trakt_info.user_name }}'
           list: watchlist
-
+          type: movies
 tasks:
   tv-my-shows:
     priority: 5
@@ -182,7 +205,6 @@ tasks:
       from:
         trakt_list:
           username: '{{ secrets.trakt_info.user_name }}'
-          #password: '{{ secrets.trakt_info.password }}'
           account: blsmit5728
           list: TvShows   
           type: shows
@@ -240,7 +262,7 @@ tasks:
       from:
         trakt_list:
           username: '{{ secrets.trakt_info.user_name }}'
-          account: blsmit5728
+          account: '{{ secrets.trakt_info.user_name }}'
           list: Laura   
           type: shows
       settings:
@@ -257,21 +279,25 @@ tasks:
       - seen_movies
     accept_all: yes
     filesystem:
-      - /mnt/disk1/Library/Movies/
+      path: /mnt/disk1/Library/Movies/
+      recursive: no
+      retrieve: dirs 
     imdb_lookup: yes
     trakt_lookup:
-      account: blsmit5728
-      username: blsmit5728
+      account: '{{ secrets.trakt_info.user_name }}'
+      username: '{{ secrets.trakt_info.user_name }}'
     tmdb_lookup: yes
     require_field: [movie_name, movie_year]
-    movie_list:
-      list_name: my_movies
+    list_match:
+      from:
+        - movie_list: my_movies
+      single_match: no
     list_remove:
       - trakt_list:
           account: '{{ secrets.trakt_info.user_name }}'
           username: '{{ secrets.trakt_info.user_name }}'
           list: Movie_Queue
-
+          type: movies
   movies-1080p:
     priority: 110
     template: 
@@ -292,60 +318,35 @@ tasks:
   imdb-list-to-trakt:
     priority: 1
     template: no_global
-    list_accept:
-      - imdb_list:
-          login: '{{ secrets.imdb.login }}'
-          password: '{{ secrets.imdb.password }}'
-          list: watchlist
+    imdb_lookup: yes
+    #list_match:
+    #  from:
+    imdb_list:
+      login: '{{ secrets.imdb.login }}'
+      password: '{{ secrets.imdb.password }}'
+      list: watchlist
+    #single_match: no
     list_add:
       - movie_list: my_movies
       - trakt_list:
           account: '{{ secrets.trakt_info.user_name }}'
           username: '{{ secrets.trakt_info.user_name }}'
           list: Movie_Queue
+          type: movies
     accept_all: yes
-      
-
- #alex-imdb-to-trakt:
- #  priority: 1
- #  template: no_global
- #  imdb_list:
- #    user_id: ur64871269 
- #    list: watchlist 
- #  trakt_add:
- #    account: '{{ secrets.trakt_info.user_name }}'
- #    username: '{{ secrets.trakt_info.user_name }}'
- #    list: Movie_Queue
- #  accept_all: yes
- #  list_add:
- #    movie_list: my_movies
 
   trakt-list-to-movie-queue:
     priority: 2
     template: no_global
     trakt_list:
       username: '{{ secrets.trakt_info.user_name }}'
-      account: blsmit5728
+      account: '{{ secrets.trakt_info.user_name }}'
       list: Movie_Queue
       type: movies
     accept_all: yes
     list_add:
       - movie_list: my_movies
    
-  google-music-sync:
-    priority: 1
-    disable: [seen, seen_info_hash]
-    template: 
-      - no_global # None of the global templates make sense here
-    filesystem:
-      path: '/home/bsmith/Dropbox/Music/to_sync/'
-      regexp: '.*\.(mp3|flac|m4a|ogg)$'
-      recursive: yes
-    accept_all: yes
-    exec:
-      on_output:
-        for_accepted: '"/home/bsmith/repos/gmusicapi-scripts/gmsync.py" -q -l -m "{{location}}" && rm "{{location}}"'
-
   local-torrents-movie:
     priority: 200
     template:
@@ -364,8 +365,10 @@ tasks:
     # To avoid warnings about non-functional input
     filler: yes 
     # Mark movies as seen
-    list_accept:
-      - movie_list: my_movies
+    list_match:
+      from:
+        - movie_list: my_movies
+      single_match: no
     plugin_priority:
       exec: 0
     filesystem:
@@ -383,12 +386,13 @@ tasks:
           account: '{{ secrets.trakt_info.user_name }}'
           username: '{{ secrets.trakt_info.user_name }}'
           list: Movie_Queue
+          type: movies
     list_add:
       - trakt_list:
           account: '{{ secrets.trakt_info.user_name }}'
           username: '{{ secrets.trakt_info.user_name }}'
           list: watchlist
-
+          type: movies
   local-torrents-tv:
     priority: 201
     include:
@@ -410,8 +414,8 @@ tasks:
       - torrent_alive
     filler: yes # To avoid warnings about non-functional input
     trakt_lookup:
-      username: blsmit5728
-      account: blsmit5728
+      username: '{{ secrets.trakt_info.user_name }}'
+      account: '{{ secrets.trakt_info.user_name }}'
     all_series:
       parse_only: yes
     plugin_priority:
@@ -426,15 +430,63 @@ tasks:
     accept_all: yes
     set:
       label: local-tv
-    configure_series:
-      from:
-        trakt_list:
-          username: '{{ secrets.trakt_info.user_name }}'
-          account: blsmit5728
-          list: TvShows   
-          type: shows
-
-
+    sequence:
+      - configure_series:
+          settings:
+            assume_special: true
+          from:
+            trakt_list:
+              account: '{{ secrets.trakt_info.user_name }}'
+              list: TvShows   
+              type: shows
+              strip_dates: yes
+      - configure_series:
+          settings:
+            assume_special: true
+          from:
+            trakt_list:
+              account: '{{ secrets.trakt_info.user_name }}'
+              list: Fall Shows   
+              type: shows
+              strip_dates: yes
+      - configure_series:
+          settings:
+            assume_special: true
+          from:
+            trakt_list:
+              account: '{{ secrets.trakt_info.user_name }}'
+              list: Moms Shows   
+              type: shows
+              strip_dates: yes
+      
+      - configure_series:
+          settings:
+            assume_special: true
+          from:
+            trakt_list:
+              account: '{{ secrets.trakt_info.user_name }}'
+              list: Laura   
+              type: shows
+              strip_dates: yes
+      - configure_series:
+          settings:
+            assume_special: true
+          from:
+            trakt_list:
+              account: '{{ secrets.trakt_info.user_name }}'
+              list: RealityTV   
+              type: shows
+              strip_dates: yes        
+      - configure_series:
+          settings:
+            assume_special: true
+          from:
+            trakt_list:
+              account: '{{ secrets.trakt_info.user_name }}'
+              list: Interesting   
+              type: shows
+              strip_dates: yes                              
+      
   trakt-fall-shows:
     priority: 6
     include: [ series-fall-shows.yml ]
