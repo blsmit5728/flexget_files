@@ -73,7 +73,7 @@ templates:
         {% if trakt_series_slug is defined and trakt_season is defined and trakt_episode is defined %}
         <https://trakt.tv/shows/{{ trakt_series_slug }}/seasons/{{ trakt_season }}/episodes/{{ trakt_episode }}|{{tvdb_series_name|d(series_name)}} - {{series_id}}{{tvdb_ep_name|d('')}}>
         {% else %}
-        {{tvdb_series_name|d(series_name)}} - {{series_id}}{{tvdb_ep_name|d('')}}
+        {{tvdb_series_name|d(series_name)}} - {{series_id}} - {{tvdb_ep_name|d('')}}
         {% endif %}
         - {{quality}}
         {% elif imdb_name is defined %}
