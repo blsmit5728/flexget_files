@@ -68,6 +68,7 @@ templates:
     magnets: no
     slack:
       webhook-url: '{{secrets.slack.url}}'
+      icon-emoji: tv
       text: "[{{task}}] - Download started:
         {% if series_name is defined %}
         {% if trakt_series_slug is defined and trakt_season is defined and trakt_episode is defined %}
@@ -546,4 +547,38 @@ tasks:
         timeframe: 12 hours
         quality: 360p+ tvrip+ 
         tracking: backfill
-
+  
+  alex-tv-shows:
+    priority: 10
+    template:
+      - tv-global
+    set:
+      label: tv-alex
+    configure_series:
+      from:
+        trakt_list:
+          username: '{{ secrets.trakt_info.am_username }}'
+          account: alexmcree
+          list: watchlist
+          type: shows
+      settings:
+        target: 720p+ webrip+
+        timeframe: 12 hours
+        quality: 360p+ tvrip+
+ 
+  alex-imdb-list-to-trakt:
+    priority: 1
+    template: no_global
+    imdb_lookup: yes
+    imdb_list:
+      login: '{{ secrets.imdb.am_login }}'
+      password: '{{ secrets.imdb.am_password }}'
+      list: watchlist
+    list_add:
+      - movie_list: my_movies
+      - trakt_list:
+          account: '{{ secrets.trakt_info.user_name }}'
+          username: '{{ secrets.trakt_info.user_name }}'
+          list: Movie_Queue
+          type: movies
+    accept_all: yes
