@@ -6,11 +6,11 @@ import subprocess
 from rarfile import RarFile
 import time
 
-from pushbullet import Pushbullet
-ff = open('/home/bsmith/repos/flexget_files/bin/pb.key','r')
-l = ff.readline()
-key = l.rstrip()
-pb = Pushbullet(key)
+#from pushbullet import Pushbullet
+#ff = open('/home/bsmith/repos/flexget_files/bin/pb.key','r')
+#l = ff.readline()
+#key = l.rstrip()
+#pb = Pushbullet(key)
 
 
 LOG_FILE='/home/bsmith/logs/tor_comp/torrent_complete.log'
@@ -103,8 +103,8 @@ for path, task in FLEXGET_PATH_TASK.items():
                     ret = subprocess.check_output(cmd, shell=True)
                 except subprocess.CalledProcessError:
                     log.error('Error on Find with: %s' % ret)
-                    str_err = "Error on Find command, rerun" + torrent_name
-                    push = pb.push_note("[Tor Complete]",str_err)
+                    #str_err = "Error on Find command, rerun" + torrent_name
+                    #push = pb.push_note("[Tor Complete]",str_err)
                     sys.exit(-2)
                 ret = ret.rstrip()
                 log.debug('Find Returned : %s' % ret)
@@ -122,8 +122,8 @@ for path, task in FLEXGET_PATH_TASK.items():
                 except:
                     e = sys.exc_info()[0]
                     log.error("Error on Extraction with %s" % e)
-                    str_err = "Error on Extraction, error: " + e
-                    push = pb.push_note("[Tor Complete]",str_err)
+                    #str_err = "Error on Extraction, error: " + e
+                    #push = pb.push_note("[Tor Complete]",str_err)
                     sys.exit(-2)
                 #with RarFile(rar_file,path=out_path) as rf:
                 #    rf.extractall()

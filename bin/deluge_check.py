@@ -22,23 +22,23 @@ for fn in os.listdir(search_path):
         deluge_movie_list.append(deluge_name)
 
 # BUILD the TV show compare list
-comp = os.listdir('/home/bsmith/Downloads/completed/TvShows/')
+comp = os.listdir('/mnt/disk1/Downloads/completed/TvShows/')
 comp_list = []
 for dir in comp:
     comp_list.append(dir)
-comp2 = os.listdir('/mnt/disk1/Downloads/completed/TvShows/')
-for dir in comp2:
-    comp_list.append(dir)
+#comp2 = os.listdir('/mnt/disk1/Downloads/completed/TvShows/')
+#for dir in comp2:
+#    comp_list.append(dir)
 
 # build the movies compare list
-movie_comp = os.listdir('/home/bsmith/Downloads/completed/Movies/')
+movie_comp = os.listdir('/mnt/disk1/Downloads/completed/Movies/')
 movie_comp_list = []
 for dir in movie_comp:
     movie_comp_list.append(dir)
 
-movie2 = os.listdir('/mnt/disk1/Downloads/completed/Movies/')
-for dir in movie2:
-    movie_comp_list.append(dir)
+#movie2 = os.listdir('/mnt/disk1/Downloads/completed/Movies/')
+#for dir in movie2:
+#    movie_comp_list.append(dir)
 
 # create a list of TVShows to remove
 remove_list = []
@@ -50,7 +50,7 @@ for torrent in sorted(comp_list):
 
 # Print out that list
 for i in remove_list:
-    print "rm -rfv /home/bsmith/Downloads/completed/TvShows/" + i 
+    print "rm -rfv /mnt/disk1/Downloads/completed/TvShows/" + i 
 
 # Create a list of Movies to remove
 remove_list = []
@@ -62,7 +62,7 @@ for torrent in sorted(movie_comp_list):
 
 # print out that list
 for i in remove_list:
-    print "rm -rfv /home/bsmith/Downloads/completed/Movies/" + i
+    print "rm -rfv /mnt/disk1/Downloads/completed/Movies/" + i
 
 
         

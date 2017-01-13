@@ -6,7 +6,7 @@
 # This config file is not a standard Flexget config, it is used
 # to sort my unrared movies and TV shows into their proper place
 #
-secrets: secretfile.yml
+variables: secretfile.yml
 templates:
   global:
     # Each feed must be run manually
@@ -26,26 +26,32 @@ templates:
         - \bsample\b: {from: title}
     content_size:
       min: 60
-    slack:
-      webhook-url: '{{secrets.slack.url}}'
-      text: "[{{task}}] - Sorted:
-        {% if series_name is defined %}
-        {% if trakt_series_slug is defined and trakt_season is defined and trakt_episode is defined %}
-        <https://trakt.tv/shows/{{ trakt_series_slug }}/seasons/{{ trakt_season }}/episodes/{{ trakt_episode }}|{{tvdb_series_name|d(series_name)}} - {{series_id}}{{tvdb_ep_name|d('')}}>
-        {% else %}
-        {{tvdb_series_name|d(series_name)}} - {{series_id}} - {{tvdb_ep_name|d('')}}
-        {% endif %}
-        - {{quality}}
-        {% elif imdb_name is defined %}
-        {% if imdb_url is defined %}
-        {{imdb_url}} {{imdb_name}} {{imdb_year}}
-        {% else %}
-        {{imdb_name}} {{imdb_year}}
-        {% endif %}
-        - {{quality}}
-        {% else %}
-        {{title}}
-        {% endif %}"
+    notify:
+      entries:
+        title: "[{{task}}] - Sorted"
+        message: "[{{task}}] - Sorted:
+                {% if series_name is defined %}
+                {% if trakt_series_slug is defined and trakt_season is defined and trakt_episode is defined %}
+                <https://trakt.tv/shows/{{ trakt_series_slug }}/seasons/{{ trakt_season }}/episodes/{{ trakt_episode }}|{{tvdb_series_name|d(series_name)}} - {{series_id}}{{tvdb_ep_name|d('')}}>
+                {% else %}
+                {{tvdb_series_name|d(series_name)}} - {{series_id}} - {{tvdb_ep_name|d('')}}
+                {% endif %}
+                - {{quality}}
+                {% elif imdb_name is defined %}
+                {% if imdb_url is defined %}
+                {{imdb_url}} {{imdb_name}} {{imdb_year}}
+                {% else %}
+                {{imdb_name}} {{imdb_year}}
+                {% endif %}
+                - {{quality}}
+                {% else %}
+                {{title}}
+                {% endif %}"
+        what: accepted
+        via:
+          - slack:
+              web_hook_url: '{? slack.url ?}'
+              icon_emoji: hamburger              
 
 tasks:
   Sort_Unpacked_TV_Shows:
@@ -75,12 +81,12 @@ tasks:
       to: >
         /mnt/disk1/Library/TvShows/{{ series_name|replace('/', '_')|replace(':', ' -') }}/{% if series_id_type == 'ep' %}Season {{ tvdb_season|default(series_season) }}/{% endif %}
       # Filename (inside of folder) to move to
-      filename: >
+      rename: >
         {{ series_name|replace('/', '_')|replace(':', ' -') }} - {{ tvdb_ep_id|default(series_id) }}{% if tvdb_ep_name|default(False) %} - {{ tvdb_ep_name|replace('/', '_')|replace(':', ' -') }}{% endif %} - {{ quality }}.{{ location[-3:] }}
       clean_source: 40
     #pushbullet:
-    #  apikey: '{{ secrets.pushb.apikey }}'
-    #  device: '{{ secrets.pushb.device }}'
+    #  apikey: '{? pushb.apikey ?}'
+    #  device: '{? pushb.device ?}'
     #  title: "[Flexget] Sorted TV Show"
     #  body: "{{task}} - {{ series_name|replace('/', '_')|replace(':', ' -') }} - {{ tvdb_ep_id|default(series_id) }}{% if tvdb_ep_name|default(False) %} - {{ tvdb_ep_name|replace('/', '_')|replace(':', ' -') }}{% endif %} - {{ quality }}.{{ location[-3:] }}"
 
@@ -94,12 +100,12 @@ tasks:
     move:
       to: >
         /mnt/disk1/Library/Movies/{{ imdb_name|replace('/', '_')|replace(':', ' -') }} ({{ imdb_year }})/
-      filename: >
+      rename: >
         {{ imdb_name|replace('/', '_')|replace(':', ' -') }} ({{ imdb_year }}) - {{ quality }}.{{ location[-3:] }}
       clean_source: 1000
     #pushbullet:
-    #  apikey: '{{ secrets.pushb.apikey }}'
-    #  device: '{{ secrets.pushb.device }}'
+    #  apikey: '{? pushb.apikey ?}'
+    #  device: '{? pushb.device ?}'
     #  title: "[Flexget] Sorted Movie"
     #  body: "{{task}} - {{ imdb_name }} {{ imdb_year }} - {{ quality }} http://www.imdb.com/title/{{imdb_id}}"
 
