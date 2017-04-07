@@ -6,4 +6,6 @@ series:
       identified_by: ep
   - Moonshiners:
       specials: no
+  - "Hunted (2017)":
+      name_regexp: ^hunted.us?
 

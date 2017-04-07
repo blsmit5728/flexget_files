@@ -59,9 +59,9 @@ tasks:
     filesystem:
       path: "/mnt/disk1/Downloads/staging/TvShows/"
     # Where to get the metadata
-    thexem:
-      source: scene
-      destination: tvdb
+    #thexem:
+    #  source: scene
+    #  destination: tvdb
     thetvdb_lookup: yes
     trakt_lookup: yes
     # This is needed to get my TVDB offset values 

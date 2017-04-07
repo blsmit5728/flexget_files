@@ -107,9 +107,9 @@ templates:
       - "/mnt/disk1/Downloads/staging/TvShows"
     deluge:
       ratio: 1.4
-    thexem:
-      source: scene
-      destination: tvdb
+    #thexem:
+    #  source: scene
+    #  destination: tvdb
     thetvdb_lookup: yes
     trakt_lookup:
       account: '{? trakt_info.user_name ?}' 
