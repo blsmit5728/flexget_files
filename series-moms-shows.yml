@@ -1,3 +1,7 @@
 series:
-  - Gold Rush:
+  - "Gold Rush (2010)":
       specials: no 
+  - "Gold Rush: Parker's Trail (2017)":
+      name_regexp: gold.rush.parkers.trail(.2017)?
+      #identified_by: sequence
+      #id_regexp: part.(\d)

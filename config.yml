@@ -139,7 +139,7 @@ templates:
               - '^(HD|BDRip|DVDRip.DVDScreener|DVD-R|Documentaries)$': {from: category}
     archive: [movies]
     content_size:
-      max: 15000
+      max: 20000
       min: 1000
     exists_movie:
       - "/mnt/disk1/Library/Movies/"
