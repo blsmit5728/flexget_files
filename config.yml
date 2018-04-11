@@ -66,6 +66,7 @@ templates:
       max_retries: 5
     verify_ssl_certificates: no
     magnets: no
+    #cfscraper: yes
     notify:
       entries:
         title: "[{{task}}] - Download started"
@@ -92,13 +93,12 @@ templates:
           - slack:
               web_hook_url: '{? slack.url ?}'
               icon_emoji: tv
-              
-    #download: "/home/bsmith/Downloads/torrents/"
       
   tv-global:
+    headers:
+      User-Agent: "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.84 Safari/537.36"
     inputs:
       - rss: { url: '{? tl.url ?}', silent: yes }
-      #- rss: { url: 'http://kickass.to/tv/?rss=1' , silent: yes }
     content_size:
       max: 8000
       min: 20
@@ -116,19 +116,22 @@ templates:
       username: '{? trakt_info.user_name ?}'
     set:
       queuetotop: yes
+    deluge:
+      ratio: 1.4
+    #thexem:
+    #  source: scene
+    #  destination: tvdb
+    thetvdb_lookup: yes
+    trakt_lookup:
+      account: '{? trakt_info.user_name ?}' 
+      username: '{? trakt_info.user_name ?}'
+    set:
+      queuetotop: yes
       content_filename: "{{ tvdb_series_name|default(series_name)|replace('/', '_')|replace(':', ' -')|replace(',', '') }} - {{ series_id }}{% if tvdb_ep_name|default(False) %} - {{ tvdb_ep_name|replace('/', '_')|replace(':', ' -')|replace(',', '') }}{% endif %} - {{ quality }}"
       movedone: "/mnt/disk1/Library/TvShows/{{ series_name|replace('/', '_')|replace(':', ' ') }}/{% if series_id_type == 'ep' %}Season {{ trakt_season|default(series_season) }}/{% endif %}"
     content_sort:
       '*.rar': "/mnt/disk1/Downloads/completed/TvShows/"
     
-    #pushbullet:
-    #  apikey: '{? pushb.apikey ?}'
-    #  device: '{? pushb.device ?}'
-    #  title: "[Flexget] {{series_name}} {{series_id}}"
-    #  body: "{{task}} - {{ tvdb_series_name|default(series_name) }} - {{ series_id }}{% if tvdb_ep_name|default(False) %} - {{ tvdb_ep_name }}{% endif %}\n{{ quality }}\nTorrent File: {{title}}"
-    #  #url: "{% if trakt_series_url is defined and trakt_season is defined and trakt_episode is defined %}{{ trakt_series_url|replace('.','-')|replace(' ','-') }}/season/{{ trakt_season }}/episode/{{ trakt_episode }}{% endif %}"
-    #  #url: "imdb:///title/{{"
-
   movie-global:
     inputs:
       - rss: { url: '{? tl.url ?}', silent: yes }
@@ -143,6 +146,7 @@ templates:
       min: 1000
     exists_movie:
       - "/mnt/disk1/Library/Movies/"
+      - "/mnt/disk1/Library/Kids/"
       - "/mnt/disk1/Downloads/staging/Movies/"
     tmdb_lookup: yes
     imdb_lookup: yes
@@ -216,8 +220,8 @@ tasks:
           list: TvShows   
           type: shows
       settings:
-        timeframe: 4 hours 
-        target: 720p+ 
+        timeframe: 1 hours 
+        target: 720p+
         quality: 480p+
 
   tv-interesting:
@@ -235,9 +239,7 @@ tasks:
           list: Interesting
           type: shows
       settings:
-        timeframe: 3 hours
-        target: 720p+
-        quality: 480p+
+        quality: hdtv+
 
   tv-reality:
     priority: 7
@@ -254,13 +256,11 @@ tasks:
           list: RealityTV   
           type: shows
       settings:
-        timeframe: 3 hours
-        target: hdtv+ dvdscr+        
-        quality: 480p+ sdtv+             
+        quality: hdtv+             
 
   tv-laura:
     priority: 8
-    include: [ series-wife.yml ]
+    #include: [ series-wife.yml ]
     template:
       - tv-global
     set:
@@ -273,9 +273,7 @@ tasks:
           list: Laura   
           type: shows
       settings:
-        timeframe: 4 hours
-        target: 480p+       
-        quality: 360p+             
+        quality: hdtv+       
               
   clean-movie-queue:
     priority: 90
@@ -406,7 +404,7 @@ tasks:
       - series-interesting.yml  
       - series-reality.yml  
       - series-tvshows.yml  
-      - series-wife.yml
+        #- series-wife.yml
     template:
       - tv-global
     disable:
@@ -496,7 +494,7 @@ tasks:
       
   trakt-fall-shows:
     priority: 6
-    include: [ series-fall-shows.yml ]
+    #include: [ series-fall-shows.yml ]
     template: 
       - tv-global
     set:
@@ -509,10 +507,7 @@ tasks:
           list: Fall Shows 
           type: shows
       settings:
-        timeframe: 2 hours
-        target: 720p+ 
         quality: hdtv+ 
-        propers: 2 hours
 
   trakt-moms-shows:
     priority: 6
@@ -525,66 +520,52 @@ tasks:
       from:
         trakt_list:
           username: '{? trakt_info.user_name ?}'
-          account: blsmit5728
           list: Moms Shows
-          type: shows
-      settings:
-        timeframe: 2 hours
-        target: 720p+ hdtv+ 
-        quality: 360p+ tvrip+ 
-        propers: 2 hours
-  
-  trakt-daily-shows:
-    priority: 2
-    include: [ series-daily-shows.yml ]
-    template:
-      - tv-global
-    set:
-      label: tv-daily
-    configure_series:
-      from:
-        trakt_list:
-          username: '{? trakt_info.user_name ?}'
           account: blsmit5728
-          list: Daily
-          type: shows
-      settings:
-        target: 720p+ webrip+
-        timeframe: 12 hours
-        quality: 360p+ tvrip+ 
-        tracking: backfill
+  #    label: tv-daily
+  #  configure_series:
+  #    from:
+  #      trakt_list:
+  #        username: '{? trakt_info.user_name ?}'
+  #        account: blsmit5728
+  #        list: Daily
+  #        type: shows
+  #    settings:
+  #      target: 720p+ webrip+
+  #      timeframe: 12 hours
+  #      quality: 360p+ tvrip+ 
+  #      tracking: backfill
   
-  alex-tv-shows:
-    priority: 10
-    template:
-      - tv-global
-    set:
-      label: tv-alex
-    configure_series:
-      from:
-        trakt_list:
-          username: '{? trakt_info.am_username ?}'
-          account: alexmcree
-          list: watchlist
-          type: shows
-      settings:
-        target: 720p+ webrip+
-        timeframe: 12 hours
-        quality: 360p+ tvrip+
+  #alex-tv-shows:
+  #  priority: 10
+  #  template:
+  #    - tv-global
+  #  set:
+  #    label: tv-alex
+  #  configure_series:
+  #    from:
+  #      trakt_list:
+  #        username: '{? trakt_info.am_username ?}'
+  #        account: alexmcree
+  #        list: watchlist
+  #        type: shows
+  #    settings:
+  #      quality: hdtv+
  
-  alex-imdb-list-to-trakt:
-    priority: 1
-    template: no_global
-    imdb_lookup: yes
-    imdb_list:
-      login: '{? imdb.am_login ?}'
-      password: '{? imdb.am_password ?}'
-      list: watchlist
-    list_add:
-      - movie_list: my_movies
-      - trakt_list:
-          account: '{? trakt_info.user_name ?}'
-          username: '{? trakt_info.user_name ?}'
-          list: Movie_Queue
-          type: movies
-    accept_all: yes
+  #alex-imdb-list-to-trakt:
+  #  priority: 1
+  #  template: no_global
+  #  imdb_lookup: yes
+  #  imdb_list:
+  #    login: '{? imdb.am_login ?}'
+  #    password: '{? imdb.am_password ?}'
+  #    list: watchlist
+  #  list_add:
+  #    - movie_list: my_movies
+  #    - trakt_list:
+  #        account: '{? trakt_info.user_name ?}'
+  #        username: '{? trakt_info.user_name ?}'
+  #        list: Movie_Queue
+  #        type: movies
+  #  accept_all: yes
+

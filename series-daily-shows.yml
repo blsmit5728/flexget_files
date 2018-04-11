@@ -1,5 +1,1 @@
-series:
-  - Jimmy Kimmel Live!:
-      name_regexp: ^jimmy.kimmel.live(!)?
-      identified_by: date
                   

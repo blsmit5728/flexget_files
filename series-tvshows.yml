@@ -1,40 +1,30 @@
 series:  
-  - American Dad!:
+  - "American Dad!":
       name_regexp: ^american.dad(!)?
-  - Archer (2009):
+  - "Archer (2009)":
       name_regexp: ^archer(.2009)?
   - "Bob's Burgers":
       name_regexp: ^bobs.burgers
-  - "Cosmos A Spacetime Odyssey":
-      name_regexp: ^cosmos.+a.space.time.odyssey
-  - Dads (2013):
-      name_regexp: ^dads(.2013)?
-  - Halt and Catch Fire:
+  - "Halt and Catch Fire":
       name_regexp: ^halt(.and|.&)?.catch.fire
-  - The Americans (2013):
+  - "The Americans (2013)":
       name_regexp: ^the.americans(.2013)?
-  # Trakt uses a wrong name for this Show.
-  - The Bridge US  
-  - Parks and Recreation:
-      name_regexp: ^parks.and.recreation(.2009)?
-  - Better Call Saul:
+  - "Better Call Saul":
       name_regexp: ^better.call.saul?
-  - House of Cards (2013):
+  - "House of Cards (2013)":
       name_regexp: ^house.of.cards(.2013)?
-  - "Marvel's Agents of S.H.I.E.L.D.":
-      name_regexp: ^marvel(')?s.agents.of.(s.h.i.e.l.d.?|shield)
-  - Brooklyn Nine-Nine:
+  - "Marvels Agents of S.H.I.E.L.D.":
+      name_regexp: ^marvels.agents.of.(s.h.i.e.l.d.?|shield)
+  - "Brooklyn Nine-Nine (2013)":
       name_regexp: ^brooklyn.nine.nine.(2013)?
-  - Tosh.0:
+  - "Tosh.0":
       name_regexp: ^tosh.0.(2009)?
-  - "Turn":
-      name_regexp: ^turn.(2014)?
   - "Fear the Walking Dead (2015)":
       name_regexp: ^fear.the.walking.dead.(2015)?
-  - "Mr Robot":
+  - "Mr Robot (2015)":
       name_regexp: ^mr.robot.(2015)?
-  - "Scream Queens (2015)":
-      name_regexp: ^scream.queens.(2015)?
+  - "Shameless (2011)":
+      name_regexp: ^shameless.(US)?
 
 
 

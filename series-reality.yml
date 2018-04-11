@@ -1,11 +1,9 @@
 series:
   - "Fast N' Loud":
       name_regexp: ^fast.n(.)?.loud
-  - Last Week Tonight With John Oliver:
+  - "Last Week Tonight With John Oliver (2014)":
       name_regexp: last.week.tonight.with.john.oliver.(.2014)?
       identified_by: ep
-  - Moonshiners:
+  - "Moonshiners":
       specials: no
-  - "Hunted (2017)":
-      name_regexp: ^hunted.us?
 

@@ -1,14 +1,5 @@
 series:
-  - House of Lies:
-      name_regexp: ^house.of.lies.(2012)?
-  - Zoo:
-      name_regexp: ^zoo.(2015)?
-  - Bordertown (2016):
-      name_regexp: ^bordertown.(2016)?
   - The Detour (2016):
       name_regexp: ^the.detour.(2016)?
-  - The Knick (2016):
-      name_regexp: ^the.knick.(2016)?
-
 
 
