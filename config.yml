@@ -1,31 +1,62 @@
 variables: secretfile.yml
 templates:
+  my-deluge-tv:
+    deluge:
+      removeatratio: yes
+      port: 58846
+      main_file_only: yes 
+      username: bsmith
+      password: '{? deluge.password ?}'
+      ratio: 1.4
+    set:
+      queuetotop: yes
+      content_filename: "{{ tvdb_series_name|default(series_name)|replace('/', '_')|replace(':', ' -')|replace(',', '') }} - {{ series_id }}{% if tvdb_ep_name|default(False) %} - {{ tvdb_ep_name|replace('/', '_')|replace(':', ' -')|replace(',', '') }}{% endif %} - {{ quality }}"
+      movedone: "/mnt/disk1/Library/TvShows/{{ series_name|replace('/', '_')|replace(':', ' ') }}/{% if series_id_type == 'ep' %}Season {{ trakt_season|default(series_season) }}/{% endif %}"
+
+
+  my-deluge-movie:
+    deluge:
+      removeatratio: yes
+      port: 58846
+      main_file_only: yes 
+      username: bsmith
+      password: '{? deluge.password ?}'
+      ratio: 3.0
+    set:
+      content_filename: "{{ tmdb_name|replace('/', '_')|replace(':', ' ') }} ({{ tmdb_year }}) - {{ quality }}"
+      movedone: "/mnt/disk1/Library/Movies/{{ tmdb_name|replace('/', '_')|replace(':', ' ') }} ({{ tmdb_year }})"
+
+
   global:
     domain_delay:
       www.torrentleech.org: 10 seconds
       rss.torrentleech.org: 10 minutes
       bt-chat.com: 5 seconds
       torrentz.eu: 5 seconds
-    if:
-      - "'torrentleech' in url":
-          deluge:
-            #ratio: 1.4
-            removeatratio: yes
-            port: 58846
-            main_file_only: yes 
-            username: bsmith
-            password: '{? deluge.password ?}'
-      - "'torrentleech' not in url":
-          deluge:
-            username: bsmith
-            password: '{? deluge.password ?}'
-            ratio: 0.1
-            removeatratio: yes
-            port: 58846
-            main_file_only: yes
+    #if:
+    #  - "'torrentleech' in url":
+    #      deluge:
+    #        removeatratio: yes
+    #        port: 58846
+    #        main_file_only: yes 
+    #        username: bsmith
+    #        password: '{? deluge.password ?}'
+    #  - "'torrentleech' not in url":
+    #      deluge:
+    #        username: bsmith
+    #        password: '{? deluge.password ?}'
+    #        ratio: 0.1
+    #        removeatratio: yes
+    #        port: 58846
+    #        main_file_only: yes
     free_space:
       path: /mnt/disk1/
       space: 10000
+    headers:
+      User-Agent: 'curl/7.35.0'  
+    exec:
+      on_output:
+        for_accepted: echo 'downloading file {{output}} from {{url}}' >> /home/bsmith/logs/downloading.log
     regexp:
       reject:
         - (s|d)ub(s|bed)?\b: {from: title} 
@@ -64,7 +95,7 @@ templates:
       retry_time: 1 hour
       retry_time_multiplier: 2
       max_retries: 5
-    verify_ssl_certificates: no
+    verify_ssl_certificates: yes
     magnets: no
     #cfscraper: yes
     notify:
@@ -103,38 +134,34 @@ templates:
       max: 8000
       min: 20
     exists_series:
-      - "/mnt/disk1/Library/TvShows/"
-      - "/mnt/disk1/Downloads/staging/TvShows"
-    deluge:
-      ratio: 1.4
-    #thexem:
-    #  source: scene
-    #  destination: tvdb
+      path: "/mnt/disk1/Library/TvShows/"
+      path: "/mnt/disk1/Downloads/staging/TvShows"
+      allow_different_qualities: no
+    #deluge:
+    #  ratio: 1.4
     thetvdb_lookup: yes
+    make_rss: /home/bsmith/flexget_rss.rss
     trakt_lookup:
       account: '{? trakt_info.user_name ?}' 
       username: '{? trakt_info.user_name ?}'
-    set:
-      queuetotop: yes
-    deluge:
-      ratio: 1.4
-    #thexem:
-    #  source: scene
-    #  destination: tvdb
-    thetvdb_lookup: yes
-    trakt_lookup:
-      account: '{? trakt_info.user_name ?}' 
-      username: '{? trakt_info.user_name ?}'
-    set:
-      queuetotop: yes
-      content_filename: "{{ tvdb_series_name|default(series_name)|replace('/', '_')|replace(':', ' -')|replace(',', '') }} - {{ series_id }}{% if tvdb_ep_name|default(False) %} - {{ tvdb_ep_name|replace('/', '_')|replace(':', ' -')|replace(',', '') }}{% endif %} - {{ quality }}"
-      movedone: "/mnt/disk1/Library/TvShows/{{ series_name|replace('/', '_')|replace(':', ' ') }}/{% if series_id_type == 'ep' %}Season {{ trakt_season|default(series_season) }}/{% endif %}"
+    #set:
+    #  queuetotop: yes
+    #  content_filename: "{{ tvdb_series_name|default(series_name)|replace('/', '_')|replace(':', ' -')|replace(',', '') }} - {{ series_id }}{% if tvdb_ep_name|default(False) %} - {{ tvdb_ep_name|replace('/', '_')|replace(':', ' -')|replace(',', '') }}{% endif %} - {{ quality }}"
+    #  movedone: "/mnt/disk1/Library/TvShows/{{ series_name|replace('/', '_')|replace(':', ' ') }}/{% if series_id_type == 'ep' %}Season {{ trakt_season|default(series_season) }}/{% endif %}"
     content_sort:
       '*.rar': "/mnt/disk1/Downloads/completed/TvShows/"
+    exec:
+      on_filter:
+        for_accepted: wget {{url}} -P /home/bsmith/Dropbox/torrents/TvShows/
+
     
   movie-global:
     inputs:
       - rss: { url: '{? tl.url ?}', silent: yes }
+    urlrewrite:
+      torrentleech:
+        regexp: 'https://www.torrentleech.org/(?P<name>.*)'
+        format: 'https://v4.torrentleech.org/\g<name>'
     if:
       - "has_field('category')":
           regexp:
@@ -153,19 +180,16 @@ templates:
     trakt_lookup:
       account: blsmit5728
       username: blsmit5728
-    deluge:
-      ratio: 3.0
-    set:
-      content_filename: "{{ tmdb_name|replace('/', '_')|replace(':', ' ') }} ({{ tmdb_year }}) - {{ quality }}"
-      movedone: "/mnt/disk1/Library/Movies/{{ tmdb_name|replace('/', '_')|replace(':', ' ') }} ({{ tmdb_year }})"
+    #deluge:
+    #  ratio: 3.0
+    #set:
+    #  content_filename: "{{ tmdb_name|replace('/', '_')|replace(':', ' ') }} ({{ tmdb_year }}) - {{ quality }}"
+    #  movedone: "/mnt/disk1/Library/Movies/{{ tmdb_name|replace('/', '_')|replace(':', ' ') }} ({{ tmdb_year }})"
     content_sort:
       '*.rar': "/mnt/disk1/Downloads/completed/Movies/"
-    #pushbullet:
-    #  apikey: '{? pushb.apikey ?}'
-    #  device: '{? pushb.device ?}'
-    #  title: "[Flexget] Movie Downloaded"
-    #  body: "{{task}} - {{ imdb_name }} {{ imdb_year }} - {{ quality }}\nTorrent File: {{title}}"
-    #  url: "imdb:///title/{{ imdb_id }}?src=mdot"
+    exec:
+      on_output:
+        for_accepted: wget {{url}} -P /home/bsmith/Dropbox/torrents/movies/
 
   movies-discover:
     discover:
@@ -181,14 +205,16 @@ templates:
   movies-queued:
     list_match:
       from:
-        - movie_list: my_movies    
+        #- movie_list: movies_2018     
+        - movie_list: movies_2018    
       single_match: no
-    template: movies-discover
+    #template: movies-discover
+    #template: movie-global
     disable:
       - seen_movies
     discover:
       what:
-        - movie_list: my_movies
+        - movie_list: movies_2018
       from: [ filler: yes ]
     set:
       label: my-movies
@@ -210,6 +236,7 @@ tasks:
     include: [ series-tvshows.yml ]
     template:
       - tv-global
+     #- my-deluge-tv
     set:
       label: tv-my-shows
     configure_series:
@@ -229,6 +256,7 @@ tasks:
     include: [ series-interesting.yml ] 
     template:
       - tv-global
+     #- my-deluge-tv
     set:
       label: tv-interesting
     configure_series:
@@ -243,9 +271,12 @@ tasks:
 
   tv-reality:
     priority: 7
+    headers:
+      User-Agent: 'curl/7.35.0' 
     include: [ series-reality.yml ]
     template:
       - tv-global
+      - my-deluge-tv
     set:
       label: tv-reality
     configure_series:
@@ -261,8 +292,11 @@ tasks:
   tv-laura:
     priority: 8
     #include: [ series-wife.yml ]
+    headers:
+      User-Agent: 'curl/7.35.0'
     template:
       - tv-global
+      - my-deluge-tv
     set:
       label: tv-laura
     configure_series:
@@ -295,7 +329,7 @@ tasks:
     require_field: [movie_name, movie_year]
     list_match:
       from:
-        - movie_list: my_movies
+        - movie_list: movies_2018
       single_match: no
     list_remove:
       - trakt_list:
@@ -303,9 +337,17 @@ tasks:
           username: '{? trakt_info.user_name ?}'
           list: Movie_Queue
           type: movies
+
   movies-1080p:
     priority: 110
+    headers:
+      User-Agent: 'curl/7.35.0' 
+    urlrewrite:
+      sitename:
+        regexp: 'https://www.torrentleech.org/(?P<name>.*)'
+        format: 'https://v4.torrentleech.org/\g<name>'
     template: 
+      - my-deluge-movie
       - movie-global
       - movies-queued
     quality: 1080p+ bluray+ h264+ !mp3 !aac
@@ -324,20 +366,24 @@ tasks:
     priority: 1
     template: no_global
     imdb_lookup: yes
-    #list_match:
-    #  from:
     imdb_list:
       login: '{? imdb.login ?}'
       password: '{? imdb.password ?}'
       list: watchlist
-    #single_match: no
     list_add:
-      - movie_list: my_movies
+      - movie_list: movies_2018
       - trakt_list:
           account: '{? trakt_info.user_name ?}'
           username: '{? trakt_info.user_name ?}'
           list: Movie_Queue
           type: movies
+    list_clear:
+      what:
+        - imdb_list:
+            login: '{? imdb.login ?}'
+            password: '{? imdb.password ?}'
+            list: watchlist
+      phase: exit
     accept_all: yes
 
   trakt-list-to-movie-queue:
@@ -350,7 +396,7 @@ tasks:
       type: movies
     accept_all: yes
     list_add:
-      - movie_list: my_movies
+      - movie_list: movies_2018
    
   local-torrents-movie:
     priority: 200
@@ -372,7 +418,7 @@ tasks:
     # Mark movies as seen
     list_match:
       from:
-        - movie_list: my_movies
+        - movie_list: movies_2018
       single_match: no
     plugin_priority:
       exec: 0
@@ -398,6 +444,8 @@ tasks:
           username: '{? trakt_info.user_name ?}'
           list: watchlist
           type: movies
+
+#Local Torrents
   local-torrents-tv:
     priority: 201
     include:
@@ -407,13 +455,14 @@ tasks:
         #- series-wife.yml
     template:
       - tv-global
+      - my-deluge-tv
     disable:
-      - seen
-      - seen_info_hash
-      - configure_series
+    # - seen
+    #  - seen_info_hash
+    #- configure_series
     #- trakt_list
       - inputs
-      - exists_series
+    # - exists_series
       - regexp
       - content_size
       - torrent_alive
@@ -432,7 +481,7 @@ tasks:
     exec:
       on_output:
         for_accepted: rm "{{location}}"
-    accept_all: yes
+    #accept_all: yes
     set:
       label: local-tv
     sequence:
@@ -463,7 +512,6 @@ tasks:
               list: Moms Shows   
               type: shows
               strip_dates: yes
-      
       - configure_series:
           settings:
             assume_special: true
@@ -522,19 +570,7 @@ tasks:
           username: '{? trakt_info.user_name ?}'
           list: Moms Shows
           account: blsmit5728
-  #    label: tv-daily
-  #  configure_series:
-  #    from:
-  #      trakt_list:
-  #        username: '{? trakt_info.user_name ?}'
-  #        account: blsmit5728
-  #        list: Daily
-  #        type: shows
-  #    settings:
-  #      target: 720p+ webrip+
-  #      timeframe: 12 hours
-  #      quality: 360p+ tvrip+ 
-  #      tracking: backfill
+  
   
   #alex-tv-shows:
   #  priority: 10
@@ -561,7 +597,7 @@ tasks:
   #    password: '{? imdb.am_password ?}'
   #    list: watchlist
   #  list_add:
-  #    - movie_list: my_movies
+  #    - movie_list: movies_2018
   #    - trakt_list:
   #        account: '{? trakt_info.user_name ?}'
   #        username: '{? trakt_info.user_name ?}'
