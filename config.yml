@@ -26,37 +26,43 @@ templates:
       content_filename: "{{ tmdb_name|replace('/', '_')|replace(':', ' ') }} ({{ tmdb_year }}) - {{ quality }}"
       movedone: "/mnt/disk1/Library/Movies/{{ tmdb_name|replace('/', '_')|replace(':', ' ') }} ({{ tmdb_year }})"
 
+  slack-notify:
+    notify:
+      entries:
+        title: "[{{task}}] - Download started"
+        message: "[{{task}}] - Download started:
+          {% if series_name is defined %}
+          {% if trakt_series_slug is defined and trakt_season is defined and trakt_episode is defined %}
+          <https://trakt.tv/shows/{{ trakt_series_slug }}/seasons/{{ trakt_season }}/episodes/{{ trakt_episode }}|{{tvdb_series_name|d(series_name)}} - {{series_id}}{{tvdb_ep_name|d('')}}>
+          {% else %}
+          {{tvdb_series_name|d(series_name)}} - {{series_id}} - {{tvdb_ep_name|d('')}}
+          {% endif %}
+          - {{quality}}
+          {% elif imdb_name is defined %}
+          {% if imdb_url is defined %}
+          {{imdb_url}} {{imdb_name}} {{imdb_year}}
+          {% else %}
+          {{imdb_name}} {{imdb_year}}
+          {% endif %}
+          - {{quality}}
+          {% else %}
+          {{title}}
+          {% endif %}"
+        what: accepted
+        via:
+          - slack:
+              web_hook_url: '{? slack.url ?}'
+              icon_emoji: tv
 
   global:
     domain_delay:
       www.torrentleech.org: 10 seconds
       rss.torrentleech.org: 10 minutes
-      bt-chat.com: 5 seconds
-      torrentz.eu: 5 seconds
-    #if:
-    #  - "'torrentleech' in url":
-    #      deluge:
-    #        removeatratio: yes
-    #        port: 58846
-    #        main_file_only: yes 
-    #        username: bsmith
-    #        password: '{? deluge.password ?}'
-    #  - "'torrentleech' not in url":
-    #      deluge:
-    #        username: bsmith
-    #        password: '{? deluge.password ?}'
-    #        ratio: 0.1
-    #        removeatratio: yes
-    #        port: 58846
-    #        main_file_only: yes
     free_space:
       path: /mnt/disk1/
       space: 10000
     headers:
       User-Agent: 'curl/7.35.0'  
-    exec:
-      on_output:
-        for_accepted: echo 'downloading file {{output}} from {{url}}' >> /home/bsmith/logs/downloading.log
     regexp:
       reject:
         - (s|d)ub(s|bed)?\b: {from: title} 
@@ -97,35 +103,9 @@ templates:
       max_retries: 5
     verify_ssl_certificates: yes
     magnets: no
-    #cfscraper: yes
-    notify:
-      entries:
-        title: "[{{task}}] - Download started"
-        message: "[{{task}}] - Download started:
-          {% if series_name is defined %}
-          {% if trakt_series_slug is defined and trakt_season is defined and trakt_episode is defined %}
-          <https://trakt.tv/shows/{{ trakt_series_slug }}/seasons/{{ trakt_season }}/episodes/{{ trakt_episode }}|{{tvdb_series_name|d(series_name)}} - {{series_id}}{{tvdb_ep_name|d('')}}>
-          {% else %}
-          {{tvdb_series_name|d(series_name)}} - {{series_id}} - {{tvdb_ep_name|d('')}}
-          {% endif %}
-          - {{quality}}
-          {% elif imdb_name is defined %}
-          {% if imdb_url is defined %}
-          {{imdb_url}} {{imdb_name}} {{imdb_year}}
-          {% else %}
-          {{imdb_name}} {{imdb_year}}
-          {% endif %}
-          - {{quality}}
-          {% else %}
-          {{title}}
-          {% endif %}"
-        what: accepted
-        via:
-          - slack:
-              web_hook_url: '{? slack.url ?}'
-              icon_emoji: tv
       
   tv-global:
+    template: slack-notify
     headers:
       User-Agent: "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.84 Safari/537.36"
     inputs:
@@ -149,6 +129,7 @@ templates:
 
     
   movie-global:
+    template: slack-notify
     inputs:
       - rss: { url: '{? tl.url ?}', silent: yes }
     if:
@@ -213,7 +194,7 @@ tasks:
       from:
         trakt_list:
           username: '{? trakt_info.user_name ?}'
-          account: blsmit5728
+          account: '{? trakt_info.user_name ?}'
           list: TvShows   
           type: shows
       settings:
@@ -249,7 +230,7 @@ tasks:
       from:
         trakt_list:
           username: '{? trakt_info.user_name ?}'
-          account: blsmit5728
+          account: '{? trakt_info.user_name ?}'
           list: RealityTV   
           type: shows
       settings:
@@ -352,7 +333,15 @@ tasks:
     accept_all: yes
     list_add:
       - movie_list: movies_2018
-   
+  
+  sync-trakt:
+    next_trakt_episodes:
+      account: '{? trakt_info.user_name ?}' 
+      context: collected
+      list: TvShows
+    accept_all: yes
+    set_series_begin: yes
+
   local-torrents-movie:
     priority: 200
     template:
@@ -404,24 +393,26 @@ tasks:
       - series-tvshows.yml  
         #- series-wife.yml
     template:
-      - tv-global
+     #- tv-global
       - my-deluge-tv
-    disable:
+    content_sort:
+      '*.rar': "/mnt/disk1/Downloads/completed/TvShows/"
+    #disable:
     # - seen
     #  - seen_info_hash
     #- configure_series
     #- trakt_list
-      - inputs
+    #  - inputs
     # - exists_series
-      - regexp
-      - content_size
-      - torrent_alive
-    filler: yes # To avoid warnings about non-functional input
+    #  - regexp
+    #  - content_size
+    #  - torrent_alive
+    #filler: yes # To avoid warnings about non-functional input
     trakt_lookup:
       username: '{? trakt_info.user_name ?}'
       account: '{? trakt_info.user_name ?}'
-    all_series:
-      parse_only: yes
+    #all_series:
+    #  parse_only: yes
     plugin_priority:
       exec: 0
     filesystem:
@@ -431,9 +422,10 @@ tasks:
     exec:
       on_output:
         for_accepted: rm "{{location}}"
+        #for_accepted: echo 'downloading file {{output}} from {{url}}' >> /home/bsmith/logs/downloading.log    
     #accept_all: yes
-    set:
-      label: local-tv
+    #set:
+    #  label: local-tv
     sequence:
       - configure_series:
           settings:
