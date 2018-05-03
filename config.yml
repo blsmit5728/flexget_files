@@ -61,8 +61,6 @@ templates:
     free_space:
       path: /mnt/disk1/
       space: 10000
-    headers:
-      User-Agent: 'curl/7.35.0'  
     regexp:
       reject:
         - (s|d)ub(s|bed)?\b: {from: title} 
@@ -110,9 +108,9 @@ templates:
       User-Agent: "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.84 Safari/537.36"
     inputs:
       - rss: { url: '{? tl.url ?}', silent: yes }
-    content_size:
-      max: 8000
-      min: 20
+    #content_size:
+    #  max: 8000
+    #  min: 20
     exists_series:
       path: ["/mnt/disk1/Library/TvShows/","/mnt/disk1/Downloads/staging/TvShows"]
       allow_different_qualities: no
@@ -132,11 +130,6 @@ templates:
     template: slack-notify
     inputs:
       - rss: { url: '{? tl.url ?}', silent: yes }
-    if:
-      - "has_field('category')":
-          regexp:
-            reject_excluding:
-              - '^(HD|BDRip|DVDRip.DVDScreener|DVD-R|Documentaries)$': {from: category}
     archive: [movies]
     content_size:
       max: 20000
@@ -147,7 +140,7 @@ templates:
     tmdb_lookup: yes
     imdb_lookup: yes
     trakt_lookup:
-      account: blsmit5728
+      account: '{? trakt_info.user_name ?}'
       username: blsmit5728
     content_sort:
       '*.rar': "/mnt/disk1/Downloads/completed/Movies/"
@@ -189,7 +182,6 @@ tasks:
     include: [ series-tvshows.yml ]
     template:
       - tv-global
-     #- my-deluge-tv
     configure_series:
       from:
         trakt_list:
@@ -212,7 +204,7 @@ tasks:
       from:
         trakt_list:
           username: '{? trakt_info.user_name ?}'
-          account: blsmit5728
+          account: '{? trakt_info.user_name ?}'
           list: Interesting
           type: shows
       settings:
@@ -220,12 +212,9 @@ tasks:
 
   tv-reality:
     priority: 7
-    headers:
-      User-Agent: 'curl/7.35.0' 
     include: [ series-reality.yml ]
     template:
       - tv-global
-     #- my-deluge-tv
     configure_series:
       from:
         trakt_list:
@@ -239,11 +228,8 @@ tasks:
   tv-laura:
     priority: 8
     #include: [ series-wife.yml ]
-    headers:
-      User-Agent: 'curl/7.35.0'
     template:
       - tv-global
-    #  - my-deluge-tv
     configure_series:
       from:
         trakt_list:
@@ -334,13 +320,13 @@ tasks:
     list_add:
       - movie_list: movies_2018
   
-  sync-trakt:
-    next_trakt_episodes:
-      account: '{? trakt_info.user_name ?}' 
-      context: collected
-      list: TvShows
-    accept_all: yes
-    set_series_begin: yes
+  #sync-trakt:
+  #  next_trakt_episodes:
+  #    account: '{? trakt_info.user_name ?}' 
+  #    context: collected
+  #    list: TvShows
+  #  accept_all: yes
+  #  set_series_begin: yes
 
   local-torrents-movie:
     priority: 200
@@ -393,26 +379,12 @@ tasks:
       - series-tvshows.yml  
         #- series-wife.yml
     template:
-     #- tv-global
       - my-deluge-tv
     content_sort:
       '*.rar': "/mnt/disk1/Downloads/completed/TvShows/"
-    #disable:
-    # - seen
-    #  - seen_info_hash
-    #- configure_series
-    #- trakt_list
-    #  - inputs
-    # - exists_series
-    #  - regexp
-    #  - content_size
-    #  - torrent_alive
-    #filler: yes # To avoid warnings about non-functional input
     trakt_lookup:
       username: '{? trakt_info.user_name ?}'
       account: '{? trakt_info.user_name ?}'
-    #all_series:
-    #  parse_only: yes
     plugin_priority:
       exec: 0
     filesystem:
@@ -422,10 +394,6 @@ tasks:
     exec:
       on_output:
         for_accepted: rm "{{location}}"
-        #for_accepted: echo 'downloading file {{output}} from {{url}}' >> /home/bsmith/logs/downloading.log    
-    #accept_all: yes
-    #set:
-    #  label: local-tv
     sequence:
       - configure_series:
           settings:
@@ -493,7 +461,7 @@ tasks:
       from:
         trakt_list:
           username: '{? trakt_info.user_name ?}'
-          account: blsmit5728
+          account: '{? trakt_info.user_name ?}' 
           list: Fall Shows 
           type: shows
       settings:
@@ -511,39 +479,6 @@ tasks:
         trakt_list:
           username: '{? trakt_info.user_name ?}'
           list: Moms Shows
-          account: blsmit5728
+          account: '{? trakt_info.user_name ?}'
   
   
-  #alex-tv-shows:
-  #  priority: 10
-  #  template:
-  #    - tv-global
-  #  set:
-  #    label: tv-alex
-  #  configure_series:
-  #    from:
-  #      trakt_list:
-  #        username: '{? trakt_info.am_username ?}'
-  #        account: alexmcree
-  #        list: watchlist
-  #        type: shows
-  #    settings:
-  #      quality: hdtv+
- 
-  #alex-imdb-list-to-trakt:
-  #  priority: 1
-  #  template: no_global
-  #  imdb_lookup: yes
-  #  imdb_list:
-  #    login: '{? imdb.am_login ?}'
-  #    password: '{? imdb.am_password ?}'
-  #    list: watchlist
-  #  list_add:
-  #    - movie_list: movies_2018
-  #    - trakt_list:
-  #        account: '{? trakt_info.user_name ?}'
-  #        username: '{? trakt_info.user_name ?}'
-  #        list: Movie_Queue
-  #        type: movies
-  #  accept_all: yes
-

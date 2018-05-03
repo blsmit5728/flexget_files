@@ -25,6 +25,7 @@ series:
       name_regexp: ^mr.robot.(2015)?
   - "Shameless (2011)":
       name_regexp: ^shameless.(US)?
+  - "The 100"
 
 
 

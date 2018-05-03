@@ -58,10 +58,6 @@ tasks:
     # Where to get the unpacked (staged) files from
     filesystem:
       path: "/mnt/disk1/Downloads/staging/TvShows/"
-    # Where to get the metadata
-    #thexem:
-    #  source: scene
-    #  destination: tvdb
     thetvdb_lookup: yes
     trakt_lookup: yes
     # This is needed to get my TVDB offset values 
@@ -72,7 +68,6 @@ tasks:
      #- series-wife.yml
       - series-moms-shows.yml
     all_series:
-      # Don't actually filter
       parse_only: yes
     # Don't attempt to move if we don't have valid metadata
     require_field: [series_id]
@@ -84,11 +79,6 @@ tasks:
       rename: >
         {{ series_name|replace('/', '_')|replace(':', ' -') }} - {{ tvdb_ep_id|default(series_id) }}{% if tvdb_ep_name|default(False) %} - {{ tvdb_ep_name|replace('/', '_')|replace(':', ' -') }}{% endif %} - {{ quality }}.{{ location[-3:] }}
       clean_source: 40
-    #pushbullet:
-    #  apikey: '{? pushb.apikey ?}'
-    #  device: '{? pushb.device ?}'
-    #  title: "[Flexget] Sorted TV Show"
-    #  body: "{{task}} - {{ series_name|replace('/', '_')|replace(':', ' -') }} - {{ tvdb_ep_id|default(series_id) }}{% if tvdb_ep_name|default(False) %} - {{ tvdb_ep_name|replace('/', '_')|replace(':', ' -') }}{% endif %} - {{ quality }}.{{ location[-3:] }}"
 
   # Same as above
   Sort_Unpacked_Movies:
@@ -103,9 +93,4 @@ tasks:
       rename: >
         {{ imdb_name|replace('/', '_')|replace(':', ' -') }} ({{ imdb_year }}) - {{ quality }}.{{ location[-3:] }}
       clean_source: 1000
-    #pushbullet:
-    #  apikey: '{? pushb.apikey ?}'
-    #  device: '{? pushb.device ?}'
-    #  title: "[Flexget] Sorted Movie"
-    #  body: "{{task}} - {{ imdb_name }} {{ imdb_year }} - {{ quality }} http://www.imdb.com/title/{{imdb_id}}"
 
