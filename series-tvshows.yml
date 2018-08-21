@@ -13,19 +13,20 @@ series:
       name_regexp: ^better.call.saul?
   - "House of Cards (2013)":
       name_regexp: ^house.of.cards(.2013)?
-  - "Marvels Agents of S.H.I.E.L.D.":
+  - "Marvels Agents of S.H.I.E.L.D. (2013)":
       name_regexp: ^marvels.agents.of.(s.h.i.e.l.d.?|shield)
-  - "Brooklyn Nine-Nine (2013)":
-      name_regexp: ^brooklyn.nine.nine.(2013)?
+#  - "Brooklyn Nine-Nine (2013)":
+#      name_regexp: ^brooklyn.nine.nine.(2013)?
   - "Tosh.0":
       name_regexp: ^tosh.0.(2009)?
-  - "Fear the Walking Dead (2015)":
-      name_regexp: ^fear.the.walking.dead.(2015)?
+#  - "Fear the Walking Dead (2015)":
+#      name_regexp: ^fear.the.walking.dead.(2015)?
   - "Mr Robot (2015)":
       name_regexp: ^mr.robot.(2015)?
   - "Shameless (2011)":
       name_regexp: ^shameless.(US)?
   - "The 100"
+  - "Sharp Objects (2018)"
 
 
 
