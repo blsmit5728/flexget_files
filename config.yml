@@ -102,7 +102,7 @@ templates:
       space: 10000
     regexp:
       reject:
-        #- (s|d)ub(s|bed)?\b: {from: title} 
+        - (s|d)ub(s|bed)?\b: {from: title} 
         - (duo|tri|quadri|tetra|penta|hexa|hepta|octa|ennea|deca)logy 
         - \b3-?D\b: {from: title}          
         - \bR5\b: {from: title}            
