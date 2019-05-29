@@ -20,12 +20,12 @@ session = requests.Session()
 
 
 class PluginTheXEM(object):
-    def validator(self):
-        from flexget import validator
-        root = validator.factory('dict')
-        root.accept('choice', key='source', required=True).accept_choices(['scene', 'tvdb', 'anidb', 'rage'])
-        root.accept('choice', key='destination', required=True).accept_choices(['scene', 'tvdb', 'anidb', 'rage'])
-        return root
+    #def validator(self):
+    #    from flexget import validator
+    #    root = validator.factory('dict')
+    #    root.accept('choice', key='source', required=True).accept_choices(['scene', 'tvdb', 'anidb', 'rage'])
+    #    root.accept('choice', key='destination', required=True).accept_choices(['scene', 'tvdb', 'anidb', 'rage'])
+    #    return root
 
     @plugin.priority(109) # NOQA
     def on_task_metainfo(self, task, config): # NOQA

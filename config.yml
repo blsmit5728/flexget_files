@@ -2,38 +2,39 @@ variables: secretfile.yml
 templates:
   my-deluge-tv:
     deluge:
-      removeatratio: yes
+      remove_at_ratio: yes
       port: 58846
       main_file_only: yes 
       username: bsmith
       password: '{? deluge.password ?}'
       ratio: 1.4
     set:
-      queuetotop: yes
+      queue_to_top: yes
       content_filename: "{{ tvdb_series_name|default(series_name)|replace('/', '_')|replace(':', ' -')|replace(',', '') }} - {{ series_id }}{% if tvdb_ep_name|default(False) %} - {{ tvdb_ep_name|replace('/', '_')|replace(':', ' -')|replace(',', '') }}{% endif %} - {{ quality }}"
-      movedone: "{? storage.library ?}/TvShows/{{ series_name|replace('/', '_')|replace(':', ' ') }}/{% if series_id_type == 'ep' %}Season {{ trakt_season|default(series_season) }}/{% endif %}"
+      move_completed_path: "{? storage.library ?}/TvShows/{{ series_name|replace('/', '_')|replace(':', ' ') }}/{% if series_id_type == 'ep' %}Season {{ trakt_season|default(series_season) }}/{% endif %}"
 
 
   my-deluge-movie:
     deluge:
-      removeatratio: yes
+      remove_at_ratio: yes
       port: 58846
       main_file_only: yes 
       username: bsmith
       password: '{? deluge.password ?}'
       ratio: 3.0
     set:
+      queue_to_top: yes
       content_filename: "{{ tmdb_name|replace('/', '_')|replace(':', ' ') }} ({{ tmdb_year }}) - {{ quality }}"
-      movedone: "{? storage.library ?}/Movies/{{ tmdb_name|replace('/', '_')|replace(':', ' ') }} ({{ tmdb_year }})"
+      move_completed_path: "{? storage.library ?}/Movies/{{ tmdb_name|replace('/', '_')|replace(':', ' ') }} ({{ tmdb_year }})"
 
-  slack-notify:
+  send-notify:
     notify:
       entries:
         title: "[{{task}}] - Download started"
-        message: "[{{task}}] - Download started:
+        message: "[{{task}}] - Download started:\n
           {% if series_name is defined %}
           {% if trakt_series_slug is defined and trakt_season is defined and trakt_episode is defined %}
-          <https://trakt.tv/shows/{{ trakt_series_slug }}/seasons/{{ trakt_season }}/episodes/{{ trakt_episode }}|{{tvdb_series_name|d(series_name)}} - {{series_id}}{{tvdb_ep_name|d('')}}>
+          [Show Link](https://trakt.tv/shows/{{ trakt_series_slug }}/seasons/{{ trakt_season }}/episodes/{{ trakt_episode }}|{{tvdb_series_name|d(series_name)}} - {{series_id}}{{tvdb_ep_name|d('')}})
           {% else %}
           {{tvdb_series_name|d(series_name)}} - {{series_id}} - {{tvdb_ep_name|d('')}}
           {% endif %}
@@ -50,9 +51,13 @@ templates:
           {% endif %}"
         what: accepted
         via:
-          - slack:
-              web_hook_url: '{? slack.url ?}'
-              icon_emoji: tv
+          #- slack:
+          #    web_hook_url: '{? slack.url ?}'
+          #    icon_emoji: tv
+          - discord:
+              web_hook_url: "{? discord.webhookurl ?}"
+              avatar_url: "https://i.imgur.com/HbBXlsd.png"
+              username: "Flexget"
 
   local-torrents:
     disable:
@@ -97,7 +102,7 @@ templates:
       space: 10000
     regexp:
       reject:
-        - (s|d)ub(s|bed)?\b: {from: title} 
+        #- (s|d)ub(s|bed)?\b: {from: title} 
         - (duo|tri|quadri|tetra|penta|hexa|hepta|octa|ennea|deca)logy 
         - \b3-?D\b: {from: title}          
         - \bR5\b: {from: title}            
@@ -117,6 +122,8 @@ templates:
         - \bASAP\b: {from: title}
         - \MULTi: {from: title}
         - \bCasStudio\b: {from: title}
+      accept:
+        - \Pokemon.*.DUBBED\b: {from: title}
     content_filter:
       require:
         - '*.avi'
@@ -139,7 +146,8 @@ templates:
     magnets: no
       
   tv-global:
-    template: slack-notify
+    template: 
+      - send-notify
     headers:
       User-Agent: "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.84 Safari/537.36"
     inputs:
@@ -164,7 +172,8 @@ templates:
 
     
   movie-global:
-    template: slack-notify
+    template: 
+      - send-notify
     inputs:
       - rss: { url: '{? tl.url ?}', silent: yes }
     archive: [movies]
@@ -192,7 +201,7 @@ templates:
             rss_key: '{? tl.rss ?}'
             username: '{? tl.user_name ?}'
             password: '{? tl.password ?}'
-            category: ['HD', 'BDRip', 'DVDRip', 'DVDR', 'Documentaries']
+            category: ['HDRip', 'BlurayRip', 'DVDRip/DVDScreener', 'DVD-R', 'Documentaries']
         - flexget_archive: [movies]
       what: [filler: yes]
 
@@ -233,34 +242,34 @@ tasks:
         target: 720p+
         quality: 480p+
 
-  clean-movie-queue:
-    priority: 90
-    template: no_global
-    disable:
-      - seen
-      - seen_info_hash
-      - seen_movies
-    accept_all: yes
-    filesystem:
-      path: /mnt/disk1/Library/Movies/
-      recursive: no
-      retrieve: dirs 
-    imdb_lookup: yes
-    trakt_lookup:
-      account: '{? trakt_info.user_name ?}'
-      username: '{? trakt_info.user_name ?}'
-    tmdb_lookup: yes
-    require_field: [movie_name, movie_year]
-    list_match:
-      from:
-        - movie_list: movies_2018
-      single_match: no
-    list_remove:
-      - trakt_list:
-          account: '{? trakt_info.user_name ?}'
-          username: '{? trakt_info.user_name ?}'
-          list: Movie_Queue
-          type: movies
+  #clean-movie-queue:
+  #  priority: 90
+  #  template: no_global
+  #  disable:
+  #    - seen
+  #    - seen_info_hash
+  #    - seen_movies
+  #  accept_all: yes
+  #  filesystem:
+  #    path: /mnt/disk1/Library/Movies/
+  #    recursive: no
+  #    retrieve: dirs 
+  #  imdb_lookup: yes
+  #  trakt_lookup:
+  #    account: '{? trakt_info.user_name ?}'
+  #    username: '{? trakt_info.user_name ?}'
+  #  tmdb_lookup: yes
+  #  require_field: [movie_name, movie_year]
+  #  list_match:
+  #    from:
+  #      - movie_list: movies_2018
+  #    single_match: no
+  #  list_remove:
+  #    - trakt_list:
+  #        account: '{? trakt_info.user_name ?}'
+  #        username: '{? trakt_info.user_name ?}'
+  #        list: Movie_Queue
+  #        type: movies
 
   movies-1080p:
     priority: 110
@@ -277,29 +286,29 @@ tasks:
     quality: 720p+ bluray+ h264+ !mp3 !aac
     delay: 7 days
 
-  imdb-list-to-trakt:
-    priority: 1
-    template: no_global
-    imdb_lookup: yes
-    imdb_list:
-      login: '{? imdb.login ?}'
-      password: '{? imdb.password ?}'
-      list: watchlist
-    list_add:
-      - movie_list: movies_2018
-      - trakt_list:
-          account: '{? trakt_info.user_name ?}'
-          username: '{? trakt_info.user_name ?}'
-          list: Movie_Queue
-          type: movies
-    list_clear:
-      what:
-        - imdb_list:
-            login: '{? imdb.login ?}'
-            password: '{? imdb.password ?}'
-            list: watchlist
-      phase: exit
-    accept_all: yes
+  #imdb-list-to-trakt:
+  #  priority: 1
+  #  template: no_global
+  #  imdb_lookup: yes
+  #  imdb_list:
+  #    login: '{? imdb.login ?}'
+  #    password: '{? imdb.password ?}'
+  #    list: watchlist
+  #  list_add:
+  #    - movie_list: movies_2018
+  #    - trakt_list:
+  #        account: '{? trakt_info.user_name ?}'
+  #        username: '{? trakt_info.user_name ?}'
+  #        list: Movie_Queue
+  #        type: movies
+  #  list_clear:
+  #    what:
+  #      - imdb_list:
+  #          login: '{? imdb.login ?}'
+  #          password: '{? imdb.password ?}'
+  #          list: watchlist
+  #    phase: exit
+  #  accept_all: yes
 
   trakt-list-to-movie-queue:
     priority: 2
@@ -326,7 +335,7 @@ tasks:
       - regexp
       - quality
     # To avoid warnings about non-functional input
-    filler: yes 
+    #filler: yes 
     # Mark movies as seen
     list_match:
       from:
@@ -361,7 +370,7 @@ tasks:
     template: 
       - local-torrents
         #- tv-global
-      - slack-notify
+      - send-notify
       - my-deluge-tv
     all_series:
       parse_only: yes
@@ -378,21 +387,21 @@ tasks:
       regexp: '.*\.torrent$'
       recursive: yes
       
-  trakt-fall-shows:
-    priority: 6
-    #include: [ series-fall-shows.yml ]
-    template: 
-      - tv-global
-    set:
-      label: tv-fall-shows
-    configure_series:
-      from:
-        trakt_list:
-          username: '{? trakt_info.user_name ?}'
-          account: '{? trakt_info.user_name ?}' 
-          list: Fall Shows 
-          type: shows
-      settings:
-        quality: hdtv+ 
+    #trakt-fall-shows:
+    #priority: 6
+    ##include: [ series-fall-shows.yml ]
+    #template: 
+    #  - tv-global
+    #set:
+    #  label: tv-fall-shows
+    #configure_series:
+    #  from:
+    #    trakt_list:
+    #      username: '{? trakt_info.user_name ?}'
+    #      account: '{? trakt_info.user_name ?}' 
+    #      list: Fall Shows 
+    #      type: shows
+    #  settings:
+    #    quality: hdtv+ 
 
   

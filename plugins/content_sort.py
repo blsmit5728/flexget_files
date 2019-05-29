@@ -18,24 +18,24 @@ class FilterContentSort(object):
       '*.mkv': '/other/path'
     """
 
-    def validator(self):
-        from flexget import validator
-        config = validator.factory('dict')
-        config.accept_any_key('any')
-        return config
+    #def validator(self):
+    #    from flexget import validator
+    #    config = validator.factory('dict')
+    #    config.accept_any_key('any')
+    #    return config
 
     def process_entry(self, task, entry, config):
         if 'content_files' in entry:
             files = entry['content_files']
-            log.debug('%s files: %s' % (entry['title'], files))
+            log.info('%s files: %s' % (entry['title'], files))
 
             for mask, path in config.items():
                 log.debug('Checing for: %s' % mask)
                 for file in files:
                     log.debug('\t in: %s' % file)
                     if fnmatch(file, mask):
-                        conf = {'movedone': path }
-                        log.debug('adding set: info to entry:\'%s\' %s' % (entry['title'], conf))
+                        conf = {'move_completed_path': path }
+                        log.info('adding set: info to entry:\'%s\' %s' % (entry['title'], conf))
                         entry.update(conf)
 
     def parse_torrent_files(self, entry):

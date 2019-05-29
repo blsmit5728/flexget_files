@@ -32,7 +32,7 @@ templates:
         message: "[{{task}}] - Sorted:
           {% if series_name is defined %}
           {% if trakt_series_slug is defined and trakt_season is defined and trakt_episode is defined %}
-          <https://trakt.tv/shows/{{ trakt_series_slug }}/seasons/{{ trakt_season }}/episodes/{{ trakt_episode }}|{{tvdb_series_name|d(series_name)}} - {{series_id}}{{tvdb_ep_name|d('')}}>
+          [Show Link](https://trakt.tv/shows/{{ trakt_series_slug }}/seasons/{{ trakt_season }}/episodes/{{ trakt_episode }}|{{tvdb_series_name|d(series_name)}} - {{series_id}}{{tvdb_ep_name|d('')}})
           {% else %}
           {{tvdb_series_name|d(series_name)}} - {{series_id}} - {{tvdb_ep_name|d('')}}
           {% endif %}
@@ -49,9 +49,14 @@ templates:
           {% endif %}"
         what: accepted
         via:
-          - slack:
-              web_hook_url: '{? slack.url ?}'
-              icon_emoji: hamburger              
+            #- slack:
+            #    web_hook_url: '{? slack.url ?}'
+            #    icon_emoji: hamburger              
+          - discord:
+              web_hook_url: "{? discord.webhookurl ?}"
+              avatar_url: "https://i.imgur.com/HbBXlsd.png"
+              username: "Flexget"
+ 
 
 tasks:
   Sort_Unpacked_TV_Shows:
