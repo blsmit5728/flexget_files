@@ -29,7 +29,7 @@ templates:
     notify:
       entries:
         title: "[{{task}}] - Sorted"
-        message: "[{{task}}] - Sorted:
+        message: "[{{task}}] - Sorted:\n
           {% if series_name is defined %}
           {% if trakt_series_slug is defined and trakt_season is defined and trakt_episode is defined %}
           [Show Link](https://trakt.tv/shows/{{ trakt_series_slug }}/seasons/{{ trakt_season }}/episodes/{{ trakt_episode }}|{{tvdb_series_name|d(series_name)}} - {{series_id}}{{tvdb_ep_name|d('')}})
@@ -64,7 +64,9 @@ tasks:
     filesystem:
       path: "/mnt/disk1/Downloads/staging/TvShows/"
     thetvdb_lookup: yes
-    trakt_lookup: yes
+    trakt_lookup:
+      account: "{? trakt_info.user_name ?}"
+      username: "{? trakt_info.user_name ?}"
     # This is needed to get my TVDB offset values 
     include: 
       - series-interesting.yml

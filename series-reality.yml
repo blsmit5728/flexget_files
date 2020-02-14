@@ -4,6 +4,9 @@ series:
   - "Last Week Tonight With John Oliver (2014)":
       name_regexp: last.week.tonight.with.john.oliver.(.2014)?
       identified_by: ep
+  - "Real Time with Bill Maher (2003)":
+      name_regexp: real.time.with.bill.maher.(.2013)?
+      identified_by: ep
   - "Moonshiners":
       specials: no
 

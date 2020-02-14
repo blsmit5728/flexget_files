@@ -18,7 +18,7 @@ DOWNLOAD_PATH='/mnt/disk1/Downloads/completed'
 STAGING_PATH='/mnt/disk1/Downloads/staging'
 # If you're using a local checkout of Flexget, use flexget_vanilla.
 # Otherwise use the one in your system
-FLEXGET_COMMAND='flexget --loglevel verbose --logfile /home/bsmith/logs/flexget/flexget-sorting.log'
+FLEXGET_COMMAND='flexget --loglevel debug --logfile /home/bsmith/logs/flexget/flexget-sorting.log --debug'
 FLEXGET_SORTING_CONFIG='-c /home/bsmith/.flexget/sort.yml'
 FLEXGET_TASK_PREFIX='Sort_Unpacked_'
 
@@ -33,7 +33,7 @@ logformat = logging.Formatter("%(levelname)s\t%(asctime)s\t%(message)s")
 
 logfile = logging.FileHandler(LOG_FILE)
 logfile.setFormatter(logformat)
-logfile.setLevel(logging.DEBUG)
+logfile.setLevel(logging.INFO)
 log.addHandler(logfile)
 
 # Log to stdout and increase logging level if run from a console
@@ -97,7 +97,7 @@ for path, task in FLEXGET_PATH_TASK.items():
             else:
                 log.info('root=%s dirs=%s files=%s' % (root,dirs,files))
                 #cmd='find "'+root+'" -type f -regex ".*\.\(\part[0-9]+\.\)?r\([0-9]+\|ar\)$" | head -1'
-                cmd='find "'+root+'" -type f -regex ".*\.\(\part[0-9]+\.\)?r\([0-9]+\|ar\)$" | grep "rar" | grep -v "Subs"'
+                cmd='find "'+root+'" -type f -regex ".*\.\(\part[0-9]+\.\)?r\([0-9]+\|ar\)$" | grep "\.rar" | grep -v "Subs"'
                 log.debug('Shelling out: %s' % cmd)
                 try:
                     ret = subprocess.check_output(cmd, shell=True)
@@ -165,6 +165,8 @@ for path, task in FLEXGET_PATH_TASK.items():
             ret = subprocess.call(cmd, shell=True)
             if ret != 0:
                 log.warning('Flexget command returned non-zero value %d.' % ret)
+            else:
+                log.info("SUCCESS! %d\n" % ret)
         else:
             log.debug("Unrar Failed, or True never set")
     else:

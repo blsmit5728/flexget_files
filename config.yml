@@ -41,7 +41,7 @@ templates:
           - {{quality}}
           {% elif imdb_name is defined %}
           {% if imdb_url is defined %}
-          {{imdb_url}} {{imdb_name}} {{imdb_year}}
+          {{imdb_url}}\n{{imdb_name}} ({{imdb_year}})
           {% else %}
           {{imdb_name}} {{imdb_year}}
           {% endif %}
@@ -121,7 +121,7 @@ templates:
         - \[facepalm\]: {from: title}
         - \bASAP\b: {from: title}
         - \MULTi: {from: title}
-        - \bCasStudio\b: {from: title}
+        #- \bCasStudio\b: {from: title}
       accept:
         - \Pokemon.*.DUBBED\b: {from: title}
     content_filter:
@@ -187,7 +187,7 @@ templates:
     imdb_lookup: yes
     trakt_lookup:
       account: '{? trakt_info.user_name ?}'
-      username: blsmit5728
+      username: '{? trakt_info.user_name ?}' 
     content_sort:
       '*.rar': '{? storage.complete ?}/Movies/'
     exec:
@@ -286,29 +286,30 @@ tasks:
     quality: 720p+ bluray+ h264+ !mp3 !aac
     delay: 7 days
 
-  #imdb-list-to-trakt:
-  #  priority: 1
-  #  template: no_global
-  #  imdb_lookup: yes
-  #  imdb_list:
-  #    login: '{? imdb.login ?}'
-  #    password: '{? imdb.password ?}'
-  #    list: watchlist
-  #  list_add:
-  #    - movie_list: movies_2018
-  #    - trakt_list:
-  #        account: '{? trakt_info.user_name ?}'
-  #        username: '{? trakt_info.user_name ?}'
-  #        list: Movie_Queue
-  #        type: movies
-  #  list_clear:
-  #    what:
-  #      - imdb_list:
-  #          login: '{? imdb.login ?}'
-  #          password: '{? imdb.password ?}'
-  #          list: watchlist
-  #    phase: exit
-  #  accept_all: yes
+  imdb-list-to-trakt:
+    priority: 1
+    template: no_global
+    imdb_lookup: yes
+    imdb_watchlist:
+      user_id: '{? imdb.user_id_num ?}' 
+      #login: '{? imdb.login ?}'
+      #password: '{? imdb.password ?}'
+      list: watchlist
+    list_add:
+      - movie_list: movies_2018
+      - trakt_list:
+          account: '{? trakt_info.user_name ?}'
+          username: '{? trakt_info.user_name ?}'
+          list: Movie_Queue
+          type: movies
+    #list_clear:
+    #  what:
+    #    - imdb_list:
+    #        login: '{? imdb.login ?}'
+    #        password: '{? imdb.password ?}'
+    #        list: watchlist
+    #  phase: exit
+    accept_all: yes
 
   trakt-list-to-movie-queue:
     priority: 2
