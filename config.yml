@@ -92,11 +92,21 @@ templates:
             - trakt_list:
                 <<: *tv-trakt-list-tv-shows
                 type: shows
+  movie-anchors:
+    _movies_discover_from: &movies-discover-from
+      from:
+        - torrentleech:
+            rss_key: '{? tl.rss ?}'
+            username: '{? tl.user_name ?}'
+            password: '{? tl.password ?}'
+            category: [11, 12, 13, 14, 29, 37, 41, 43, 4]
+        - flexget_archive: [movies]
 
   global:
     domain_delay:
       www.torrentleech.org: 10 seconds
       rss.torrentleech.org: 10 minutes
+    #cfscraper: yes
     free_space:
       path: '{? storage.library ?}'
       space: 10000
@@ -194,17 +204,6 @@ templates:
       on_output:
         for_accepted: wget "{{url}}" -P /home/bsmith/Dropbox/torrents/movies/
 
-  movies-discover:
-    discover:
-      from:
-        - torrentleech:
-            rss_key: '{? tl.rss ?}'
-            username: '{? tl.user_name ?}'
-            password: '{? tl.password ?}'
-            category: ['HDRip', 'BlurayRip', 'DVDRip/DVDScreener', 'DVD-R', 'Documentaries']
-        - flexget_archive: [movies]
-      what: [filler: yes]
-
   movies-queued:
     list_match:
       from:
@@ -276,15 +275,37 @@ tasks:
     template: 
       - movie-global
       - movies-queued
-    quality: 1080p+ bluray+ h264+ !mp3 !aac
+    #discover:
+    #  release_estimations:
+    #    optimistic: 30 days
+    #  interval: 2 hours
+    #  <<: *movies-discover-from
+    #  what:
+    #    - trakt_list:
+    #        account: '{? trakt_info.user_name ?}'
+    #        username: '{? trakt_info.user_name ?}'
+    #        list: Movie_Queue
+    #        type: movies
+    quality: 1080p+ bluray|webdl|webrip h264+ dd5.1-dts
 
   movies-720p:
     priority: 120
     template: 
       - movie-global
       - movies-queued
-    quality: 720p+ bluray+ h264+ !mp3 !aac
-    delay: 7 days
+    #discover:
+    #  release_estimations:
+    #    optimistic: 30 days
+    #  interval: 2 hours
+    #  <<: *movies-discover-from
+    #  what:
+    #    - trakt_list:
+    #        account: '{? trakt_info.user_name ?}'
+    #        username: '{? trakt_info.user_name ?}'
+    #        list: Movie_Queue
+    #        type: movies
+    quality: 720p+ bluray|webdl|webrip h264+ dd5.1-dts
+    delay: 4 days
 
   imdb-list-to-trakt:
     priority: 1
@@ -313,6 +334,8 @@ tasks:
 
   trakt-list-to-movie-queue:
     priority: 2
+    disable:
+      - seen
     template: no_global
     trakt_list:
       username: '{? trakt_info.user_name ?}'
